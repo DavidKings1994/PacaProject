@@ -1,31 +1,31 @@
 <?php
 class Conexion {
-    private $servidor = 'localhost';
-    private $usuario = 'root';
-    private $contraseña = 'root';
-    private $bd = 'guitar_champion';
-    private $conexion = null;
+    private $server = 'localhost';
+    private $user = 'root';
+    private $password = 'root';
+    private $database = 'guitar_champion';
+    private $connection = null;
 
     function __construct() {
-        $this->conexion = mysqli_connect($this->servidor, $this->usuario, $this->contraseña, $this->bd)
-            or die('No se pudo conectar: ' . mysql_error());
+        $this->connection = mysqli_connect($this->server, $this->user, $this->password, $this->database)
+            or die('Connection error: ' . mysql_error());
     }
 
     function __destruct() {
-        mysqli_close($this->conexion);
+        mysqli_close($this->connection);
     }
 
-    function GetConexion() {
-        return $this->conexion;
+    function GetConection() {
+        return $this->connection;
     }
 
-    function CrearConexion() {
-        $this->conexion = mysqli_connect($this->servidor, $this->usuario, $this->contraseña, $this->bd)
-            or die('No se pudo conectar: ' . mysql_error());
+    function openConection() {
+        $this->connection = mysqli_connect($this->server, $this->user, $this->password, $this->database)
+            or die('Connection error: ' . mysql_error());
     }
 
-    function CerrarConexion() {
-        mysqli_close($this->conexion);
+    function closeConnection() {
+        mysqli_close($this->connection);
     }
 }
 ?>

@@ -5,6 +5,8 @@ var inject = require('gulp-inject');
 var webserver = require('gulp-webserver');
 var connect = require('gulp-connect-php');
 var gnf = require('gulp-npm-files');
+var vueify = require('gulp-vueify');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var htmlclean = require('gulp-htmlclean');
 var cleanCSS = require('gulp-clean-css');
@@ -33,10 +35,10 @@ var paths = {
 };
 
 gulp.task("webpack", function(callback) {
-    // run webpack
     return webpack({
         entry: [
-            __dirname + "/src/js/main.js"
+            __dirname + "/src/js/main.js",
+            __dirname + "/src/scss/main.scss"
         ],
         output: {
             path: __dirname + "/dist/",
@@ -45,6 +47,10 @@ gulp.task("webpack", function(callback) {
             chunkFilename: "[id].bundle.js"
         },
         plugins: [
+            new ExtractTextPlugin({
+                filename: '[name].bundle.css',
+                allChunks: true
+            }),
             new webpack.ProvidePlugin({
                 $: 'jquery',
                 jquery: 'jquery',
@@ -55,14 +61,33 @@ gulp.task("webpack", function(callback) {
         resolve: {
             alias: {
                 'jquery': __dirname + '/node_modules/jquery/dist/jquery.js',
-                'bootstrap': __dirname + '/node_modules/bootstrap/dist/js/bootstrap.js'
+                'bootstrap': __dirname + '/node_modules/bootstrap/dist/js/bootstrap.js',
+                'vue': __dirname + '/node_modules/vue/dist/vue.js',
+                'vuex':  __dirname + '/node_modules/vuex/dist/vuex.js'
             }
         },
         module: {
             loaders: [
                 { test: /\.css$/, loader: "style!css" },
+                { test: /\.vue$/, loader: "vue-loader" },
                 { test: /\.(png|jpg)$/, loader: 'file-loader' }
             ],
+            rules: [
+                {
+                    test: /\.css$/,
+                    loader: ExtractTextPlugin.extract({
+                        loader: 'css-loader?importLoaders=1',
+                    })
+                },
+                {
+                    test: /\.(sass|scss)$/,
+                    loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
+                },
+                {
+                    test: /\.vue$/,
+                    loader: 'vue-loader'
+                }
+            ]
         }
     }, function(err, stats) {
         if(err) throw new gutil.PluginError("webpack", err);
@@ -73,20 +98,32 @@ gulp.task("webpack", function(callback) {
     });
 });
 
+gulp.task('vueify', function() {
+    return gulp.src('src/js/views/**/*.vue')
+        .pipe(vueify())
+        .pipe(gulp.dest('./dist/components'));
+});
+
 gulp.task('html', function () {
     return gulp.src(paths.srcHTML).pipe(gulp.dest(paths.public));
 });
 
 gulp.task('css', function () {
-    return gulp.src(paths.srcCSS).pipe(gulp.dest(paths.public));
+    return gulp.src(paths.distCSS).pipe(gulp.dest('./public/dist'));
 });
 
-gulp.task('js', ['webpack'], function () {
+gulp.task('js', function () {
     return gulp.src(paths.distJS).pipe(gulp.dest('./public/dist'));
 });
 
+gulp.task('bundles', ['webpack'], function () {
+    var js = gulp.src(paths.distJS).pipe(gulp.dest('./public/dist'));
+    var css = gulp.src(paths.distCSS).pipe(gulp.dest('./public/dist'));
+    return [js,css];
+});
+
 gulp.task('php', function () {
-    return gulp.src(paths.srcPHP).pipe(gulp.dest(paths.public));
+    return gulp.src(paths.srcPHP).pipe(gulp.dest('./public/php'));
 });
 
 gulp.task('img', function () {
@@ -98,22 +135,16 @@ gulp.task('copyNpm', function() {
     gulp.src(gnf(), {base:'./'}).pipe(gulp.dest('./public/build'));
 });
 
-gulp.task('copy', ['html', 'css', 'js', 'php', 'img', 'copyNpm']);
+gulp.task('copy', ['html', 'bundles', 'php', 'img', 'copyNpm']);
 
 // inyecta las nuevas direcciones publicas de los archivos de css y js en el index de la carpeta public
 gulp.task('inject', ['copy'], function () {
-    var indexCss = gulp.src([paths.publicCSS, 'public/css/main.css'], { read: false });
-    var landingCss = gulp.src([paths.publicCSS, 'public/css/landing.css'], { read: false });
+    var mainCss = gulp.src([paths.publicCSS, 'public/dist/main.bundle.css'], { read: false });
     var js = gulp.src(paths.publicJS);
-    var indexInject = gulp.src(paths.publicIndex)
-        .pipe(inject( indexCss, { relative:true } ))
+    return gulp.src(paths.publicIndex)
+        .pipe(inject( mainCss, { relative:true } ))
         .pipe(inject( js, { relative:true } ))
         .pipe(gulp.dest(paths.public));
-    var landingInject = gulp.src('public/landing.php')
-        .pipe(inject( landingCss, { relative:true } ))
-        .pipe(inject( js, { relative:true } ))
-        .pipe(gulp.dest(paths.public));
-    return [indexInject, landingInject];
 });
 
 // inicializa un servidor web de gulp para la aplicacion
