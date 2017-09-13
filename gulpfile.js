@@ -163,6 +163,8 @@ gulp.task('serve', ['inject'], function () {
 // conecta el servidor de gulp con el servicio de php
 gulp.task('connect', ['inject'], function() {
     connect.server({
+        bin: 'C:/xampp/php/php.exe',
+        ini: 'C:/xampp/php/php.ini',
         port: 8000,
         base: paths.public
     });

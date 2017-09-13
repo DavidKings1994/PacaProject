@@ -29,6 +29,8 @@
     "webshot": "^0.18.0"
   },
   "devDependencies": {
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.8.0",
     "css-loader": "^0.28.0",
     "del": "^3.0.0",
     "extract-text-webpack-plugin": "2.0.0-beta.4",
@@ -45,7 +47,6 @@
     "node-sass": "^4.3.0",
     "sass-loader": "^4.1.1",
     "vue-loader": "^10.0.2",
-    "vue-template-compiler": "^2.2.6",
-    "webpack": "^3.5.5"
+    "vue-template-compiler": "^2.2.6"
   }
 }

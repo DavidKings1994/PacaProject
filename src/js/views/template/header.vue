@@ -1,0 +1,55 @@
+<template>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#pacaNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="./index.php">Paca Manager</a>
+            </div>
+            <div class="collapse navbar-collapse" id="pacaNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Juego</a></li>
+                    <li><a href="#">Ranking</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#configurations">Configuracion</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="./php/logout.php"><span class="glyphicon glyphicon-log-out"></span> Cerrar sesion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</template>
+
+<script type="text/javascript">
+export default {
+    data() {
+        return {
+            session: null
+        }
+    },
+    methods: {
+        login: function() {
+            $.ajax({
+                url: '.php/userController.php',
+                type: 'POST',
+                data: {
+                    action: 'login'
+                },
+                success: function(msg) {
+                    console.log(msg);
+                }
+            });
+        }
+    },
+    mounted: function() {
+
+    }
+};
+</script>
+
+<style media="screen">
+
+</style>

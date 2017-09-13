@@ -1,5 +1,6 @@
 define(['vue'], function(Vue) {
     Vue.component('paca-navbar', require('./views/template/navbar.vue'));
+    Vue.component('paca-header', require('./views/template/header.vue'));
 
     new Vue({
         el: '#App',
