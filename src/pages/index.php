@@ -17,7 +17,12 @@
             <div class="row" id="mainContainer">
                 <paca-navbar></paca-navbar>
                 <div class="mainContent col-md-10">
-                    Contenido de la pagina
+                    <!-- <div v-if="session.rol == 'admin'"> -->
+                        <paca-admin-home></paca-admin-home>
+                    <!-- </div>
+                    <div v-if="session.rol == 'user'"> -->
+                        <paca-user-home></paca-user-home>
+                    <!-- </div> -->
                 </div>
             </div>
         </div>

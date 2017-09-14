@@ -16,9 +16,8 @@ if(isset($_POST['action'])) {
                 session_start();
         		$_SESSION['idPlayer'] = $row["idUser"];
                 $_SESSION['name'] = $row["name"];
-                $_SESSION['mail'] = $row["email"];
                 $_SESSION['rol'] = $row["rol"];
-                header("Location: ./../../index.php");
+                return json_encode($_SESSION);
             }
             break;
         }
