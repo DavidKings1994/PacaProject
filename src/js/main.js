@@ -5,8 +5,9 @@ define(['vue'], function(Vue) {
     new Vue({
         el: '#App',
         data: {
-            sesion: null
+            
         },
+        props: [ 'session' ],
         methods: { },
         computed: {
             actualPage: function() {

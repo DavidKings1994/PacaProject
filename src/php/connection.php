@@ -1,5 +1,5 @@
 <?php
-class Conexion {
+class Connection {
     private $server = 'localhost';
     private $user = 'root';
     private $password = 'root';
