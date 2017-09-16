@@ -25,6 +25,8 @@
                     <!-- </div> -->
                 </div>
             </div>
+            <paca-login></paca-login>
+            <paca-logout></paca-logout>
         </div>
 
         <!--[htmlclean-protect]-->

@@ -1,7 +1,9 @@
-define(['vue', 'vuex', './navigation'], function(Vue, Vuex, Navigation) {
+define(['vue', 'vuex', 'bootstrap', './navigation'], function(Vue, Vuex, Bootstrap, Navigation) {
     // templates
     Vue.component('paca-navbar', require('./views/template/navbar.vue'));
     Vue.component('paca-header', require('./views/template/header.vue'));
+    Vue.component('paca-login', require('./views/template/login.vue'));
+    Vue.component('paca-logout', require('./views/template/logout.vue'));
 
     // admin components
     Vue.component('paca-admin-home', require('./views/admin/home.vue'));

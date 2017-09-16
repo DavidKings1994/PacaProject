@@ -3,7 +3,7 @@ class Connection {
     private $server = 'localhost';
     private $user = 'root';
     private $password = 'root';
-    private $database = 'guitar_champion';
+    private $database = 'paca_project_db';
     private $connection = null;
 
     function __construct() {
@@ -15,11 +15,11 @@ class Connection {
         mysqli_close($this->connection);
     }
 
-    function GetConection() {
+    function getConnection() {
         return $this->connection;
     }
 
-    function openConection() {
+    function openConnection() {
         $this->connection = mysqli_connect($this->server, $this->user, $this->password, $this->database)
             or die('Connection error: ' . mysql_error());
     }

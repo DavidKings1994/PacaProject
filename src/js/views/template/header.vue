@@ -16,7 +16,16 @@
                     <li><a href="#" data-toggle="modal" data-target="#configurations">Configuracion</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="./php/logout.php"><span class="glyphicon glyphicon-log-out"></span> Cerrar sesion</a></li>
+                    <li v-if="logged">
+                        <a href="#" data-toggle="modal" data-target="#logoutModal">
+                            <span class="glyphicon glyphicon-log-out"></span> Logout
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="#" data-toggle="modal" data-target="#loginModal">
+                            <span class="glyphicon glyphicon-log-in"></span> Login
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -24,25 +33,20 @@
 </template>
 
 <script type="text/javascript">
+var navigation = require('./../../navigation.js');
 export default {
     data() {
         return {
             session: null
         }
     },
-    methods: {
-        login: function() {
-            $.ajax({
-                url: '.php/userController.php',
-                type: 'POST',
-                data: {
-                    action: 'login'
-                },
-                success: function(msg) {
-                    console.log(msg);
-                }
-            });
+    computed: {
+        logged: function() {
+            return navigation.state.session != null;
         }
+    },
+    methods: {
+
     },
     mounted: function() {
 

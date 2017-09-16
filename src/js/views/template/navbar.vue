@@ -8,6 +8,7 @@
 </template>
 
 <script>
+var navigation = require('./../../navigation.js');
 export default {
     data() {
         return {
@@ -33,7 +34,7 @@ export default {
         }
     },
     mounted: function() {
-        console.log(this.usuario);
+        
     }
 }
 </script>

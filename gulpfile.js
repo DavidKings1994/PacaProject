@@ -43,8 +43,7 @@ gulp.task("webpack", function(callback) {
         output: {
             path: __dirname + "/dist/",
             publicPath: __dirname + "/public/",
-            filename: "[name].bundle.js",
-            chunkFilename: "[id].bundle.js"
+            filename: "[name].bundle.js"
         },
         plugins: [
             new ExtractTextPlugin({
