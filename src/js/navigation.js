@@ -1,5 +1,8 @@
+var Vue = require('vue');
+var Vuex = require('vuex');
+
 Vue.use(Vuex);
-const navigation = new Vuex.Store({
+module.exports = new Vuex.Store({
     state: {
         page: 'home',
         action: ''
@@ -9,4 +12,4 @@ const navigation = new Vuex.Store({
             state.page = page;
         }
     }
-})
+});

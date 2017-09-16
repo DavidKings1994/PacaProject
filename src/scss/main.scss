@@ -1,7 +1,37 @@
 @charset "UTF-8";
 
 @import "main/colors";
+@import "main/fonts";
 
-#mainContainer {
-    margin-top: 51px;
+#App {
+    $appHeight: calc(100vh - 51px);
+    font-family: $mainFont;
+
+    #mainContainer {
+        margin-top: 51px;
+        min-height: $appHeight;
+        width: calc(100vw - 15px);
+
+        .lateral-navbar {
+            height: $appHeight;
+            background: $background-light;
+            padding: 0px;
+            padding-left: 15px;
+
+            a {
+                display: block;
+                padding: 10px 15px;
+                color: $main-text;
+                text-decoration: none;
+            }
+
+            a:hover {
+                background: $main;
+            }
+
+            a.selected {
+                background: $main-selected;
+            }
+        }
+    }
 }

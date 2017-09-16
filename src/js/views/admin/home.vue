@@ -1,7 +1,5 @@
 <template>
-    <div class="fdfd" id="asd">
-
-    </div>
+    
 </template>
 
 <script>

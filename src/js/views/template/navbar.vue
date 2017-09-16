@@ -1,19 +1,9 @@
 <template>
     <div class="lateral-navbar col-md-2">
-        <ul>
-            <li>
-                <a href="#">opcion 1</a>
-            </li>
-            <li>
-                <a href="#">opcion 2</a>
-            </li>
-            <li>
-                <a href="#">opcion 3</a>
-            </li>
-            <li>
-                <a href="#">opcion 4</a>
-            </li>
-        </ul>
+        <a v-on:click="select" href="#"><span class="glyphicon glyphicon-user"></span> opcion 1</a>
+        <a v-on:click="select" href="#"><span class="glyphicon glyphicon-envelope"></span> opcion 2</a>
+        <a v-on:click="select" href="#"><span class="glyphicon glyphicon-print"></span> opcion 3</a>
+        <a v-on:click="select" href="#"><span class="glyphicon glyphicon-calendar"></span> opcion 4</a>
     </div>
 </template>
 
@@ -36,6 +26,10 @@ export default {
         },
         inicio: function() {
 
+        },
+        select: function(event) {
+            $('.lateral-navbar a').removeClass('selected');
+            $(event.target).addClass('selected');
         }
     },
     mounted: function() {

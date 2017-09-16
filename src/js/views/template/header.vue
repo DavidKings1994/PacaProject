@@ -24,7 +24,6 @@
 </template>
 
 <script type="text/javascript">
-var navigation = import('./../../navigation.js');
 export default {
     data() {
         return {

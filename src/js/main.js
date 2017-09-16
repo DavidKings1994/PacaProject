@@ -1,4 +1,4 @@
-define(['vue', 'vuex'], function(Vue, Vuex) {
+define(['vue', 'vuex', './navigation'], function(Vue, Vuex, Navigation) {
     // templates
     Vue.component('paca-navbar', require('./views/template/navbar.vue'));
     Vue.component('paca-header', require('./views/template/header.vue'));
