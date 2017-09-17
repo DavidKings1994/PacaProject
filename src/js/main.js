@@ -1,4 +1,4 @@
-define(['vue', 'vuex', 'bootstrap', './navigation'], function(Vue, Vuex, Bootstrap, Navigation) {
+define(['vue', 'vuex', 'bootstrap'], function(Vue, Vuex, Bootstrap) {
     // templates
     Vue.component('paca-navbar', require('./views/template/navbar.vue'));
     Vue.component('paca-header', require('./views/template/header.vue'));
@@ -11,20 +11,26 @@ define(['vue', 'vuex', 'bootstrap', './navigation'], function(Vue, Vuex, Bootstr
     // user components
     Vue.component('paca-user-home', require('./views/user/home.vue'));
 
+    var navigation = require('./navigation.js');
     new Vue({
         el: '#App',
-        data: {
-
+        created: function() {
+            navigation.commit('checkSession');
         },
-        methods: { },
         computed: {
-            actualPage: function() {
-                var titulo  = store.state.navegacion.currentPage;
+            page: function() {
+                var titulo  = navigation.state.page;
                 $("title").text('Paca manager | ' + titulo.charAt(0).toUpperCase() + titulo.slice(1));
-                return store.state.navegacion.currentPage;
+                return navigation.state.page;
             },
-            accion: function() {
+            action: function() {
                 return store.state.navegacion.currentAction;
+            },
+            rol: function() {
+                return navigation.state.session != null ? navigation.state.session.rol : '';
+            },
+            logged: function() {
+                return navigation.state.session != null;
             }
         },
         filters: {

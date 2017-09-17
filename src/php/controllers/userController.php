@@ -14,24 +14,33 @@ if(isset($_POST['action'])) {
             if($query->execute()) {
                 $query->bind_result($idUser, $name, $rol, $status);
                 $query->fetch();
-                session_start();
-                $data = array(
-                    'idPlayer' => $idUser,
-                    'name' => $name,
-                    'rol' => $rol,
-                    'status' => $status
-                );
-        		$_SESSION['idPlayer'] = $idUser;
-                $_SESSION['name'] = $name;
-                $_SESSION['rol'] = $rol;
-                $_SESSION['status'] = $status;
-                echo json_encode($data);
+                if (!is_null($idUser)) {
+                    session_start();
+                    $data = array(
+                        'status' => 'OK',
+                        'data' => array(
+                            'idUser' => $idUser,
+                            'name' => $name,
+                            'rol' => $rol,
+                            'status' => $status
+                        )
+                    );
+            		$_SESSION['idUser'] = $idUser;
+                    $_SESSION['name'] = $name;
+                    $_SESSION['rol'] = $rol;
+                    $_SESSION['status'] = $status;
+                    echo json_encode($data);
+                } else {
+                    echo json_encode(array(
+                        'status' => 'ERROR'
+                    ));
+                }
             }
             break;
         }
         case 'logout': {
             session_start();
-            unset($_SESSION['idPlayer']);
+            unset($_SESSION['idUser']);
             unset($_SESSION['name']);
             unset($_SESSION['rol']);
             unset($_SESSION['status']);
@@ -44,6 +53,26 @@ if(isset($_POST['action'])) {
                 );
             }
             session_destroy();
+            break;
+        }
+        case 'checkSession': {
+            session_start();
+            if (isset($_SESSION['idUser'])) {
+                $data = array(
+                    'status' => 'logged',
+                    'data' => array(
+                        'idUser' => $_SESSION['idUser'],
+                        'name' => $_SESSION['name'],
+                        'rol' => $_SESSION['rol'],
+                        'status' => $_SESSION['status']
+                    )
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'not logged'
+                ));
+            }
             break;
         }
     };

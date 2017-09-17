@@ -7,13 +7,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="./index.php">Paca Manager</a>
+                <a class="navbar-brand" href="./index.php">Pacapillars</a>
             </div>
             <div class="collapse navbar-collapse" id="pacaNavbar">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Juego</a></li>
+                    <!-- <li class="active"><a href="#">Juego</a></li>
                     <li><a href="#">Ranking</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#configurations">Configuracion</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#configurations">Configuracion</a></li> -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li v-if="logged">
@@ -35,21 +35,10 @@
 <script type="text/javascript">
 var navigation = require('./../../navigation.js');
 export default {
-    data() {
-        return {
-            session: null
-        }
-    },
     computed: {
         logged: function() {
             return navigation.state.session != null;
         }
-    },
-    methods: {
-
-    },
-    mounted: function() {
-
     }
 };
 </script>

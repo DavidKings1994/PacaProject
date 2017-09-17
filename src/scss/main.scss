@@ -9,14 +9,28 @@
 
     #mainContainer {
         margin-top: 51px;
+        margin-left: 0;
+        margin-right: 0;
         min-height: $appHeight;
         width: calc(100vw - 15px);
 
+        #loginMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            text-align: center;
+
+            .jumbotron {
+                background: $main;
+                color: $main-text;
+            }
+        }
+
         .lateral-navbar {
             height: $appHeight;
-            background: $background-light;
+            background: $background-dark;
             padding: 0px;
-            padding-left: 15px;
 
             a {
                 display: block;

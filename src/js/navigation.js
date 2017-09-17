@@ -12,6 +12,16 @@ module.exports = new Vuex.Store({
         navigate (state, page) {
             state.page = page;
         },
+        checkSession (state) {
+            $.post('/php/controllers/userController.php', {
+                action: 'checkSession'
+            }, function(json) {
+                var session = $.parseJSON(json);
+                if (session.status == "logged") {
+                    state.session = session.data;
+                }
+            });
+        },
         login (state, data) {
             $.post('/php/controllers/userController.php', {
                 action: 'login',
@@ -19,7 +29,9 @@ module.exports = new Vuex.Store({
                 pass: data.pass
             }, function(json) {
                 var session = $.parseJSON(json);
-                state.session = session;
+                if (session.status == "OK") {
+                    state.session = session.data;
+                }
             });
         },
         logout (state) {
