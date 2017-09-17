@@ -75,6 +75,18 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'getUsers': {
+            $resul = mysqli_query($connection->getConnection(), "CALL getUsers()");
+            $users = array();
+            while($row = mysqli_fetch_assoc($resul)) {
+                $users[] = $row;
+            }
+            echo json_encode(array(
+                'status' => 'OK',
+                'users' => $users
+            ));
+            break;
+        }
     };
 }
 ?>

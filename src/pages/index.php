@@ -4,6 +4,10 @@
         <!-- src/index.html -->
         <meta charset="utf-8">
         <title>Pacapillars</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="keywords" content="pacas,pacapillars,deviant,art">
+        <meta name="description" content="The place to register and manage your pacapillars!">
         <link rel="shortcut icon" type="image/x-icon" href="img/guitar-icon.png"/>
 
         <!-- External libraries -->
@@ -23,15 +27,15 @@
                 <div class="mainContent col-md-10">
                     <div v-if="rol == 'admin'">
                         <paca-admin-home v-if="page == 'home'"></paca-admin-home>
-                        <!-- <paca-admin-bank v-if="page == 'bank'"></paca-admin-bank>
-                        <paca-admin-items v-if="page == 'items'"></paca-admin-items>
-                        <paca-admin-users v-if="page == 'users'"></paca-admin-users> -->
+                        <!-- <paca-admin-bank v-if="page == 'bank'"></paca-admin-bank> -->
+                        <!-- <paca-admin-items v-if="page == 'items'"></paca-admin-items> -->
+                        <paca-admin-user-list v-if="page == 'users'"></paca-admin-user-list>
                     </div>
                     <div v-if="rol == 'user'">
                         <paca-user-home v-if="page == 'home'"></paca-user-home>
-                        <!-- <paca-user-profile v-if="page == 'profile'"></paca-user-profile>
-                        <paca-user-characters v-if="page == 'characters'"></paca-user-characters>
-                        <paca-user-items v-if="page == 'items'"></paca-user-items> -->
+                        <!-- <paca-user-profile v-if="page == 'profile'"></paca-user-profile> -->
+                        <!-- <paca-user-characters v-if="page == 'characters'"></paca-user-characters> -->
+                        <!-- <paca-user-items v-if="page == 'items'"></paca-user-items> -->
                     </div>
                 </div>
             </div>

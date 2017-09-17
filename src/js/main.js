@@ -7,6 +7,7 @@ define(['vue', 'vuex', 'bootstrap'], function(Vue, Vuex, Bootstrap) {
 
     // admin components
     Vue.component('paca-admin-home', require('./views/admin/home.vue'));
+    Vue.component('paca-admin-user-list', require('./views/admin/users/userList.vue'));
 
     // user components
     Vue.component('paca-user-home', require('./views/user/home.vue'));
