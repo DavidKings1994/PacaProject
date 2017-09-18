@@ -26,6 +26,7 @@
     "dom-to-image": "^2.5.2",
     "jquery": "^3.2.1",
     "vue": "^2.1.10",
+    "vue-paginate": "^3.5.0",
     "vuex": "^2.2.1"
   },
   "devDependencies": {

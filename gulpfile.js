@@ -63,7 +63,8 @@ gulp.task("webpack", function(callback) {
                 'bootstrap': __dirname + '/node_modules/bootstrap/dist/js/bootstrap.js',
                 'vue': __dirname + '/node_modules/vue/dist/vue.js',
                 'vuex':  __dirname + '/node_modules/vuex/dist/vuex.js',
-                'dom-to-image':  __dirname + '/node_modules/dom-to-image/src/dom-to-image.js'
+                'dom-to-image':  __dirname + '/node_modules/dom-to-image/src/dom-to-image.js',
+                'vue-paginate':  __dirname + '/node_modules/vue-paginate/dist/vue-paginate.js'
             }
         },
         module: {

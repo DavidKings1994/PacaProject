@@ -1,4 +1,6 @@
-define(['vue', 'vuex', 'bootstrap'], function(Vue, Vuex, Bootstrap) {
+define(['vue', 'vuex', 'vue-paginate', 'bootstrap'], function(Vue, Vuex, VuePaginate, Bootstrap) {
+    Vue.use(VuePaginate);
+
     // templates
     Vue.component('paca-navbar', require('./views/template/navbar.vue'));
     Vue.component('paca-header', require('./views/template/header.vue'));
