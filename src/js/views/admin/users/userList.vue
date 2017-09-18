@@ -20,11 +20,13 @@
                 </tbody>
             </table>
         </div>
+        <button type="button" class="btn btn-success" v-on:click="save">Save image</button>
     </div>
 </template>
 
 <script>
 var navigation = require('./../../../navigation.js');
+var domtoimage = require('dom-to-image');
 export default {
     data() {
         return {
@@ -40,6 +42,18 @@ export default {
                 if (json.status == 'OK') {
                     this.users = json.users;
                 }
+            });
+        },
+        save: function() {
+            domtoimage.toPng($('.table')[0])
+            .then(function (dataUrl) {
+                var link = document.createElement('a');
+                link.download = 'my-image-name.jpeg';
+                link.href = dataUrl;
+                link.click();
+            })
+            .catch(function (error) {
+                console.error('oops, something went wrong!', error);
             });
         }
     },

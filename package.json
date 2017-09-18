@@ -23,10 +23,10 @@
   "homepage": "https://github.com/DavidKings1994/PacaProject#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "dom-to-image": "^2.5.2",
     "jquery": "^3.2.1",
     "vue": "^2.1.10",
-    "vuex": "^2.2.1",
-    "webshot": "^0.18.0"
+    "vuex": "^2.2.1"
   },
   "devDependencies": {
     "webpack": "^3.5.5",

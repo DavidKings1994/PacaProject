@@ -62,7 +62,8 @@ gulp.task("webpack", function(callback) {
                 'jquery': __dirname + '/node_modules/jquery/dist/jquery.js',
                 'bootstrap': __dirname + '/node_modules/bootstrap/dist/js/bootstrap.js',
                 'vue': __dirname + '/node_modules/vue/dist/vue.js',
-                'vuex':  __dirname + '/node_modules/vuex/dist/vuex.js'
+                'vuex':  __dirname + '/node_modules/vuex/dist/vuex.js',
+                'dom-to-image':  __dirname + '/node_modules/dom-to-image/src/dom-to-image.js'
             }
         },
         module: {
