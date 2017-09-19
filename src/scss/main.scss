@@ -14,6 +14,22 @@
         min-height: $appHeight;
         width: calc(100vw - 15px);
 
+        #userList {
+            .table-responsive {
+                display: initial;
+            }
+
+            .btn-primary {
+                background-color: $main;
+                border-color: $main;
+
+                &:hover {
+                    background-color: $main-selected;
+                    border-color: $main-selected;
+                }
+            }
+        }
+
         #loginMessage {
             position: absolute;
             top: 50%;

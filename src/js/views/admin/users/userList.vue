@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="content">
+    <div class="content" id="userList">
         <div class="table-responsive">
             <paginate name="users" :list="users" :per="2" tag="div">
                 <table class="table table-striped">
@@ -9,14 +9,32 @@
                             <th>Name</th>
                             <th>Status</th>
                             <th>Currency</th>
+                            <th>Options</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr :key="user.idUser" v-for="user in paginated('users')">
                             <td>{{ user.idUser }}</td>
                             <td>{{ user.userName }}</td>
-                            <td>{{ user.status }}</td>
+                            <td><span class="label label-success">{{ user.status }}</span></td>
                             <td>{{ user.currency }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                        Options
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-header">Download images</li>
+                                        <li><a href="#">Currency</a></li>
+                                        <li><a href="#">Profile</a></li>
+                                        <li class="dropdown-header">Transactions</li>
+                                        <li><a href="#">Currency</a></li>
+                                        <li><a href="#">Items</a></li>
+                                        <li><a href="#">Badges</a></li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
