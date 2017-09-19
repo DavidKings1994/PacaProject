@@ -28,6 +28,27 @@
                     border-color: $main-selected;
                 }
             }
+
+            .currencyFrame {
+                background: $background-light;
+                padding-top: 60px;
+
+                .data {
+                    text-align: center;
+                    padding: 20px 0px;
+                    background: gray;
+                    width: 80%;
+                    margin: 0 auto;
+                    margin-bottom: 30px;
+                }
+
+                .currencyFooter {
+                    text-align: right;
+                    color: $main-text;
+                    background: $background-dark;
+                    padding: 3px 20px;
+                }
+            }
         }
 
         #loginMessage {

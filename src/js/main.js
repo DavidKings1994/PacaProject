@@ -10,6 +10,7 @@ define(['vue', 'vuex', 'vue-paginate', 'bootstrap'], function(Vue, Vuex, VuePagi
     // admin components
     Vue.component('paca-admin-home', require('./views/admin/home.vue'));
     Vue.component('paca-admin-user-list', require('./views/admin/users/userList.vue'));
+    Vue.component('paca-admin-user-currency', require('./views/admin/users/userCurrency.vue'));
 
     // user components
     Vue.component('paca-user-home', require('./views/user/home.vue'));

@@ -1,15 +1,15 @@
 <template lang="html">
     <div class="content" id="userList">
         <div class="table-responsive">
-            <paginate name="users" :list="users" :per="2" tag="div">
+            <paginate name="users" :list="users" :per="10" tag="div">
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Currency</th>
-                            <th>Options</th>
+                            <th class="col-md-1">ID</th>
+                            <th class="col-md-5">Name</th>
+                            <th class="col-md-2">Status</th>
+                            <th class="col-md-2">Currency</th>
+                            <th class="col-md-2">Options</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,7 +26,7 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li class="dropdown-header">Download images</li>
-                                        <li><a href="#">Currency</a></li>
+                                        <li><a href="#" data-toggle="modal" :data-target="'#balanceModal' + user.idUser">Currency</a></li>
                                         <li><a href="#">Profile</a></li>
                                         <li class="dropdown-header">Transactions</li>
                                         <li><a href="#">Currency</a></li>
@@ -35,6 +35,13 @@
                                     </ul>
                                 </div>
                             </td>
+                            <paca-admin-user-currency
+                                :userId="user.idUser"
+                                :userName="user.userName"
+                                :userCurrency="user.currency"
+                                :date="today"
+                            >
+                            </paca-admin-user-currency>
                         </tr>
                     </tbody>
                 </table>
@@ -44,13 +51,11 @@
                 </paginate-links>
             </div>
         </div>
-        <button type="button" class="btn btn-success" v-on:click="save">Save image</button>
     </div>
 </template>
 
 <script>
 var navigation = require('./../../../navigation.js');
-var domtoimage = require('dom-to-image');
 var VuePaginate  = require('vue-paginate');
 export default {
     data() {
@@ -58,6 +63,24 @@ export default {
             users: [],
             paginate: ['users']
         };
+    },
+    computed: {
+        today: function() {
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth()+1;
+            var yyyy = today.getFullYear();
+
+            if(dd<10) {
+                dd = '0'+dd
+            }
+
+            if(mm<10) {
+                mm = '0'+mm
+            }
+
+            return mm + '/' + dd + '/' + yyyy;
+        }
     },
     methods: {
         loadUsers: function() {
@@ -68,18 +91,6 @@ export default {
                 if (json.status == 'OK') {
                     this.users = json.users;
                 }
-            });
-        },
-        save: function() {
-            domtoimage.toPng($('.table')[0])
-            .then(function (dataUrl) {
-                var link = document.createElement('a');
-                link.download = 'my-image-name.jpeg';
-                link.href = dataUrl;
-                link.click();
-            })
-            .catch(function (error) {
-                console.error('oops, something went wrong!', error);
             });
         }
     },
