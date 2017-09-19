@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="content" id="userList">
-        <div class="table-responsive">
+        <!-- <div class="table-responsive">
             <paginate name="users" :list="users" :per="10" tag="div">
                 <table class="table table-striped">
                     <thead>
@@ -50,19 +50,56 @@
                 <paginate-links for="users" :hide-single-page="true" :classes="{'ul': 'pagination'}">
                 </paginate-links>
             </div>
-        </div>
+        </div> -->
+        <vue-bootstrap-table
+            :columns="columns"
+            :values="users"
+            :show-filter="true"
+            :show-column-picker="true"
+            :sortable="true"
+            :paginated="true"
+            :multi-column-sortable="true"
+            :filter-case-sensitive="false"
+        >
+        </vue-bootstrap-table>
     </div>
 </template>
 
 <script>
 var navigation = require('./../../../navigation.js');
-var VuePaginate  = require('vue-paginate');
+var VueBootstrapTable  = require('vue-bootstrap-table');
 export default {
     data() {
         return {
-            users: [],
-            paginate: ['users']
+            columns: [
+                {
+                    name: "idUser",
+                    title: "ID"
+                },
+                {
+                    name: "userName",
+                    title: "Name"
+                },
+                {
+                    name: "status",
+                    title: "Status",
+                    renderfunction: this.renderStatusColumn
+                },
+                {
+                    name: "currency",
+                    title: "Currency"
+                },
+                {
+                    name: "options",
+                    title: "Options",
+                    renderfunction: this.renderOptionsColumn
+                }
+            ],
+            users: []
         };
+    },
+    components: {
+        VueBootstrapTable: VueBootstrapTable
     },
     computed: {
         today: function() {
@@ -92,6 +129,34 @@ export default {
                     this.users = json.users;
                 }
             });
+        },
+        renderStatusColumn: function (colname, entry) {
+            return '<span class="label label-' + (entry.status == 'ACTIVE' ? 'success' : 'danger') + '">' + entry.status + '</span>';
+        },
+        renderOptionsColumn: function(colname, entry) {
+            return
+            '<div class="dropdown">' +
+                '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
+                    'Options' +
+                    '<span class="caret"></span>' +
+                '</button>' +
+                '<ul class="dropdown-menu">' +
+                    '<li class="dropdown-header">Download images</li>' +
+                    '<li><a href="#" data-toggle="modal" :data-target="\'#balanceModal\'' + entry.idUser + '">Currency</a></li>' +
+                    '<li><a href="#">Profile</a></li>' +
+                    '<li class="dropdown-header">Transactions</li>' +
+                    '<li><a href="#">Currency</a></li>' +
+                    '<li><a href="#">Items</a></li>' +
+                    '<li><a href="#">Badges</a></li>' +
+                '</ul>' +
+                '<paca-admin-user-currency' +
+                    ':userId="' + entry.idUser + '"' +
+                    ':userName="' + entry.userName + '"' +
+                    ':userCurrency="' + entry.currency + '"' +
+                    ':date="' + today + '"' +
+                '>' +
+                '</paca-admin-user-currency>' +
+            '</div>';
         }
     },
     created: function() {

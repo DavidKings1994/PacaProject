@@ -22,7 +22,8 @@ if(isset($_POST['action'])) {
                             'idUser' => $idUser,
                             'name' => $name,
                             'rol' => $rol,
-                            'status' => $status
+                            'status' => $status,
+                            'options' => ''
                         )
                     );
             		$_SESSION['idUser'] = $idUser;
