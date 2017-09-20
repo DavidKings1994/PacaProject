@@ -1,24 +1,24 @@
 <template lang="html">
-    <div class="content" id="userList">
+    <div class="content" id="itemList">
         <div class="row text-right" id="upperBar">
-            <button type="button" class="btn btn-success" v-on:click="newUser">
-                <i class="fa fa-plus"></i> Register new user
+            <button type="button" class="btn btn-success" v-on:click="newItem">
+                <i class="fa fa-plus"></i> Register new item
             </button>
         </div>
-        <paca-admin-user-form
-            :user="selectedUser"
+        <paca-admin-item-form
+            :item="selectedItem"
         >
-        </paca-admin-user-form>
-        <paca-admin-user-currency v-for="user in users"
-            :userId="user.idUser"
-            :userName="user.userName"
-            :userCurrency="user.currency"
+        </paca-admin-item-form>
+        <paca-admin-item-currency v-for="item in items"
+            :itemId="item.idItem"
+            :itemName="item.itemName"
+            :itemCurrency="item.currency"
             :date="today"
         >
-        </paca-admin-user-currency>
+        </paca-admin-item-currency>
         <vue-bootstrap-table
             :columns="columns"
-            :values="users"
+            :values="items"
             :show-filter="true"
             :show-column-picker="false"
             :sortable="true"
@@ -38,31 +38,30 @@ export default {
         return {
             columns: [
                 {
-                    name: "idUser",
+                    name: "idObject",
                     title: "ID"
                 },
                 {
-                    name: "userName",
+                    name: "Image",
+                    title: "Image",
+                    renderfunction: this.renderImageColumn
+                },
+                {
+                    name: "name",
                     title: "Name"
                 },
                 {
-                    name: "status",
-                    title: "Status",
-                    renderfunction: this.renderStatusColumn
+                    name: "description",
+                    title: "Description"
                 },
                 {
-                    name: "currency",
-                    title: "Currency"
-                },
-                {
-                    name: "options",
-                    title: "Options",
-                    visible: true,
-                    renderfunction: this.renderOptionsColumn
+                    name: "creationDate",
+                    title: "Register date"
+                    // renderfunction: this.renderOptionsColumn
                 }
             ],
-            users: [],
-            selectedUser: null
+            items: [],
+            selectedItem: null
         };
     },
     components: {
@@ -87,44 +86,44 @@ export default {
         }
     },
     methods: {
-        loadUsers: function() {
-            $.post('./php/controllers/usercontroller.php', {
-                action: 'getUsers'
+        loadItems: function() {
+            $.post('./php/controllers/itemcontroller.php', {
+                action: 'getItems'
             }, (msg) => {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
-                    this.users = json.users;
+                    this.items = json.items;
                 }
             });
         },
-        newUser: function() {
-            this.selectedUser = null;
-            $('#userFormModal').modal();
+        newItem: function() {
+            this.selectedItem = null;
+            $('#itemFormModal').modal();
         },
-        renderStatusColumn: function (colname, entry) {
-            return '<span class="label label-' + (entry.status == 'ACTIVE' ? 'success' : 'danger') + '">' + entry.status + '</span>';
+        renderImageColumn: function (colname, entry) {
+            return '<img src="' + entry.image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
-                if ($('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"]').length > 0) {
-                    $('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"]').click((event) => {
-                        var id = $(event.target).attr('data-iduser');
-                        this.selectedUser = $(this.users).filter(function(i,n) {
-                            return n.idUser == id;
+                if ($('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"]').length > 0) {
+                    $('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"]').click((event) => {
+                        var id = $(event.target).attr('data-iditem');
+                        this.selectedItem = $(this.items).filter(function(i,n) {
+                            return n.idItem == id;
                         })[0];
-                        $("#userFormModal").modal();
+                        $("#itemFormModal").modal();
                     })
                     clearTimeout(checker);
                 }
             }, 100);
-            var target = "#balanceModal" + entry.idUser;
+            var target = "#balanceModal" + entry.idItem;
             return '<div class="dropdown">' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
                     'Options' +
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +
-                    '<li><a href="#" data-iduser="' + entry.idUser + '" data-option="profile">Edit user</a></li>' +
+                    '<li><a href="#" data-iditem="' + entry.idItem + '" data-option="profile">Edit item</a></li>' +
                     '<li class="divider"></li>' +
                     '<li class="dropdown-header">Download images</li>' +
                     '<li><a href="#" data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
@@ -138,13 +137,13 @@ export default {
         }
     },
     created: function() {
-        this.loadUsers();
+        this.loadItems();
     }
 }
 </script>
 
 <style lang="css">
-#userList #upperBar {
+#itemList #upperBar {
     padding: 30px;
 }
 </style>

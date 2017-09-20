@@ -8,9 +8,9 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for="email">Email:</label>
+                            <label class="control-label col-sm-2" for="name">Name:</label>
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="email" placeholder="Enter email">
+                                <input type="text" class="form-control" id="name" placeholder="Enter user name" :value="this.userName">
                             </div>
                         </div>
                         <div class="form-group">
@@ -48,8 +48,8 @@ export default {
     },
     props: ['user'],
     computed: {
-        userName: function() { return this.user.userName == null ? '' : this.user.userName; },
-        status: function() { return this.user.status == null ? '' : this.user.status; },
+        userName: function() { return this.user == null ? '' : this.user.userName; },
+        status: function() { return this.user == null ? '' : this.user.status; },
         buttonText: function() { return this.user == null ? 'Register' : 'Save'; }
     },
     methods: {

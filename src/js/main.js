@@ -10,6 +10,8 @@ define(['vue', 'vuex', 'bootstrap'], function(Vue, Vuex, Bootstrap) {
     Vue.component('paca-admin-user-list', require('./views/admin/users/userList.vue'));
     Vue.component('paca-admin-user-currency', require('./views/admin/users/userCurrency.vue'));
     Vue.component('paca-admin-user-form', require('./views/admin/users/userForm.vue'));
+    Vue.component('paca-admin-item-list', require('./views/admin/items/itemList.vue'));
+    Vue.component('paca-admin-badge-list', require('./views/admin/badges/badgeList.vue'));
 
     // user components
     Vue.component('paca-user-home', require('./views/user/home.vue'));
