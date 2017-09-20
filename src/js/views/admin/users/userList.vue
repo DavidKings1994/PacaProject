@@ -1,5 +1,14 @@
 <template lang="html">
     <div class="content" id="userList">
+        <div class="row text-right" id="upperBar">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#userFormModal">
+                <i class="fa fa-plus"></i> Register new user
+            </button>
+        </div>
+        <paca-admin-user-form
+            :user="selectedUser"
+        >
+        </paca-admin-user-form>
         <paca-admin-user-currency v-for="user in users"
             :userId="user.idUser"
             :userName="user.userName"
@@ -52,7 +61,8 @@ export default {
                     renderfunction: this.renderOptionsColumn
                 }
             ],
-            users: []
+            users: [],
+            selectedUser: null
         };
     },
     components: {
@@ -84,6 +94,19 @@ export default {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.users = json.users;
+                    var checker = setTimeout(() => {
+                        if ($('ul.dropdown-menu a[data-option="profile"]').length > 0) {
+                            $('ul.dropdown-menu a[data-option="profile"]').click((event) => {
+                                var id = $(event.target).attr('data-iduser');
+                                this.selectedUser = $(this.users).filter(function(i,n) {
+                                    return n.idUser == id;
+                                })[0];
+                                console.log(this.selectedUser);
+                                $("#userFormModal").modal();
+                            })
+                            clearTimeout(checker);
+                        }
+                    }, 100);
                 }
             });
         },
@@ -98,6 +121,8 @@ export default {
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +
+                    '<li><a href="#" data-iduser="' + entry.idUser + '" data-option="profile">Edit user</a></li>' +
+                    '<li class="divider"></li>' +
                     '<li class="dropdown-header">Download images</li>' +
                     '<li><a href="#" data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
                     '<li><a href="#">Profile</a></li>' +
@@ -116,4 +141,7 @@ export default {
 </script>
 
 <style lang="css">
+#userList #upperBar {
+    padding: 30px;
+}
 </style>
