@@ -7,6 +7,7 @@
         </div>
         <paca-admin-user-form
             :user="selectedUser"
+            v-on:saved="loadUsers"
         >
         </paca-admin-user-form>
         <paca-admin-user-currency v-for="user in users"
@@ -120,7 +121,7 @@ export default {
             var target = "#balanceModal" + entry.idUser;
             return '<div class="dropdown">' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
-                    'Options' +
+                    'Options ' +
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +

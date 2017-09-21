@@ -10,13 +10,13 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="name">Name:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" placeholder="Enter user name" :value="this.userName">
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter user name" :value="this.userName">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="status">Status:</label>
                             <div class="col-sm-10">
-                                <select class="form-control" id="status">
+                                <select class="form-control" id="status" name="status">
                                     <option v-for="s in statusList" :value="s.idStatus">{{ s.name }}</option>
                                 </select>
                             </div>
@@ -24,7 +24,7 @@
                         <div class="form-group" v-if="this.user == null">
                             <label class="control-label col-sm-2" for="pwd">Password:</label>
                             <div class="col-sm-10">
-                                <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+                                <input type="password" class="form-control" name="pass" id="pwd" placeholder="Enter password">
                             </div>
                         </div>
                     </form>
@@ -54,16 +54,42 @@ export default {
     },
     methods: {
         save: function() {
-            $.post('./php/controllers/userController.php', {
-                action: 'registerUser'
-            }, (json) => {
-                var result = JSON.parse(json);
-                if (result.status == 'OK') {
-                    $('#userFormModal .btn-danger').click();
-                } else {
-
-                }
-            });
+            if (this.user == null) {
+                $.post('./php/controllers/userController.php', {
+                    action: 'registerUser',
+                    name: $('#userFormModal input[name="name"]').val(),
+                    pass: $('#userFormModal input[name="pass"]').val(),
+                    status: $('#userFormModal select[name="status"]').val()
+                }, (json) => {
+                    var result = JSON.parse(json);
+                    if (result.status == 'OK') {
+                        this.$emit('saved');
+                        $('#userFormModal .btn-danger').click();
+                    } else {
+                        console.error(result.error);
+                    }
+                });
+            } else {
+                console.log({
+                    idUser: this.user.idUser,
+                    name: $('#userFormModal input[name="name"]').val(),
+                    status: $('#userFormModal select[name="status"]').val()
+                });
+                $.post('./php/controllers/userController.php', {
+                    action: 'adminUpdateUser',
+                    idUser: this.user.idUser,
+                    name: $('#userFormModal input[name="name"]').val(),
+                    status: $('#userFormModal select[name="status"]').val()
+                }, (json) => {
+                    var result = JSON.parse(json);
+                    if (result.status == 'OK') {
+                        this.$emit('saved');
+                        $('#userFormModal .btn-danger').click();
+                    } else {
+                        console.error(result.error);
+                    }
+                });
+            }
         },
         loadStatus: function() {
             $.post('./php/controllers/statusController.php', {

@@ -88,6 +88,53 @@ if(isset($_POST['action'])) {
             ));
             break;
         }
+        case 'registerUser': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL registerUser(?,?,?)");
+            $pass = sha1($_POST['pass']);
+            $query->bind_param('ssi',
+                $_POST['name'],
+                $pass,
+                $_POST['status']
+            );
+            if($query->execute()) {
+                $query->bind_result($resul);
+                $query->fetch();
+                $data = array(
+                    'status' => ($resul == 0 ? 'OK' : 'ERROR'),
+                    'error' => 'Can\'t complete operation'
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
+        case 'adminUpdateUser': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL adminUpdateUser(?,?,?)");
+            $query->bind_param('isi',
+                $_POST['idUser'],
+                $_POST['name'],
+                $_POST['status']
+            );
+            if($query->execute()) {
+                $query->bind_result($resul);
+                $query->fetch();
+                $data = array(
+                    'status' => ($resul == 0 ? 'OK' : 'ERROR'),
+                    'error' => 'Can\'t complete operation'
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
     };
 }
 ?>
