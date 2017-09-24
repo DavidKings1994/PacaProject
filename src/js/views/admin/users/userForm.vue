@@ -16,7 +16,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="status">Status:</label>
                             <div class="col-sm-10">
-                                <select class="form-control" id="status" name="status">
+                                <select class="form-control" id="status" name="status" v-model="userStatus">
                                     <option v-for="s in statusList" :value="s.idStatus">{{ s.name }}</option>
                                 </select>
                             </div>
@@ -43,14 +43,19 @@
 export default {
     data: function() {
         return {
-            statusList: []
+            statusList: [],
+            userStatus: 1
         };
     },
     props: ['user'],
     computed: {
         userName: function() { return this.user == null ? '' : this.user.userName; },
-        status: function() { return this.user == null ? '' : this.user.status; },
         buttonText: function() { return this.user == null ? 'Register' : 'Save'; }
+    },
+    watch: {
+        user: function() {
+            this.userStatus = this.user == null ? 1 : (this.user.status == 'ACTIVE' ? 1 : 2);
+        }
     },
     methods: {
         save: function() {
@@ -100,6 +105,9 @@ export default {
                     this.statusList = result.statusList;
                 }
             });
+        },
+        isSelected: function(n) {
+            return (this.user == null ? 'false' : (n == 'ACTIVE' ? 'true' : 'false'));
         }
     },
     created: function() {
