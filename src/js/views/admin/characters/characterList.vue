@@ -62,7 +62,11 @@ export default {
                 {
                     name: "ownerName",
                     title: "Owner"
-                    // renderfunction: this.renderOptionsColumn
+                },
+                {
+                    name: "registered",
+                    title: "Registered",
+                    renderfunction: this.renderRegisterColumn
                 }
             ],
             characters: [],
@@ -96,7 +100,6 @@ export default {
                 action: 'getCharacters'
             }, (msg) => {
                 var json = JSON.parse(msg);
-                console.log(json);
                 if (json.status == 'OK') {
                     this.characters = json.characters;
                 }
@@ -111,6 +114,9 @@ export default {
         },
         renderStatusColumn: function (colname, entry) {
             return '<span class="label label-' + (entry.status == 'HOME' ? 'success' : 'danger') + '">' + entry.status + '</span>';
+        },
+        renderRegisterColumn: function (colname, entry) {
+            return '<span class="label label-' + (entry.registered == 1 ? 'success' : 'danger') + '">' + (entry.registered == 1 ? 'YES' : 'NO') + '</span>';
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
