@@ -17,26 +17,43 @@ function parseCSVtoArray($path) {
 }
 
 $characters = parseCSVtoArray('masterlist.csv');
-// echo json_encode($characters);
+$usersGenerated = array();
 
 foreach ($characters as $key => $value) {
-    $query = mysqli_prepare($connection->getConnection(), "CALL registerCharacter(?,?,?,?)");
+    $query2 = mysqli_prepare($connection->getConnection(), "CALL registerUser(?,?,?)");
+    $pass = substr(uniqid('paca', true), 0, 6);
+    $encriptedPass = sha1($pass);
+    $status = 1;
+    $query2->bind_param('sss', $value['Owner'], $encriptedPass, $status);
+    if($query2->execute()) {
+        $query2->bind_result($resul2);
+        $query2->fetch();
+        if ($resul2 == 0) {
+            $usersGenerated[] = array(
+                'name' => $value['Owner'],
+                'password' => $pass
+            );
+        }
+    }
+    $query2->close();
+
+    $query = mysqli_prepare($connection->getConnection(), "CALL registerCharacterWithOwner(?,?,?,?,?)");
     $desc = (isset($value['Description']) ? $value['Description'] : null);
     $name = 'NA';
     if($value['Image'] != '' && isset($value['Image'])) {
-        $query->bind_param('ssss',
+        $query->bind_param('sssss',
             $value['Registry Number'],
             $value['Image'],
             $name,
-            $desc
+            $desc,
+            $value['Owner']
         );
         if($query->execute()) {
             $query->bind_result($resul);
             $query->fetch();
-            $data = array(
-                'status' => ($resul == 0 ? 'OK' : 'ERROR')
-            );
-            echo json_encode($data);
+            if ($resul == 0) {
+
+            }
         } else {
             echo json_encode(array(
                 'status' => 'ERROR',
@@ -44,7 +61,9 @@ foreach ($characters as $key => $value) {
             ));
         }
     }
-    $connection->closeConnection();
-    $connection->openConnection();
+    $query->close();
 }
+
+echo json_encode($usersGenerated);
+
 ?>

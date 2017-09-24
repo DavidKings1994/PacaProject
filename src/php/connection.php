@@ -20,8 +20,7 @@ class Connection {
     }
 
     function openConnection() {
-        $this->connection = mysqli_connect($this->server, $this->user, $this->password, $this->database)
-            or die('Connection error: ' . mysql_error());
+        $this->connection = mysqli_connect($this->server, $this->user, $this->password, $this->database);
     }
 
     function closeConnection() {
