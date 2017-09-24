@@ -3,13 +3,14 @@
         <div v-if="rol == 'admin'">
             <a v-on:click="select" href="#" data-destiny="home" class="selected"><i class="fa fa-home"></i> Home</a>
             <a v-on:click="select" href="#" data-destiny="users"><i class="fa fa-users"></i> Users</a>
+            <a v-on:click="select" href="#" data-destiny="characters"><i class="fa fa-heart"></i> Characters</a>
             <a v-on:click="select" href="#" data-destiny="items"><i class="fa fa-briefcase"></i> Items</a>
             <a v-on:click="select" href="#" data-destiny="badges"><i class="fa fa-certificate"></i> Badges</a>
             <a v-on:click="select" href="#" data-destiny="bank"><i class="fa fa-university"></i> Bank</a>
         </div>
         <div v-if="rol == 'user'">
             <a v-on:click="select" href="#" data-destiny="home" class="selected"><i class="fa fa-home"></i> Home</a>
-            <a v-on:click="select" href="#" data-destiny="characters"><i class="fa fa-pet"></i> Characters</a>
+            <a v-on:click="select" href="#" data-destiny="characters"><i class="fa fa-heart"></i> Characters</a>
             <a v-on:click="select" href="#" data-destiny="items"><i class="fa fa-briefcase"></i> Items</a>
         </div>
     </div>

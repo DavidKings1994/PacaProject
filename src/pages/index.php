@@ -29,6 +29,7 @@
                         <paca-admin-home v-if="page == 'home'"></paca-admin-home>
                         <!-- <paca-admin-bank v-if="page == 'bank'"></paca-admin-bank> -->
                         <paca-admin-user-list v-if="page == 'users'"></paca-admin-user-list>
+                        <paca-admin-character-list v-if="page == 'characters'"></paca-admin-character-list>
                         <paca-admin-item-list v-if="page == 'items'"></paca-admin-item-list>
                         <paca-admin-badge-list v-if="page == 'badges'"></paca-admin-badge-list>
                     </div>
