@@ -1,4 +1,5 @@
-define(['vue', 'vuex', 'bootstrap'], function(Vue, Vuex, Bootstrap) {
+define(['vue', 'vuex', 'vue-router', 'bootstrap'], function(Vue, Vuex, VueRouter, Bootstrap) {
+    Vue.use(VueRouter);
     // templates
     Vue.component('paca-navbar', require('./views/template/navbar.vue'));
     Vue.component('paca-header', require('./views/template/header.vue'));
@@ -17,9 +18,23 @@ define(['vue', 'vuex', 'bootstrap'], function(Vue, Vuex, Bootstrap) {
     // user components
     Vue.component('paca-user-home', require('./views/user/home.vue'));
 
+    const routes = [
+        { path: '/home', component: require('./views/admin/home.vue') },
+        { path: '/users', component: require('./views/admin/users/userList.vue') },
+        { path: '/characters', component: require('./views/admin/characters/characterList.vue') },
+        { path: '/items', component: require('./views/admin/items/itemList.vue') },
+        { path: '/badges', component: require('./views/admin/badges/badgeList.vue') },
+        // { path: '/bank', component: Bar },
+    ];
+
+    const router = new VueRouter({
+        routes: routes
+    });
+
     var navigation = require('./navigation.js');
     new Vue({
         el: '#App',
+        router: router,
         created: function() {
             navigation.commit('checkSession');
         },
