@@ -21,7 +21,7 @@ $usersGenerated = array();
 
 foreach ($characters as $key => $value) {
     $query2 = mysqli_prepare($connection->getConnection(), "CALL registerUser(?,?,?)");
-    $pass = substr(uniqid('paca', true), 0, 6);
+    $pass = substr(uniqid('paca', true), 0, 14);
     $encriptedPass = sha1($pass);
     $status = 1;
     $query2->bind_param('sss', $value['Owner'], $encriptedPass, $status);

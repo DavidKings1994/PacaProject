@@ -1,9 +1,9 @@
 <?php
 class Connection {
-    private $server = 'sql3.freemysqlhosting.net';//'localhost';
-    private $user = 'sql3195203';//'root';
-    private $password = 'JkGP7Umqav';//'root';
-    private $database = 'sql3195203';//'paca_project_db';
+    private $server = 'localhost';
+    private $user = 'root'; //'id2845823_pacaadmin';
+    private $password = 'root';//'jjkli8jlkjlu';
+    private $database = 'paca_project_db'; //'id2845823_paca_project_db';
     private $connection = null;
 
     function __construct() {
