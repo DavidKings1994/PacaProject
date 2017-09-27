@@ -26,16 +26,6 @@
                 <paca-navbar></paca-navbar>
                 <div class="mainContent col-md-10">
                     <router-view></router-view>
-                    <!-- <div v-if="rol == 'admin'">
-                        <paca-admin-home v-if="page == 'home'"></paca-admin-home>
-                        <paca-admin-user-list v-if="page == 'users'"></paca-admin-user-list>
-                        <paca-admin-character-list v-if="page == 'characters'"></paca-admin-character-list>
-                        <paca-admin-item-list v-if="page == 'items'"></paca-admin-item-list>
-                        <paca-admin-badge-list v-if="page == 'badges'"></paca-admin-badge-list>
-                    </div>
-                    <div v-if="rol == 'user'">
-                        <paca-user-home v-if="page == 'home'"></paca-user-home>
-                    </div> -->
                 </div>
             </div>
             <div v-else class="row" id="mainContainer">

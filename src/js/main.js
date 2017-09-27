@@ -19,12 +19,36 @@ define(['vue', 'vuex', 'vue-router', 'bootstrap'], function(Vue, Vuex, VueRouter
     Vue.component('paca-user-home', require('./views/user/home.vue'));
 
     const routes = [
-        { path: '/home', component: require('./views/admin/home.vue') },
-        { path: '/users', component: require('./views/admin/users/userList.vue') },
-        { path: '/characters', component: require('./views/admin/characters/characterList.vue') },
-        { path: '/items', component: require('./views/admin/items/itemList.vue') },
-        { path: '/badges', component: require('./views/admin/badges/badgeList.vue') },
-        // { path: '/bank', component: Bar },
+        {
+            path: '/',
+            component: require('./views/admin/home.vue'),
+            name: 'default'
+        },
+        {
+            path: '/home',
+            component: require('./views/admin/home.vue'),
+            name: 'home'
+        },
+        {
+            path: '/users',
+            component: require('./views/admin/users/userList.vue'),
+            name: 'users'
+        },
+        {
+            path: '/characters',
+            component: require('./views/admin/characters/characterList.vue'),
+            name: 'characters'
+        },
+        {
+            path: '/items',
+            component: require('./views/admin/items/itemList.vue'),
+            name: 'items'
+        },
+        {
+            path: '/badges',
+            component: require('./views/admin/badges/badgeList.vue'),
+            name: 'badges'
+        }
     ];
 
     const router = new VueRouter({
@@ -38,15 +62,12 @@ define(['vue', 'vuex', 'vue-router', 'bootstrap'], function(Vue, Vuex, VueRouter
         created: function() {
             navigation.commit('checkSession');
         },
+        watch: {
+            $route: function (to, from) {
+                $("title").text('Paca manager | ' + to.name.charAt(0).toUpperCase() + to.name.slice(1));
+            }
+        },
         computed: {
-            page: function() {
-                var titulo  = navigation.state.page;
-                $("title").text('Paca manager | ' + titulo.charAt(0).toUpperCase() + titulo.slice(1));
-                return navigation.state.page;
-            },
-            action: function() {
-                return store.state.navegacion.currentAction;
-            },
             rol: function() {
                 return navigation.state.session != null ? navigation.state.session.rol : '';
             },
