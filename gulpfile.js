@@ -61,10 +61,11 @@ gulp.task("webpack", function(callback) {
             alias: {
                 'jquery': __dirname + '/node_modules/jquery/dist/jquery.js',
                 'bootstrap': __dirname + '/node_modules/bootstrap/dist/js/bootstrap.js',
+                'dom-to-image':  __dirname + '/node_modules/dom-to-image/src/dom-to-image.js',
                 'vue': __dirname + '/node_modules/vue/dist/vue.js',
                 'vuex':  __dirname + '/node_modules/vuex/dist/vuex.js',
                 'vue-router':  __dirname + '/node_modules/vue-router/dist/vue-router.js',
-                'dom-to-image':  __dirname + '/node_modules/dom-to-image/src/dom-to-image.js',
+                'vue-select':  __dirname + '/node_modules/vue-select/dist/vue-select.js',
                 'vue-bootstrap-table':  __dirname + '/node_modules/vue2-bootstrap-table2/dist/vue-bootstrap-table.js'
             }
         },

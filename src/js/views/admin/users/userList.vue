@@ -125,15 +125,15 @@ export default {
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +
-                    '<li><a href="#" data-iduser="' + entry.idUser + '" data-option="profile">Edit user</a></li>' +
+                    '<li><a data-iduser="' + entry.idUser + '" data-option="profile">Edit user</a></li>' +
                     '<li class="divider"></li>' +
                     '<li class="dropdown-header">Download images</li>' +
-                    '<li><a href="#" data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
-                    '<li><a href="#">Profile</a></li>' +
+                    '<li><a data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
+                    '<li><a>Profile</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
-                    '<li><a href="#">Currency</a></li>' +
-                    '<li><a href="#">Items</a></li>' +
-                    '<li><a href="#">Badges</a></li>' +
+                    '<li><a>Currency</a></li>' +
+                    '<li><a>Items</a></li>' +
+                    '<li><a>Badges</a></li>' +
                 '</ul>' +
             '</div>';
         }

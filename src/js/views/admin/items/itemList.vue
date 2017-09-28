@@ -7,14 +7,9 @@
         </div>
         <paca-admin-item-form
             :item="selectedItem"
+            v-on:saved="loadItems"
         >
         </paca-admin-item-form>
-        <paca-admin-item-currency v-for="item in items"
-            :itemId="item.idItem"
-            :itemName="item.itemName"
-            :itemCurrency="item.currency"
-            :date="today"
-        >
         </paca-admin-item-currency>
         <vue-bootstrap-table
             :columns="columns"
@@ -38,7 +33,7 @@ export default {
         return {
             columns: [
                 {
-                    name: "idObject",
+                    name: "idItem",
                     title: "ID"
                 },
                 {
@@ -57,7 +52,11 @@ export default {
                 {
                     name: "creationDate",
                     title: "Register date"
-                    // renderfunction: this.renderOptionsColumn
+                },
+                {
+                    title: "Options",
+                    visible: true,
+                    renderfunction: this.renderOptionsColumn
                 }
             ],
             items: [],
@@ -101,12 +100,19 @@ export default {
             $('#itemFormModal').modal();
         },
         renderImageColumn: function (colname, entry) {
-            return '<img src="' + entry.image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
+            return '<img src="' + entry.Image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
                 if ($('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"]').length > 0) {
-                    $('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"]').click((event) => {
+                    $('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"][data-option="profile"]').click((event) => {
+                        var id = $(event.target).attr('data-iditem');
+                        this.selectedItem = $(this.items).filter(function(i,n) {
+                            return n.idItem == id;
+                        })[0];
+                        $("#itemFormModal").modal();
+                    });
+                    $('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"][data-option="delete"]').click((event) => {
                         var id = $(event.target).attr('data-iditem');
                         this.selectedItem = $(this.items).filter(function(i,n) {
                             return n.idItem == id;
@@ -116,22 +122,14 @@ export default {
                     clearTimeout(checker);
                 }
             }, 100);
-            var target = "#balanceModal" + entry.idItem;
             return '<div class="dropdown">' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
                     'Options' +
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +
-                    '<li><a href="#" data-iditem="' + entry.idItem + '" data-option="profile">Edit item</a></li>' +
-                    '<li class="divider"></li>' +
-                    '<li class="dropdown-header">Download images</li>' +
-                    '<li><a href="#" data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
-                    '<li><a href="#">Profile</a></li>' +
-                    '<li class="dropdown-header">Transactions</li>' +
-                    '<li><a href="#">Currency</a></li>' +
-                    '<li><a href="#">Items</a></li>' +
-                    '<li><a href="#">Badges</a></li>' +
+                    '<li><a data-iditem="' + entry.idItem + '" data-option="profile">Edit item</a></li>' +
+                    '<li><a data-iditem="' + entry.idItem + '" data-option="delete">Delete item</a></li>' +
                 '</ul>' +
             '</div>';
         }

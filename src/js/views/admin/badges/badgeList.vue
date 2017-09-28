@@ -7,14 +7,9 @@
         </div>
         <paca-admin-badge-form
             :badge="selectedBadge"
+            v-on:saved="loadBadges"
         >
         </paca-admin-badge-form>
-        <paca-admin-badge-currency v-for="badge in badges"
-            :badgeId="badge.idBadge"
-            :badgeName="badge.badgeName"
-            :badgeCurrency="badge.currency"
-            :date="today"
-        >
         </paca-admin-badge-currency>
         <vue-bootstrap-table
             :columns="columns"
@@ -57,7 +52,11 @@ export default {
                 {
                     name: "creationDate",
                     title: "Register date"
-                    // renderfunction: this.renderOptionsColumn
+                },
+                {
+                    title: "Options",
+                    visible: true,
+                    renderfunction: this.renderOptionsColumn
                 }
             ],
             badges: [],
@@ -101,12 +100,19 @@ export default {
             $('#badgeFormModal').modal();
         },
         renderImageColumn: function (colname, entry) {
-            return '<img src="' + entry.image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
+            return '<img src="' + entry.Image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
                 if ($('ul.dropdown-menu a[data-idbadge="' + entry.idBadge + '"]').length > 0) {
-                    $('ul.dropdown-menu a[data-idbadge="' + entry.idBadge + '"]').click((event) => {
+                    $('ul.dropdown-menu a[data-idbadge="' + entry.idBadge + '"][data-option="profile"]').click((event) => {
+                        var id = $(event.target).attr('data-idbadge');
+                        this.selectedBadge = $(this.badges).filter(function(i,n) {
+                            return n.idBadge == id;
+                        })[0];
+                        $("#badgeFormModal").modal();
+                    });
+                    $('ul.dropdown-menu a[data-idbadge="' + entry.idBadge + '"][data-option="delete"]').click((event) => {
                         var id = $(event.target).attr('data-idbadge');
                         this.selectedBadge = $(this.badges).filter(function(i,n) {
                             return n.idBadge == id;
@@ -116,22 +122,14 @@ export default {
                     clearTimeout(checker);
                 }
             }, 100);
-            var target = "#balanceModal" + entry.idBadge;
             return '<div class="dropdown">' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
                     'Options' +
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +
-                    '<li><a href="#" data-idbadge="' + entry.idBadge + '" data-option="profile">Edit badge</a></li>' +
-                    '<li class="divider"></li>' +
-                    '<li class="dropdown-header">Download images</li>' +
-                    '<li><a href="#" data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
-                    '<li><a href="#">Profile</a></li>' +
-                    '<li class="dropdown-header">Transactions</li>' +
-                    '<li><a href="#">Currency</a></li>' +
-                    '<li><a href="#">Badges</a></li>' +
-                    '<li><a href="#">Badges</a></li>' +
+                    '<li><a data-idbadge="' + entry.idBadge + '" data-option="profile">Edit badge</a></li>' +
+                    '<li><a data-idbadge="' + entry.idBadge + '" data-option="delete">Delete badge</a></li>' +
                 '</ul>' +
             '</div>';
         }
