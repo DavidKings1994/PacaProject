@@ -3,7 +3,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Item information</h4>
+                    <h4 class="modal-title">Character information</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
@@ -45,7 +45,14 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="owner">Owner:</label>
                             <div class="col-sm-10">
-                                <v-select :value.sync="selected" :options="options" class="form-control" name="owner" id="owner">
+                                <v-select
+                                    v-model="selected"
+                                    :debounce="250"
+                                    :options="users"
+                                    :on-search="getUsers"
+                                    :on-change="consoleCallback"
+                                    :clearSearchOnSelect="true"
+                                    placeholder="Search owner name">
                                 </v-select>
                             </div>
                         </div>
@@ -62,34 +69,55 @@
 </template>
 
 <script>
-var vSelect  = require('vue-select');
+import vSelect from 'vue-select';
 export default {
     data: function() {
         return {
             selected: null,
-            options: []
+            users: []
         };
-    }
+    },
     components: {
-        vSelect: vSelect
+        'v-select': vSelect
     },
     props: ['character'],
+    watch: {
+        character: function() {
+            this.selected = (this.character == null ? null : this.character.owner);
+        }
+    },
     computed: {
         characterName: function() { return this.character == null ? '' : this.character.name; },
         characterDesc: function() { return this.character == null ? '' : this.character.description; },
         characterImage: function() { return this.character == null ? '' : this.character.Image; },
+        characterOwner: function() { return this.character == null ? '' : this.character.owner; },
         buttonText: function() { return this.character == null ? 'Register' : 'Save'; },
-        action: function() { return this.character == null ? 'registerItem' : 'updateItem'; }
+        action: function() { return this.character == null ? 'registerCharacter' : 'updateCharacter'; }
     },
     methods: {
+        // consoleCallback: function(val) {
+        //     this.selected = val.value;
+        // },
+        getUsers: function(search, loading) {
+            loading(true);
+            $.post('./php/controllers/userController.php', {
+                action: 'search',
+                name: search
+            }, (json) => {
+                var result = JSON.parse(json);
+                this.users = result.users;
+                loading(false);
+            });
+        },
         save: function() {
             $.post('./php/controllers/characterController.php',
-            $("#characterFormModal form").serialize(),
+            $("#characterFormModal form").serialize() + '&owner=' + encodeURIComponent(this.selected.value),
             (json) => {
                 var result = JSON.parse(json);
                 if (result.status == 'OK') {
                     this.$emit('saved');
                     $('#characterFormModal .btn-danger').click();
+                    this.selected = null;
                 } else {
                     console.error(result.error);
                 }

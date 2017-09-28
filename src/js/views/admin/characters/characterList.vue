@@ -7,15 +7,9 @@
         </div>
         <paca-admin-character-form
             :character="selectedCharacter"
+            v-on:saved="loadCharacters"
         >
         </paca-admin-character-form>
-        <paca-admin-character-currency v-for="character in characters"
-            :characterId="character.idCharacter"
-            :characterName="character.characterName"
-            :characterCurrency="character.currency"
-            :date="today"
-        >
-        </paca-admin-character-currency>
         <vue-bootstrap-table
             :columns="columns"
             :values="characters"

@@ -1,5 +1,6 @@
 define(['vue', 'vuex', 'vue-router', 'bootstrap'], function(Vue, Vuex, VueRouter, Bootstrap) {
     Vue.use(VueRouter);
+
     // templates
     Vue.component('paca-navbar', require('./views/template/navbar.vue'));
     Vue.component('paca-header', require('./views/template/header.vue'));
@@ -11,6 +12,7 @@ define(['vue', 'vuex', 'vue-router', 'bootstrap'], function(Vue, Vuex, VueRouter
     Vue.component('paca-admin-user-form', require('./views/admin/users/userForm.vue'));
     Vue.component('paca-admin-badge-form', require('./views/admin/badges/badgeForm.vue'));
     Vue.component('paca-admin-item-form', require('./views/admin/items/itemForm.vue'));
+    Vue.component('paca-admin-character-form', require('./views/admin/characters/characterForm.vue'));
 
     // user components
     Vue.component('paca-user-home', require('./views/user/home.vue'));

@@ -135,6 +135,31 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'search': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL searchUsers(?)");
+            $query->bind_param('s', $_POST['name'] );
+            if($query->execute()) {
+                $query->bind_result($idUser, $name);
+                $users = array();
+                while($query->fetch()) {
+                    $users[] = array(
+                        'value' => $idUser,
+                        'label' => $name
+                    );
+                }
+                $data = array(
+                    'status' => 'OK',
+                    'users' => $users
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
     };
 }
 ?>
