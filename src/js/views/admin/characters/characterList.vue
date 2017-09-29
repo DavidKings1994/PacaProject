@@ -10,6 +10,10 @@
             v-on:saved="loadCharacters"
         >
         </paca-admin-character-form>
+        <paca-inventory
+            :character="selectedCharacter"
+        >
+        </paca-inventory>
         <vue-bootstrap-table
             :columns="columns"
             :values="characters"
@@ -61,6 +65,12 @@ export default {
                     name: "registered",
                     title: "Registered",
                     renderfunction: this.renderRegisterColumn
+                },
+                {
+                    name: "options",
+                    title: "Options",
+                    visible: true,
+                    renderfunction: this.renderOptionsColumn
                 }
             ],
             characters: [],
@@ -114,33 +124,40 @@ export default {
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
+                 // if the opttions menu is already rendered
                 if ($('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"]').length > 0) {
-                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"]').click((event) => {
-                        var id = $(event.target).attr('data-idcharacter');
+                    // set up the form button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="profile"]').click((event) => {
+                        let id = $(event.target).attr('data-idcharacter');
                         this.selectedCharacter = $(this.characters).filter(function(i,n) {
                             return n.idCharacter == id;
                         })[0];
                         $("#characterFormModal").modal();
-                    })
+                    });
+                    // set op the inventory button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="inventory"]').click((event) => {
+                        let id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == id;
+                        })[0];
+                        $("#inventoryModal").modal();
+                    });
                     clearTimeout(checker);
                 }
             }, 100);
-            var target = "#balanceModal" + entry.idCharacter;
             return '<div class="dropdown">' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
                     'Options' +
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +
-                    '<li><a href="#" data-idcharacter="' + entry.idCharacter + '" data-option="profile">Edit character</a></li>' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="profile">Edit character</a></li>' +
                     '<li class="divider"></li>' +
                     '<li class="dropdown-header">Download images</li>' +
-                    '<li><a href="#" data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
-                    '<li><a href="#">Profile</a></li>' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="inventory">Inventory</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
-                    '<li><a href="#">Currency</a></li>' +
-                    '<li><a href="#">Characters</a></li>' +
-                    '<li><a href="#">Characters</a></li>' +
+                    '<li><a>Give item</a></li>' +
+                    '<li><a>Give badge</a></li>' +
                 '</ul>' +
             '</div>';
         }

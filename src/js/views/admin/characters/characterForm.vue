@@ -11,7 +11,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="id">Registry number:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="id" id="id" placeholder="Enter character registry number" :value="this.characterName">
+                                <input type="text" class="form-control" name="id" id="id" placeholder="Enter character registry number" :value="this.characterId">
                             </div>
                         </div>
                         <div class="form-group">
@@ -50,7 +50,6 @@
                                     :debounce="250"
                                     :options="users"
                                     :on-search="getUsers"
-                                    :on-change="consoleCallback"
                                     :clearSearchOnSelect="true"
                                     placeholder="Search owner name">
                                 </v-select>
@@ -83,21 +82,18 @@ export default {
     props: ['character'],
     watch: {
         character: function() {
-            this.selected = (this.character == null ? null : this.character.owner);
+            this.selected = (this.character == null ? null : this.character.ownerName);
         }
     },
     computed: {
+        characterId: function() { return this.character == null ? '' : this.character.idCharacter; },
         characterName: function() { return this.character == null ? '' : this.character.name; },
         characterDesc: function() { return this.character == null ? '' : this.character.description; },
-        characterImage: function() { return this.character == null ? '' : this.character.Image; },
-        characterOwner: function() { return this.character == null ? '' : this.character.owner; },
+        characterImage: function() { return this.character == null ? '' : this.character.image; },
         buttonText: function() { return this.character == null ? 'Register' : 'Save'; },
         action: function() { return this.character == null ? 'registerCharacter' : 'updateCharacter'; }
     },
     methods: {
-        // consoleCallback: function(val) {
-        //     this.selected = val.value;
-        // },
         getUsers: function(search, loading) {
             loading(true);
             $.post('./php/controllers/userController.php', {

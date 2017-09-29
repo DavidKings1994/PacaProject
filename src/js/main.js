@@ -6,6 +6,7 @@ define(['vue', 'vuex', 'vue-router', 'bootstrap'], function(Vue, Vuex, VueRouter
     Vue.component('paca-header', require('./views/template/header.vue'));
     Vue.component('paca-login', require('./views/template/login.vue'));
     Vue.component('paca-logout', require('./views/template/logout.vue'));
+    Vue.component('paca-inventory', require('./views/template/inventory.vue'));
 
     // admin components
     Vue.component('paca-admin-user-currency', require('./views/admin/users/userCurrency.vue'));

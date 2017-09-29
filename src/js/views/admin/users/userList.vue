@@ -75,6 +75,8 @@ export default {
             var dd = today.getDate();
             var mm = today.getMonth()+1;
             var yyyy = today.getFullYear();
+            var hh = today.getHours();
+            var Mm = today.getMinutes();
 
             if(dd<10) {
                 dd = '0'+dd
@@ -84,7 +86,7 @@ export default {
                 mm = '0'+mm
             }
 
-            return mm + '/' + dd + '/' + yyyy;
+            return mm + '/' + dd + '/' + yyyy + ' ' + hh + ':' + Mm;
         }
     },
     methods: {

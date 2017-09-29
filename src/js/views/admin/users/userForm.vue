@@ -10,7 +10,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="name">Name:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter user name" :value="this.userName">
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter user name" :value="this.userName" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group">
@@ -24,7 +24,7 @@
                         <div class="form-group" v-if="this.user == null">
                             <label class="control-label col-sm-2" for="pwd">Password:</label>
                             <div class="col-sm-10">
-                                <input type="password" class="form-control" name="pass" id="pwd" placeholder="Enter password">
+                                <input type="password" class="form-control" name="pass" id="pwd" placeholder="Enter password" autocomplete="off">
                             </div>
                         </div>
                     </form>
