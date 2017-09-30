@@ -64,6 +64,28 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'giveBadge': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL giveBadgeToCharacter(?,?)");
+            $query->bind_param('is',
+                $_POST['badge'],
+                $_POST['character']
+            );
+            if($query->execute()) {
+                $query->bind_result($result);
+                $query->fetch();
+                $data = array(
+                    'status' => ($result == 0 ? 'OK' : 'ERROR'),
+                    'error' => 'Can\'t complete operation'
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'getInventory':{
             $query = mysqli_prepare($connection->getConnection(), "CALL getCharacterInventory(?)");
             $query->bind_param('s', $_POST['id']);
@@ -81,6 +103,33 @@ if(isset($_POST['action'])) {
                 $data = array(
                     'status' => 'OK',
                     'items' => $items
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
+        case 'getBadges':{
+            $query = mysqli_prepare($connection->getConnection(), "CALL getCharacterBadges(?)");
+            $query->bind_param('s', $_POST['id']);
+            if($query->execute()) {
+                $query->bind_result($id, $name, $desc, $image);
+                $badges = array();
+                while ($query->fetch()) {
+                    $badges[] = array(
+                        'idBadge' => $id,
+                        'name' => $name,
+                        'description' => $desc,
+                        'image' => $image,
+                    );
+                }
+                $data = array(
+                    'status' => 'OK',
+                    'badges' => $badges
                 );
                 echo json_encode($data);
             } else {

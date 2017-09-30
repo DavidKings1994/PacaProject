@@ -10,8 +10,15 @@
             v-on:saved="loadCharacters"
         >
         </paca-admin-character-form>
+        <paca-inventory-transaction
+            :idCharacter="idCharacter"
+            :transaction="transaction"
+            v-on:closed="resetInventory"
+        >
+        </paca-inventory-transaction>
         <paca-inventory
             :character="selectedCharacter"
+            v-on:closed="resetInventory"
         >
         </paca-inventory>
         <vue-bootstrap-table
@@ -74,13 +81,17 @@ export default {
                 }
             ],
             characters: [],
-            selectedCharacter: null
+            selectedCharacter: null,
+            transaction: null
         };
     },
     components: {
         VueBootstrapTable: VueBootstrapTable
     },
     computed: {
+        idCharacter: function() {
+            return (this.selectedCharacter == null ? null : this.selectedCharacter.idCharacter);
+        },
         today: function() {
             var today = new Date();
             var dd = today.getDate();
@@ -99,6 +110,9 @@ export default {
         }
     },
     methods: {
+        resetInventory: function() {
+            this.selectedCharacter = null;
+        },
         loadCharacters: function() {
             $.post('./php/controllers/characterController.php', {
                 action: 'getCharacters'
@@ -129,18 +143,40 @@ export default {
                     // set up the form button
                     $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="profile"]').click((event) => {
                         let id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
                         this.selectedCharacter = $(this.characters).filter(function(i,n) {
                             return n.idCharacter == id;
                         })[0];
                         $("#characterFormModal").modal();
                     });
-                    // set op the inventory button
+                    // set up the inventory button
                     $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="inventory"]').click((event) => {
                         let id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
                         this.selectedCharacter = $(this.characters).filter(function(i,n) {
                             return n.idCharacter == id;
                         })[0];
                         $("#inventoryModal").modal();
+                    });
+                    // set up the give-badge button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="giveBadge"]').click((event) => {
+                        let id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == id;
+                        })[0];
+                        $("#inventoryTransactionModal").modal();
+                        this.transaction = 'giveBadge';
+                    });
+                    // set up the give-item button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="giveItem"]').click((event) => {
+                        let id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == id;
+                        })[0];
+                        this.transaction = 'giveItem';
+                        $("#inventoryTransactionModal").modal();
                     });
                     clearTimeout(checker);
                 }
@@ -156,8 +192,8 @@ export default {
                     '<li class="dropdown-header">Download images</li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="inventory">Inventory</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
-                    '<li><a>Give item</a></li>' +
-                    '<li><a>Give badge</a></li>' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="giveItem">Give item</a></li>' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="giveBadge">Give badge</a></li>' +
                 '</ul>' +
             '</div>';
         }

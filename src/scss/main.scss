@@ -34,6 +34,28 @@
             }
         }
 
+        #inventoryTransactionModal {
+            .panel {
+                display: inline-block;
+                text-align: center;
+                vertical-align: top;
+                width: 100px;
+                margin: 5px;
+
+                &:hover {
+                    border-color: $main;
+                }
+
+                &.selected {
+                    border-color: $main;
+
+                    .panel-body {
+                        background: $main-selected;
+                    }
+                }
+            }
+        }
+
         #userList {
             .table-responsive {
                 display: initial;
