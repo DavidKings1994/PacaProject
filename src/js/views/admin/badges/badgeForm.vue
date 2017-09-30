@@ -8,6 +8,7 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <input type="hidden" name="action" :value="action">
+                        <input type="hidden" name="badge" :value="badgeId">
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="name">Name:</label>
                             <div class="col-sm-10">
@@ -43,6 +44,7 @@
 export default {
     props: ['badge'],
     computed: {
+        badgeId: function() { return this.badge == null ? '' : this.badge.idBadge; },
         badgeName: function() { return this.badge == null ? '' : this.badge.name; },
         badgeDesc: function() { return this.badge == null ? '' : this.badge.description; },
         badgeImage: function() { return this.badge == null ? '' : this.badge.Image; },

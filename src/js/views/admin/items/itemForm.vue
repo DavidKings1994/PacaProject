@@ -8,6 +8,7 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <input type="hidden" name="action" :value="action">
+                        <input type="hidden" name="item" :value="this.itemId">
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="name">Name:</label>
                             <div class="col-sm-10">
@@ -43,6 +44,7 @@
 export default {
     props: ['item'],
     computed: {
+        itemId: function() { return this.item == null ? '' : this.item.idItem; },
         itemName: function() { return this.item == null ? '' : this.item.name; },
         itemDesc: function() { return this.item == null ? '' : this.item.description; },
         itemImage: function() { return this.item == null ? '' : this.item.Image; },

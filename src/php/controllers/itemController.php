@@ -40,18 +40,19 @@ if(isset($_POST['action'])) {
             break;
         }
         case 'updateItem': {
-            $query = mysqli_prepare($connection->getConnection(), "CALL updateItem(?,?,?)");
-            $query->bind_param('sss',
+            $query = mysqli_prepare($connection->getConnection(), "CALL updateItem(?,?,?,?)");
+            $query->bind_param('isss',
+                $_POST['item'],
                 $_POST['name'],
                 $_POST['desc'],
                 $_POST['image']
             );
             if($query->execute()) {
-                $query->bind_result($resul);
+                $query->bind_result($resul, $message);
                 $query->fetch();
                 $data = array(
                     'status' => ($resul == 0 ? 'OK' : 'ERROR'),
-                    'error' => 'Can\'t complete operation'
+                    'error' => $message
                 );
                 echo json_encode($data);
             } else {
