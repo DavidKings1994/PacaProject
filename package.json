@@ -26,6 +26,7 @@
     "dom-to-image": "^2.5.2",
     "jquery": "^3.2.1",
     "vue": "^2.1.10",
+    "vue-bootstrap-toggle": "^1.1.1",
     "vue-router": "^2.7.0",
     "vue-select": "github:sagalbot/vue-select",
     "vue2-bootstrap-table2": "^1.1.8",

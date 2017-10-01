@@ -7,16 +7,19 @@
         </div>
         <paca-admin-user-form
             :user="selectedUser"
-            v-on:saved="loadUsers"
-        >
+            v-on:saved="loadUsers">
         </paca-admin-user-form>
         <paca-admin-user-currency v-for="user in users"
             :userId="user.idUser"
             :userName="user.userName"
             :userCurrency="user.currency"
-            :date="today"
-        >
+            :date="today">
         </paca-admin-user-currency>
+        <paca-admin-currency-transaction
+            :idUser="idUser"
+            v-on:saved="loadUsers"
+            v-on:closed="resetInventory">
+        </paca-admin-currency-transaction>
         <paca-inventory-transaction
             :idUser="idUser"
             :transaction="transaction"
@@ -155,6 +158,15 @@ export default {
                             return n.idUser == id;
                         })[0];
                         $("#inventoryModal").modal();
+                    });
+                    // set up the currency-transaction button
+                    $('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"][data-option="currency"]').click((event) => {
+                        var id = $(event.target).attr('data-iduser');
+                        this.selectedUser = null;
+                        this.selectedUser = $(this.users).filter(function(i,n) {
+                            return n.idUser == id;
+                        })[0];
+                        $("#currencyTransactionModal").modal();
                     });
                     clearTimeout(checker);
                 }

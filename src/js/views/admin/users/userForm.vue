@@ -75,11 +75,6 @@ export default {
                     }
                 });
             } else {
-                console.log({
-                    idUser: this.user.idUser,
-                    name: $('#userFormModal input[name="name"]').val(),
-                    status: $('#userFormModal select[name="status"]').val()
-                });
                 $.post('./php/controllers/userController.php', {
                     action: 'adminUpdateUser',
                     idUser: this.user.idUser,

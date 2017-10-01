@@ -62,6 +62,7 @@ gulp.task("webpack", function(callback) {
                 'jquery': __dirname + '/node_modules/jquery/dist/jquery.js',
                 'bootstrap': __dirname + '/node_modules/bootstrap/dist/js/bootstrap.js',
                 'dom-to-image':  __dirname + '/node_modules/dom-to-image/src/dom-to-image.js',
+                'vue-bootstrap-toggle':  __dirname + '/node_modules/vue-bootstrap-toggle/dist/index.js',
                 'vue': __dirname + '/node_modules/vue/dist/vue.js',
                 'vuex':  __dirname + '/node_modules/vuex/dist/vuex.js',
                 'vue-router':  __dirname + '/node_modules/vue-router/dist/vue-router.js',

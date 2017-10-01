@@ -1,4 +1,5 @@
-define(['vue', 'vuex', 'vue-router', 'bootstrap'], function(Vue, Vuex, VueRouter, Bootstrap) {
+define(['vue', 'vuex', 'vue-router', 'bootstrap'],
+function(Vue, Vuex, VueRouter, Bootstrap) {
     Vue.use(VueRouter);
 
     // templates
@@ -12,6 +13,7 @@ define(['vue', 'vuex', 'vue-router', 'bootstrap'], function(Vue, Vuex, VueRouter
 
     // admin components
     Vue.component('paca-admin-user-currency', require('./views/admin/users/userCurrency.vue'));
+    Vue.component('paca-admin-currency-transaction', require('./views/admin/users/currencyTransaction.vue'));
     Vue.component('paca-admin-user-form', require('./views/admin/users/userForm.vue'));
     Vue.component('paca-admin-badge-form', require('./views/admin/badges/badgeForm.vue'));
     Vue.component('paca-admin-item-form', require('./views/admin/items/itemForm.vue'));
