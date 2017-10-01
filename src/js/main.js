@@ -18,6 +18,7 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     Vue.component('paca-admin-badge-form', require('./views/admin/badges/badgeForm.vue'));
     Vue.component('paca-admin-item-form', require('./views/admin/items/itemForm.vue'));
     Vue.component('paca-admin-character-form', require('./views/admin/characters/characterForm.vue'));
+    Vue.component('paca-admin-ticket', require('./views/admin/bank/ticket.vue'));
 
     // user components
     Vue.component('paca-user-home', require('./views/user/home.vue'));
@@ -52,6 +53,11 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
             path: '/badges',
             component: require('./views/admin/badges/badgeList.vue'),
             name: 'badges'
+        },
+        {
+            path: '/bank',
+            component: require('./views/admin/bank/ticketList.vue'),
+            name: 'bank'
         }
     ];
 
