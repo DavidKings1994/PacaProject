@@ -63,6 +63,22 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'deleteBadge': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL deleteBadge(?)");
+            $query->bind_param('i', $_POST['badge']);
+            if($query->execute()) {
+                $data = array(
+                    'status' => 'OK'
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
     }
 }
 ?>

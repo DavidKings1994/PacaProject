@@ -17,6 +17,17 @@
             :date="today"
         >
         </paca-admin-user-currency>
+        <paca-inventory-transaction
+            :idUser="idUser"
+            :transaction="transaction"
+            v-on:closed="resetInventory"
+        >
+        </paca-inventory-transaction>
+        <paca-inventory
+            :user="selectedUser"
+            v-on:closed="resetInventory"
+        >
+        </paca-inventory>
         <vue-bootstrap-table
             :columns="columns"
             :values="users"
@@ -63,13 +74,17 @@ export default {
                 }
             ],
             users: [],
-            selectedUser: null
+            selectedUser: null,
+            transaction: null
         };
     },
     components: {
         VueBootstrapTable: VueBootstrapTable
     },
     computed: {
+        idUser: function() {
+            return (this.selectedUser == null ? null : this.selectedUser.idUser);
+        },
         today: function() {
             var today = new Date();
             var dd = today.getDate();
@@ -90,6 +105,9 @@ export default {
         }
     },
     methods: {
+        resetInventory: function() {
+            this.selectedUser = null;
+        },
         loadUsers: function() {
             $.post('./php/controllers/usercontroller.php', {
                 action: 'getUsers'
@@ -110,13 +128,34 @@ export default {
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
                 if ($('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"]').length > 0) {
-                    $('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"]').click((event) => {
+                    // set up the form button
+                    $('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"][data-option="profile"]').click((event) => {
                         var id = $(event.target).attr('data-iduser');
+                        this.selectedUser = null;
                         this.selectedUser = $(this.users).filter(function(i,n) {
                             return n.idUser == id;
                         })[0];
                         $("#userFormModal").modal();
-                    })
+                    });
+                    // set up the give-item button
+                    $('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"][data-option="giveItem"]').click((event) => {
+                        var id = $(event.target).attr('data-iduser');
+                        this.selectedUser = null;
+                        this.selectedUser = $(this.users).filter(function(i,n) {
+                            return n.idUser == id;
+                        })[0];
+                        this.transaction = 'giveItem';
+                        $("#inventoryTransactionModal").modal();
+                    });
+                    // set up the inventory button
+                    $('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"][data-option="inventory"]').click((event) => {
+                        var id = $(event.target).attr('data-iduser');
+                        this.selectedUser = null;
+                        this.selectedUser = $(this.users).filter(function(i,n) {
+                            return n.idUser == id;
+                        })[0];
+                        $("#inventoryModal").modal();
+                    });
                     clearTimeout(checker);
                 }
             }, 100);
@@ -131,11 +170,12 @@ export default {
                     '<li class="divider"></li>' +
                     '<li class="dropdown-header">Download images</li>' +
                     '<li><a data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
+                    '<li><a data-iduser="' + entry.idUser + '" data-option="inventory">Inventory</a></li>' +
                     '<li><a>Profile</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
-                    '<li><a>Currency</a></li>' +
-                    '<li><a>Items</a></li>' +
-                    '<li><a>Badges</a></li>' +
+                    '<li><a data-iduser="' + entry.idUser + '" data-option="currency">Currency</a></li>' +
+                    '<li><a data-iduser="' + entry.idUser + '" data-option="giveItem">Give item</a></li>' +
+                    '<li><a data-iduser="' + entry.idUser + '" data-option="useItem">Use item</a></li>' +
                 '</ul>' +
             '</div>';
         }

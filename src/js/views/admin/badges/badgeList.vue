@@ -7,10 +7,13 @@
         </div>
         <paca-admin-badge-form
             :badge="selectedBadge"
-            v-on:saved="loadBadges"
-        >
+            v-on:saved="loadBadges">
         </paca-admin-badge-form>
-        </paca-admin-badge-currency>
+        <paca-dialog
+            :title="'Delete'"
+            :message="'You really want to delete this badge?'"
+            :onAccept="deleteBadge">
+        </paca-dialog>
         <vue-bootstrap-table
             :columns="columns"
             :values="badges"
@@ -117,7 +120,7 @@ export default {
                         this.selectedBadge = $(this.badges).filter(function(i,n) {
                             return n.idBadge == id;
                         })[0];
-                        $("#badgeFormModal").modal();
+                        $("#dialogModal").modal();
                     })
                     clearTimeout(checker);
                 }
@@ -132,6 +135,20 @@ export default {
                     '<li><a data-idbadge="' + entry.idBadge + '" data-option="delete">Delete badge</a></li>' +
                 '</ul>' +
             '</div>';
+        },
+        deleteBadge: function(callback) {
+            $.post('./php/controllers/badgeController.php', {
+                action: 'deleteBadge',
+                badge: this.selectedBadge.idBadge
+            }, (json) => {
+                let response = JSON.parse(json);
+                if (response.status == 'OK') {
+                    this.loadBadges();
+                    callback();
+                } else {
+                    console.error(response.error);
+                }
+            });
         }
     },
     created: function() {

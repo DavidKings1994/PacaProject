@@ -135,6 +135,56 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'giveItem': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL giveObjectToUser(?,?,?)");
+            $query->bind_param('iii',
+                $_POST['item'],
+                $_POST['user'],
+                $_POST['quantity']
+            );
+            if($query->execute()) {
+                $query->bind_result($status, $message);
+                $query->fetch();
+                $data = array(
+                    'status' => $status,
+                    'error' => $message
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
+        case 'getInventory':{
+            $query = mysqli_prepare($connection->getConnection(), "CALL getUserInventory(?)");
+            $query->bind_param('i', $_POST['id']);
+            if($query->execute()) {
+                $query->bind_result($id, $name, $desc, $image);
+                $items = array();
+                while ($query->fetch()) {
+                    $items[] = array(
+                        'idItem' => $id,
+                        'name' => $name,
+                        'description' => $desc,
+                        'image' => $image,
+                    );
+                }
+                $data = array(
+                    'status' => 'OK',
+                    'items' => $items
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'search': {
             $query = mysqli_prepare($connection->getConnection(), "CALL searchUsers(?)");
             $query->bind_param('s', $_POST['name'] );

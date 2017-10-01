@@ -48,7 +48,7 @@ export default {
     },
     computed: {
         inventoryName: function() {
-            return (this.user == null ? (this.character == null ? '' : this.character.name) : this.user.name);
+            return (this.user == null ? (this.character == null ? '' : this.character.name) : this.user.userName);
         }
     },
     methods: {

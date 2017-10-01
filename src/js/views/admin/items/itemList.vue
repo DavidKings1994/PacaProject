@@ -10,7 +10,11 @@
             v-on:saved="loadItems"
         >
         </paca-admin-item-form>
-        </paca-admin-item-currency>
+        <paca-dialog
+            :title="'Delete'"
+            :message="'You really want to delete this item?'"
+            :onAccept="deleteItem">
+        </paca-dialog>
         <vue-bootstrap-table
             :columns="columns"
             :values="items"
@@ -117,7 +121,7 @@ export default {
                         this.selectedItem = $(this.items).filter(function(i,n) {
                             return n.idItem == id;
                         })[0];
-                        $("#itemFormModal").modal();
+                        $("#dialogModal").modal();
                     })
                     clearTimeout(checker);
                 }
@@ -132,6 +136,20 @@ export default {
                     '<li><a data-iditem="' + entry.idItem + '" data-option="delete">Delete item</a></li>' +
                 '</ul>' +
             '</div>';
+        },
+        deleteItem: function(callback) {
+            $.post('./php/controllers/itemController.php', {
+                action: 'deleteItem',
+                item: this.selectedItem.idItem
+            }, (json) => {
+                let response = JSON.parse(json);
+                if (response.status == 'OK') {
+                    this.loadItems();
+                    callback();
+                } else {
+                    console.error(response.error);
+                }
+            });
         }
     },
     created: function() {
