@@ -19,6 +19,7 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     Vue.component('paca-admin-item-form', require('./views/admin/items/itemForm.vue'));
     Vue.component('paca-admin-character-form', require('./views/admin/characters/characterForm.vue'));
     Vue.component('paca-admin-ticket', require('./views/admin/bank/ticket.vue'));
+    Vue.component('paca-admin-log', require('./views/admin/log/log.vue'));
 
     // user components
     Vue.component('paca-user-home', require('./views/user/home.vue'));

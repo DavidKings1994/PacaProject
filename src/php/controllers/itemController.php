@@ -79,6 +79,18 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'getLogs': {
+            $resul = mysqli_query($connection->getConnection(), "CALL getLogs()");
+            $logs = array();
+            while($row = mysqli_fetch_assoc($resul)) {
+                $logs[] = $row;
+            }
+            echo json_encode(array(
+                'status' => 'OK',
+                'logs' => $logs
+            ));
+            break;
+        }
     }
 }
 ?>
