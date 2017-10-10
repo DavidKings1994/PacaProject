@@ -9,6 +9,7 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     Vue.component('paca-logout', require('./views/template/logout.vue'));
     Vue.component('paca-dialog', require('./views/template/dialog.vue'));
     Vue.component('paca-inventory', require('./views/template/inventory.vue'));
+    Vue.component('paca-inventory-use', require('./views/template/inventoryUse.vue'));
     Vue.component('paca-inventory-transaction', require('./views/template/inventoryTransaction.vue'));
 
     // admin components

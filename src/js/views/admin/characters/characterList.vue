@@ -16,6 +16,11 @@
             v-on:closed="resetInventory"
         >
         </paca-inventory-transaction>
+        <paca-inventory-use
+            :idCharacter="idCharacter"
+            v-on:closed="resetInventory"
+        >
+        </paca-inventory-use>
         <paca-inventory
             :character="selectedCharacter"
             v-on:closed="resetInventory"
@@ -178,6 +183,15 @@ export default {
                         this.transaction = 'giveItem';
                         $("#inventoryTransactionModal").modal();
                     });
+                    // set up the inventory use button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="useItem"]').click((event) => {
+                        var id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == id;
+                        })[0];
+                        $("#inventoryUseModal").modal();
+                    });
                     clearTimeout(checker);
                 }
             }, 100);
@@ -192,6 +206,7 @@ export default {
                     '<li class="dropdown-header">Download images</li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="inventory">Inventory</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="useItem">Use item</a></li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="giveItem">Give item</a></li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="giveBadge">Give badge</a></li>' +
                 '</ul>' +

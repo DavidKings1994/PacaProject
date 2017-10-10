@@ -26,6 +26,11 @@
             v-on:closed="resetInventory"
         >
         </paca-inventory-transaction>
+        <paca-inventory-use
+            :idUser="idUser"
+            v-on:closed="resetInventory"
+        >
+        </paca-inventory-use>
         <paca-inventory
             :user="selectedUser"
             v-on:closed="resetInventory"
@@ -167,6 +172,15 @@ export default {
                             return n.idUser == id;
                         })[0];
                         $("#currencyTransactionModal").modal();
+                    });
+                    // set up the inventory use button
+                    $('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"][data-option="useItem"]').click((event) => {
+                        var id = $(event.target).attr('data-iduser');
+                        this.selectedUser = null;
+                        this.selectedUser = $(this.users).filter(function(i,n) {
+                            return n.idUser == id;
+                        })[0];
+                        $("#inventoryUseModal").modal();
                     });
                     clearTimeout(checker);
                 }

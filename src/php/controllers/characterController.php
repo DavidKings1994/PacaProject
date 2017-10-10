@@ -64,6 +64,29 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'useItem': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL useObjectFromCharacter(?,?,?)");
+            $query->bind_param('isi',
+                $_POST['item'],
+                $_POST['character'],
+                $_POST['quantity']
+            );
+            if($query->execute()) {
+                $query->bind_result($status, $message);
+                $query->fetch();
+                $data = array(
+                    'status' => $status,
+                    'error' => $message
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'giveBadge': {
             $query = mysqli_prepare($connection->getConnection(), "CALL giveBadgeToCharacter(?,?)");
             $query->bind_param('is',
@@ -94,6 +117,34 @@ if(isset($_POST['action'])) {
                 $items = array();
                 while ($query->fetch()) {
                     $items[] = array(
+                        'idItem' => $id,
+                        'name' => $name,
+                        'description' => $desc,
+                        'image' => $image,
+                    );
+                }
+                $data = array(
+                    'status' => 'OK',
+                    'items' => $items
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
+        case 'getInventoryCount':{
+            $query = mysqli_prepare($connection->getConnection(), "CALL getCharacterInventoryCount(?)");
+            $query->bind_param('s', $_POST['id']);
+            if($query->execute()) {
+                $query->bind_result($total, $id, $name, $desc, $image);
+                $items = array();
+                while ($query->fetch()) {
+                    $items[] = array(
+                        'total' => $total,
                         'idItem' => $id,
                         'name' => $name,
                         'description' => $desc,
