@@ -35,7 +35,7 @@ export default {
     },
     methods: {
         login: function() {
-            navigation.commit('login', {
+            navigation.dispatch('login', {
                 name: $('#loginModal input[name="name"]').val(),
                 pass: $('#loginModal input[name="password"]').val()
             });

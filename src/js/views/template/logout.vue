@@ -21,7 +21,7 @@ var navigation = require('./../../navigation.js');
 export default {
     methods: {
         logout: function() {
-            navigation.commit('logout');
+            navigation.dispatch('logout');
             $('#logoutModal .modal-footer button.btn-danger').click();
         }
     }

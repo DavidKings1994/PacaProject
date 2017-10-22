@@ -1,29 +1,38 @@
 <template>
     <div class="lateral-navbar col-md-2">
         <div v-if="rol == 'admin'">
-            <router-link to="/home" id="nav-home">
+            <router-link to="/admin/home" id="nav-home">
                 <i class="fa fa-home"></i> Home
             </router-link>
-            <router-link to="/users" id="nav-users">
+            <router-link to="/admin/users" id="nav-users">
                 <i class="fa fa-users"></i> Users
             </router-link>
-            <router-link to="/characters" id="nav-characters">
+            <router-link to="/admin/characters" id="nav-characters">
                 <i class="fa fa-heart"></i> Characters
             </router-link>
-            <router-link to="/items" id="nav-items">
+            <router-link to="/admin/items" id="nav-items">
                 <i class="fa fa-briefcase"></i> Items
             </router-link>
-            <router-link to="/badges" id="nav-badges">
+            <router-link to="/admin/badges" id="nav-badges">
                 <i class="fa fa-certificate"></i> Badges
             </router-link>
-            <router-link to="/bank" id="nav-bank">
+            <router-link to="/admin/bank" id="nav-bank">
                 <i class="fa fa-university"></i> Bank
             </router-link>
         </div>
         <div v-if="rol == 'user'">
-            <a v-on:click="select" href="#" data-destiny="home" class="selected"><i class="fa fa-home"></i> Home</a>
-            <a v-on:click="select" href="#" data-destiny="characters"><i class="fa fa-heart"></i> Characters</a>
-            <a v-on:click="select" href="#" data-destiny="items"><i class="fa fa-briefcase"></i> Items</a>
+            <router-link :to="'/user/' + userId + '/home'" id="nav-home">
+                <i class="fa fa-home"></i> Home
+            </router-link>
+            <router-link :to="'/user/' + userId + '/profile'" id="nav-profile">
+                <i class="fa fa-user"></i> Profile
+            </router-link>
+            <router-link :to="'/user/' + userId + '/characters'" id="nav-characters">
+                <i class="fa fa-heart"></i> Characters
+            </router-link>
+            <router-link :to="'/user/' + userId + '/inventory'" id="nav-items">
+                <i class="fa fa-briefcase"></i> Inventory
+            </router-link>
         </div>
     </div>
 </template>
@@ -34,6 +43,9 @@ export default {
     computed: {
         rol: function() {
             return navigation.state.session.rol;
+        },
+        userId: function() {
+            return navigation.state.session.idUser;
         }
     }
 }

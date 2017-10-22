@@ -22,7 +22,8 @@
     <body>
         <div id="App" class="content-fluid">
             <paca-header></paca-header>
-            <div v-if="logged" class="row" id="mainContainer">
+            <router-view></router-view>
+            <!-- <div v-if="logged" class="row" id="mainContainer">
                 <paca-navbar></paca-navbar>
                 <div class="mainContent col-md-10">
                     <router-view></router-view>
@@ -37,7 +38,7 @@
                 </div>
             </div>
             <paca-login></paca-login>
-            <paca-logout></paca-logout>
+            <paca-logout></paca-logout> -->
         </div>
 
         <!--[htmlclean-protect]-->

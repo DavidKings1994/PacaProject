@@ -3,6 +3,7 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     Vue.use(VueRouter);
 
     // templates
+    Vue.component('paca-main-container', require('./views/template/mainContainer.vue'));
     Vue.component('paca-navbar', require('./views/template/navbar.vue'));
     Vue.component('paca-header', require('./views/template/header.vue'));
     Vue.component('paca-login', require('./views/template/login.vue'));
@@ -23,43 +24,83 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     Vue.component('paca-admin-log', require('./views/admin/log/log.vue'));
 
     // user components
-    Vue.component('paca-user-home', require('./views/user/home.vue'));
+    Vue.component('paca-user-item-transaction', require('./views/user/items/itemTransaction.vue'));
+    Vue.component('paca-user-character-form', require('./views/user/characters/characterForm.vue'));
 
     const routes = [
         {
             path: '/',
-            component: require('./views/admin/home.vue'),
-            name: 'default'
+            component: require('./views/template/mainContainer.vue'),
+            name: 'login'
         },
         {
-            path: '/home',
-            component: require('./views/admin/home.vue'),
-            name: 'home'
+            path: '/admin',
+            component: require('./views/template/mainContainer.vue'),
+            redirect: '/admin/home',
+            children: [
+                {
+                    path: 'home',
+                    component: require('./views/admin/home.vue'),
+                    name: 'home'
+                },
+                {
+                    path: 'users',
+                    component: require('./views/admin/users/userList.vue'),
+                    name: 'users'
+                },
+                {
+                    path: 'characters',
+                    component: require('./views/admin/characters/characterList.vue'),
+                    name: 'characters'
+                },
+                {
+                    path: 'items',
+                    component: require('./views/admin/items/itemList.vue'),
+                    name: 'items'
+                },
+                {
+                    path: 'badges',
+                    component: require('./views/admin/badges/badgeList.vue'),
+                    name: 'badges'
+                },
+                {
+                    path: 'bank',
+                    component: require('./views/admin/bank/ticketList.vue'),
+                    name: 'bank'
+                },
+            ]
         },
         {
-            path: '/users',
-            component: require('./views/admin/users/userList.vue'),
-            name: 'users'
-        },
-        {
-            path: '/characters',
-            component: require('./views/admin/characters/characterList.vue'),
-            name: 'characters'
-        },
-        {
-            path: '/items',
-            component: require('./views/admin/items/itemList.vue'),
-            name: 'items'
-        },
-        {
-            path: '/badges',
-            component: require('./views/admin/badges/badgeList.vue'),
-            name: 'badges'
-        },
-        {
-            path: '/bank',
-            component: require('./views/admin/bank/ticketList.vue'),
-            name: 'bank'
+            path: '/user/:id',
+            component: require('./views/template/mainContainer.vue'),
+            redirect: '/user/:id/home',
+            props: true,
+            children: [
+                {
+                    path: 'home',
+                    component: require('./views/user/home.vue'),
+                    name: 'user home',
+                    props: true
+                },
+                {
+                    path: 'profile',
+                    component: require('./views/user/profile.vue'),
+                    name: 'user profile',
+                    props: true
+                },
+                {
+                    path: 'inventory',
+                    component: require('./views/user/items/inventory.vue'),
+                    name: 'user inventory',
+                    props: true
+                },
+                {
+                    path: 'characters',
+                    component: require('./views/user/characters/characterList.vue'),
+                    name: 'user characters',
+                    props: true
+                }
+            ]
         }
     ];
 
@@ -68,31 +109,67 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     });
 
     var navigation = require('./navigation.js');
-    new Vue({
-        el: '#App',
-        router: router,
-        created: function() {
-            navigation.commit('checkSession');
-        },
-        watch: {
-            $route: function (to, from) {
-                $("title").text('Paca manager | ' + to.name.charAt(0).toUpperCase() + to.name.slice(1));
+    navigation.dispatch('checkSession').then(() => {
+        router.beforeEach((to, from, next) => {
+            console.log(to);
+            console.log(navigation.state.session);
+            if (to.path == "/") {
+                if (navigation.state.session != null) {
+                    switch (navigation.state.session.rol) {
+                        case 'admin': {
+                            next('/admin');
+                            break;
+                        }
+                        case 'user': {
+                            next('/user/' + navigation.state.session.idUser);
+                            break;
+                        }
+                    }
+                } else {
+                    next();
+                }
+            } else {
+                if (navigation.state.session == null) {
+                    next('/');
+                } else {
+                    if ((to.path.includes('admin') && navigation.state.session.rol != 'admin') ||
+                        (!to.path.includes('admin') && navigation.state.session.rol != 'user')) {
+                        next(false);
+                    } else {
+                        if (navigation.state.session.rol == 'user') {
+                            if (to.path.split('/')[2] == navigation.state.session.idUser) {
+                                next();
+                            } else {
+                                next(false);
+                            }
+                        } else {
+                            next();
+                        }
+                    }
+                }
             }
-        },
-        computed: {
-            rol: function() {
-                return navigation.state.session != null ? navigation.state.session.rol : '';
+        });
+
+        new Vue({
+            el: '#App',
+            router: router,
+            watch: {
+                $route: function (to, from) {
+                    $("title").text('Paca manager | ' + to.name.charAt(0).toUpperCase() + to.name.slice(1));
+                }
             },
-            logged: function() {
-                return navigation.state.session != null;
+            computed: {
+                rol: function() {
+                    return navigation.state.session != null ? navigation.state.session.rol : '';
+                }
+            },
+            filters: {
+                capitalize: function (value) {
+                    if (!value) return '';
+                    value = value.toString();
+                    return value.charAt(0).toUpperCase() + value.slice(1);
+                }
             }
-        },
-        filters: {
-            capitalize: function (value) {
-                if (!value) return '';
-                value = value.toString();
-                return value.charAt(0).toUpperCase() + value.slice(1);
-            }
-        }
+        });
     });
 });
