@@ -111,8 +111,6 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     var navigation = require('./navigation.js');
     navigation.dispatch('checkSession').then(() => {
         router.beforeEach((to, from, next) => {
-            console.log(to);
-            console.log(navigation.state.session);
             if (to.path == "/") {
                 if (navigation.state.session != null) {
                     switch (navigation.state.session.rol) {

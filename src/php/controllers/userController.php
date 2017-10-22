@@ -236,6 +236,34 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'getCharacters': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL getUserCharacters(?)");
+            $query->bind_param('i', $_POST['id']);
+            if($query->execute()) {
+                $characters = array();
+                $query->bind_result($idCharacter, $image, $name, $desc, $status);
+                while ($query->fetch()) {
+                    $characters[] = array(
+                        'idCharacter' => $idCharacter,
+                        'image' => $image,
+                        'name' => $name,
+                        'description' => $desc,
+                        'status' => $status,
+                    );
+                }
+                $data = array(
+                    'status' => 'OK',
+                    'characters' => $characters
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'search': {
             $query = mysqli_prepare($connection->getConnection(), "CALL searchUsers(?)");
             $query->bind_param('s', $_POST['name'] );
