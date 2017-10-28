@@ -12,7 +12,7 @@ if(isset($_POST['action'])) {
                 $pass
             );
             if($query->execute()) {
-                $query->bind_result($idUser, $name, $rol, $status);
+                $query->bind_result($idUser, $name, $rol, $status, $currency);
                 $query->fetch();
                 if (!is_null($idUser)) {
                     session_start();
@@ -23,6 +23,7 @@ if(isset($_POST['action'])) {
                             'name' => $name,
                             'rol' => $rol,
                             'status' => $status,
+                            'currency' => $currency,
                             'options' => ''
                         )
                     );
@@ -30,6 +31,7 @@ if(isset($_POST['action'])) {
                     $_SESSION['name'] = $name;
                     $_SESSION['rol'] = $rol;
                     $_SESSION['status'] = $status;
+                    $_SESSION['currency'] = $currency;
                     echo json_encode($data);
                 } else {
                     echo json_encode(array(
@@ -45,6 +47,7 @@ if(isset($_POST['action'])) {
             unset($_SESSION['name']);
             unset($_SESSION['rol']);
             unset($_SESSION['status']);
+            unset($_SESSION['currency']);
             $_SESSION = array();
             if (ini_get("session.use_cookies")) {
                 $params = session_get_cookie_params();
@@ -65,13 +68,37 @@ if(isset($_POST['action'])) {
                         'idUser' => $_SESSION['idUser'],
                         'name' => $_SESSION['name'],
                         'rol' => $_SESSION['rol'],
-                        'status' => $_SESSION['status']
+                        'status' => $_SESSION['status'],
+                        'currency' => $_SESSION['currency']
                     )
                 );
                 echo json_encode($data);
             } else {
                 echo json_encode(array(
                     'status' => 'not logged'
+                ));
+            }
+            break;
+        }
+        case 'changePassword': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL changePassword(?,?)");
+            $newPass = sha1($_POST['newPass']);
+            $query->bind_param('is',
+                $_POST['id'],
+                $newPass
+            );
+            if($query->execute()) {
+                $query->bind_result($status, $message);
+                $query->fetch();
+                $data = array(
+                    'status' => $status,
+                    'error' => $message
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
                 ));
             }
             break;

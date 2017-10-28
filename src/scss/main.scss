@@ -34,7 +34,7 @@
             }
         }
 
-        #inventoryTransactionModal, #inventoryUseModal {
+        #inventoryTransactionModal, #inventoryUseModal, #profileView .panels {
             .panel {
                 display: inline-block;
                 text-align: center;
@@ -52,6 +52,19 @@
                     .panel-body {
                         background: $main-selected;
                     }
+                }
+            }
+        }
+
+        #profileView {
+            .panel {
+                a:hover {
+                    text-decoration: none;
+                }
+
+                &.panel-default .panel-heading {
+                    background: $main !important;
+                    color: $main-text !important;
                 }
             }
         }
