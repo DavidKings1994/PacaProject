@@ -21,9 +21,6 @@
             </router-link>
         </div>
         <div v-if="rol == 'user'">
-            <router-link :to="'/user/' + userId + '/home'" id="nav-home">
-                <i class="fa fa-home"></i> Home
-            </router-link>
             <router-link :to="'/user/' + userId + '/profile'" id="nav-profile">
                 <i class="fa fa-user"></i> Profile
             </router-link>

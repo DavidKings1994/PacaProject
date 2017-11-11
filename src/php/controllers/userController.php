@@ -208,6 +208,31 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'transferItem': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL transferObject(?,?,?,?,?)");
+            $query->bind_param('iisii',
+                $_POST['owner'],
+                $_POST['user'],
+                $_POST['character'],
+                $_POST['item'],
+                $_POST['quantity']
+            );
+            if($query->execute()) {
+                $query->bind_result($status, $message);
+                $query->fetch();
+                $data = array(
+                    'status' => $status,
+                    'error' => $message
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'getInventory':{
             $query = mysqli_prepare($connection->getConnection(), "CALL getUserInventory(?)");
             $query->bind_param('i', $_POST['id']);

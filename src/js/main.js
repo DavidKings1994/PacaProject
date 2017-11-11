@@ -73,15 +73,9 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
         {
             path: '/user/:id',
             component: require('./views/template/mainContainer.vue'),
-            redirect: '/user/:id/home',
+            redirect: '/user/:id/profile',
             props: true,
             children: [
-                {
-                    path: 'home',
-                    component: require('./views/user/home.vue'),
-                    name: 'user home',
-                    props: true
-                },
                 {
                     path: 'profile',
                     component: require('./views/user/profile.vue'),

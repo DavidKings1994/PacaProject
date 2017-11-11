@@ -2,6 +2,11 @@
     <div class="content" id="itemList">
         <div class="row text-right" id="upperBar">
         </div>
+        <paca-user-item-transaction
+            :owner="id"
+            :item="selectedItem"
+        >
+        </paca-user-item-transaction>
         <vue-bootstrap-table
             :columns="columns"
             :values="items"
@@ -94,20 +99,13 @@ export default {
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
                 if ($('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"]').length > 0) {
-                    $('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"][data-option="profile"]').click((event) => {
+                    $('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"][data-option="transfer"]').click((event) => {
                         var id = $(event.target).attr('data-iditem');
                         this.selectedItem = $(this.items).filter(function(i,n) {
                             return n.idItem == id;
                         })[0];
-                        $("#itemFormModal").modal();
+                        $("#objectTransactionModal").modal();
                     });
-                    $('ul.dropdown-menu a[data-iditem="' + entry.idItem + '"][data-option="delete"]').click((event) => {
-                        var id = $(event.target).attr('data-iditem');
-                        this.selectedItem = $(this.items).filter(function(i,n) {
-                            return n.idItem == id;
-                        })[0];
-                        $("#dialogModal").modal();
-                    })
                     clearTimeout(checker);
                 }
             }, 100);
@@ -117,8 +115,7 @@ export default {
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +
-                    '<li><a data-iditem="' + entry.idItem + '" data-option="profile">Edit item</a></li>' +
-                    '<li><a data-iditem="' + entry.idItem + '" data-option="delete">Delete item</a></li>' +
+                    '<li><a data-iditem="' + entry.idItem + '" data-option="transfer">Transfer item</a></li>'
                 '</ul>' +
             '</div>';
         }
