@@ -38,7 +38,7 @@
                             <div class="col-sm-10">
                                 <select class="form-control" id="status" name="status">
                                     <option value="HOME">Home</option>
-                                    <option value="NOT_HOME">Not in home</option>
+                                    <option value="NOT_HOME">Not home</option>
                                 </select>
                             </div>
                         </div>
@@ -82,7 +82,12 @@ export default {
     props: ['character'],
     watch: {
         character: function() {
-            this.selected = (this.character == null ? null : this.character.ownerName);
+            if (this.character != null) {
+                $("#characterFormModal select[name='status']").val(this.character.status);
+                this.selected = this.character.ownerName;
+            } else {
+                this.selected = null;
+            }
         }
     },
     computed: {
@@ -106,11 +111,11 @@ export default {
             });
         },
         save: function() {
+            console.log(this.selected);
             $.post('./php/controllers/characterController.php',
-            $("#characterFormModal form").serialize() + '&owner=' + encodeURIComponent(this.selected.value),
+            $("#characterFormModal form").serialize() + '&owner=' + encodeURIComponent(this.selected != null ? this.selected.label : ''),
             (json) => {
                 var result = JSON.parse(json);
-                console.log(result);
                 if (result.status == 'OK') {
                     this.$emit('saved');
                     $('#characterFormModal .btn-danger').click();

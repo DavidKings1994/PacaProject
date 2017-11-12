@@ -41,6 +41,32 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'updateCharacter': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL updateCharacter(?,?,?,?,?,?)");
+            $query->bind_param('ssssss',
+                $_POST['id'],
+                $_POST['image'],
+                $_POST['name'],
+                $_POST['desc'],
+                $_POST['owner'],
+                $_POST['status']
+            );
+            if($query->execute()) {
+                $query->bind_result($resul, $message);
+                $query->fetch();
+                $data = array(
+                    'status' => ((is_numeric($resul) && $resul == 0) ? 'OK' : 'ERROR'),
+                    'error' => $message
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'giveItem': {
             $query = mysqli_prepare($connection->getConnection(), "CALL giveObjectToCharacter(?,?,?)");
             $query->bind_param('isi',

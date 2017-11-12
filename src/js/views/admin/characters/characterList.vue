@@ -136,7 +136,7 @@ export default {
             return '<img src="' + entry.image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
         },
         renderStatusColumn: function (colname, entry) {
-            return '<span class="label label-' + (entry.status == 'HOME' ? 'success' : 'danger') + '">' + entry.status + '</span>';
+            return '<span class="label label-' + (entry.status == 'HOME' ? 'success' : 'danger') + '">' + (entry.status == 'HOME' ? 'Home' : 'Not home') + '</span>';
         },
         renderRegisterColumn: function (colname, entry) {
             return '<span class="label label-' + (entry.registered == 1 ? 'success' : 'danger') + '">' + (entry.registered == 1 ? 'YES' : 'NO') + '</span>';
