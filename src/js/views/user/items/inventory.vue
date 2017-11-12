@@ -3,7 +3,7 @@
         <div class="row text-right" id="upperBar">
         </div>
         <paca-user-item-transaction
-            :owner="id"
+            :id="this.id"
             :item="selectedItem"
         >
         </paca-user-item-transaction>

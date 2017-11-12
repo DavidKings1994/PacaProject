@@ -110,6 +110,7 @@ export default {
             $("#characterFormModal form").serialize() + '&owner=' + encodeURIComponent(this.selected.value),
             (json) => {
                 var result = JSON.parse(json);
+                console.log(result);
                 if (result.status == 'OK') {
                     this.$emit('saved');
                     $('#characterFormModal .btn-danger').click();

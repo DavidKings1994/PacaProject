@@ -7,17 +7,57 @@
                     <h4 class="modal-title">Transfer item</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="quantity">Quantity:</label>
-                                <div class="col-sm-4">
-                                    <input type="number" min="1" :max="total" v-model="quantity"
-                                        class="form-control" id="quantity" name="quantity" required>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="owner">To user:</label>
+                            <div class="col-sm-10">
+                                <v-select
+                                    v-model="selected"
+                                    :debounce="250"
+                                    :options="users"
+                                    :on-search="getUsers"
+                                    :clearSearchOnSelect="true"
+                                    placeholder="Search user">
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="form-group" v-if="selected != null">
+                            <label class="control-label col-sm-8" for="operation">Transfer item to a character of this user:</label>
+                            <div class="col-sm-4">
+                                <bootstrap-toggle
+                                    id="operation"
+                                    v-model="checked"
+                                    :options="{
+                                        on: 'Yes',
+                                        off: 'No',
+                                        onstyle: 'success',
+                                        offstyle: 'danger',
+                                        width: 85
+                                    }" />
+                            </div>
+                        </div>
+                        <div class="well" v-if="characters.length > 0">
+                            <div class="panel panel-default" v-for="character in characters"
+                            :data-id="character.idCharacter" v-on:click="select">
+                                <div class="panel-body">
+                                    <img :src="character.image" :alt="character.name" width="50" height="50">
+                                </div>
+                                <div class="panel-footer">
+                                    {{ character.name }}
+                                    <span :class="'label label-' + (character.status == 'HOME' ? 'success' : 'danger')">
+                                        {{ character.status }}
+                                    </span>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="quantity">Quantity:</label>
+                            <div class="col-sm-4">
+                                <input type="number" min="1" :max="total" v-model="quantity"
+                                    class="form-control" id="quantity" name="quantity" required>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" v-on:click="close" data-dismiss="modal">Cancel</button>
@@ -30,13 +70,35 @@
 </template>
 
 <script>
+import vSelect from 'vue-select';
+import BootstrapToggle from 'vue-bootstrap-toggle';
 export default {
     data: function() {
         return {
-            quantity: 1
+            quantity: 1,
+            selected: null,
+            selectedCharacter: null,
+            users: [],
+            characters: [],
+            checked: false
         };
     },
     props: ['id', 'item'],
+    watch: {
+        checked: function() {
+            this.selectedCharacter = null;
+            $('#objectTransactionModal .panel').removeClass('selected');
+            if (this.checked && this.selected != null) {
+                this.getUsersCharacters();
+            } else {
+                this.characters = [];
+            }
+        }
+    },
+    components: {
+        'v-select': vSelect,
+        'bootstrap-toggle': BootstrapToggle
+    },
     computed: {
         total: function() {
             return this.item == null ? 1 : this.item.total;
@@ -45,27 +107,63 @@ export default {
     methods: {
         close: function() {
             $('#objectTransactionModal .panel').removeClass('selected');
-            this.item = null;
-            this.id = null;
+            this.selected = null;
             this.quantity = 1;
             this.$emit('closed');
         },
-        save: function() {
-            $.post('./php/controllers/characterController.php', {
-                action: 'giveItem',
-                owner: this.id,
-                character: this.idCharacter,
-                item: this.item.idItem,
-                quantity: this.quantity
+        getUsers: function(search, loading) {
+            loading(true);
+            $.post('./php/controllers/userController.php', {
+                action: 'search',
+                name: search
             }, (json) => {
-                let response = JSON.parse(json);
-                if (response.status == 'OK') {
-                    $('#objectTransactionModal .btn-danger').click();
-                    this.close();
-                } else {
-                    console.error(response.error);
+                var result = JSON.parse(json);
+                this.users = result.users;
+                loading(false);
+            });
+        },
+        getUsersCharacters: function() {
+            $.post('./php/controllers/userController.php', {
+                action: 'getCharacters',
+                id: this.selected.value
+            }, (msg) => {
+                var json = JSON.parse(msg);
+                if (json.status == 'OK') {
+                    this.characters = json.characters;
                 }
             });
+        },
+        select : function(event) {
+            $('#objectTransactionModal .panel').removeClass('selected');
+            $(event.target).closest('.panel').addClass('selected');
+            this.selectedCharacter = $(event.target).closest('.panel').attr('data-id');
+        },
+        save: function() {
+            if (this.selected != null) {
+                console.log({
+                    owner: this.id,
+                    character: this.selectedCharacter,
+                    user: (this.selectedCharacter == null ? this.selected.value : null),
+                    item: this.item.idItem,
+                    quantity: this.quantity
+                });
+                $.post('./php/controllers/userController.php', {
+                    action: 'transferItem',
+                    owner: this.id,
+                    character: this.selectedCharacter,
+                    user: (this.selectedCharacter == null ? this.selected.value : null),
+                    item: this.item.idItem,
+                    quantity: this.quantity
+                }, (json) => {
+                    let response = JSON.parse(json);
+                    if (response.status == 'OK') {
+                        $('#objectTransactionModal .btn-danger').click();
+                        this.close();
+                    } else {
+                        console.error(response.error);
+                    }
+                });
+            }
         }
     }
 }
