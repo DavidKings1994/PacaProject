@@ -16,6 +16,7 @@
             </div>
             <paca-login></paca-login>
         </div>
+        <messages></messages>
     </div>
 </template>
 

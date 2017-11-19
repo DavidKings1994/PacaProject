@@ -1,16 +1,19 @@
 <template lang="html">
-    <div id="MessagesContainer" v-if="this.messages.length > 0">
-        <message v-for="m in messages" :type="m.type" :message="m.message" :id="m.id" v-on:close="removeMessage"></message>
+    <div id="MessagesContainer" v-if="messages.length > 0">
+        <message
+            v-for="m in messages"
+            :key="m.id"
+            :type="m.type"
+            :message="m.message"
+            :id="m.id"
+            v-on:close="removeMessage">
+        </message>
     </div>
 </template>
 
 <script>
 var messageStore = require('./../../messages.js');
-var Message = require('./message.js');
 export default {
-    components: {
-        'message': Message
-    },
     props: ['position'],
     computed: {
         messages: function() {
@@ -19,18 +22,20 @@ export default {
     },
     methods: {
         removeMessage: function(id) {
-            
+            console.log(id);
+            messageStore.commit('removeMessage', id);
         }
     }
 }
 </script>
 
-<style scoped lang="css">
-:root {
+<style lang="css">
+#MessagesContainer {
     position: fixed;
     bottom: 0;
     right: 0;
     margin-right: 20px;
     margin-bottom: 10px;
+    z-index: 1100;
 }
 </style>

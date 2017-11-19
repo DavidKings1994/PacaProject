@@ -12,6 +12,8 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     Vue.component('paca-inventory', require('./views/template/inventory.vue'));
     Vue.component('paca-inventory-use', require('./views/template/inventoryUse.vue'));
     Vue.component('paca-inventory-transaction', require('./views/template/inventoryTransaction.vue'));
+    Vue.component('messages', require('./views/template/messages.vue'));
+    Vue.component('message', require('./views/template/message.vue'));
 
     // admin components
     Vue.component('paca-admin-user-currency', require('./views/admin/users/userCurrency.vue'));

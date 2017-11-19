@@ -72,6 +72,7 @@
 <script>
 import vSelect from 'vue-select';
 import BootstrapToggle from 'vue-bootstrap-toggle';
+var messageStore = require('./../../../messages.js');
 export default {
     data: function() {
         return {
@@ -140,13 +141,6 @@ export default {
         },
         save: function() {
             if (this.selected != null) {
-                console.log({
-                    owner: this.id,
-                    character: this.selectedCharacter,
-                    user: (this.selectedCharacter == null ? this.selected.value : null),
-                    item: this.item.idItem,
-                    quantity: this.quantity
-                });
                 $.post('./php/controllers/userController.php', {
                     action: 'transferItem',
                     owner: this.id,
@@ -160,7 +154,10 @@ export default {
                         $('#objectTransactionModal .btn-danger').click();
                         this.close();
                     } else {
-                        console.error(response.error);
+                        messageStore.commit('addMessage', {
+                            text: response.error,
+                            type: 'error'
+                        });
                     }
                 });
             }

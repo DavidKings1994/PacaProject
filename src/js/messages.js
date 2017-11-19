@@ -7,11 +7,17 @@ module.exports = new Vuex.Store({
         messages: []
     },
     mutations: {
-        addMessage: function(state, message, type) {
+        addMessage: function(state, message) {
+            let time = new Date();
             state.messages.push({
-                message: message,
-                type: type,
-                id: (state.messages.length > 0 ? (state.messages[state.messages.length - 1].id + 1) : 1)
+                message: message.text,
+                type: message.type,
+                id: time.getTime()
+            });
+        },
+        removeMessage: function(state, id) {
+            state.messages = $(state.messages).filter(function(i,m) {
+                return m.id != id;
             });
         }
     }

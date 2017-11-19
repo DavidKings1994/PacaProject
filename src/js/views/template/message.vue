@@ -1,15 +1,17 @@
 <template lang="html">
-    <div :class="'message message-' + this.type" :data-id="id">
-        <span :class="this.type">{{ message }}</span>
-        <span v-on:click="close">&times;</span>
+    <div :class="'row message message-' + this.type" :data-id="id">
+        <span class="col-xs-10">{{ message }}</span>
+        <span class="col-xs-2" v-on:click="close">&times;</span>
     </div>
 </template>
 
 <script>
 export default {
     data: function() {
-        timmer: null,
-        duration: 10000
+        return {
+            timmer: null,
+            duration: 10000
+        };
     },
     props: ['type', 'message', 'id'],
     methods: {
@@ -19,6 +21,7 @@ export default {
         close: function() {
             clearTimeout(this.timmer);
             $('.message[data-id="' + this.id + '"]').fadeOut();
+            this.$emit('close', this.id);
         }
     },
     mounted: function() {
@@ -28,21 +31,36 @@ export default {
 }
 </script>
 
-<style scoped lang="css">
-:root {
-    display:none;
-    opacity:0.0;
-    filter:alpha(opacity=0);
-}
-
+<style lang="css">
 .message {
-    width: 100px;
+    width: 300px;
     padding: 10px 20px;
     border-radius: 5px;
+    display:none;
+    margin: 5px;
 }
 
-.message .error {
+.message.message-error {
     background: red;
-    border: solid 3px red;
+    border: solid 3px black;
+    color: white;
+}
+
+.message.message-warning {
+    background: yellow;
+    border: solid 3px black;
+    color: rgb(50,50,50);
+}
+
+.message.message-info {
+    background: blue;
+    border: solid 3px black;
+    color: white;
+}
+
+.message.message-success {
+    background: green;
+    border: solid 3px black;
+    color: white;
 }
 </style>
