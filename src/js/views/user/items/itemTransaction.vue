@@ -131,6 +131,11 @@ export default {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.characters = json.characters;
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load user\'s characters',
+                        type: 'error'
+                    });
                 }
             });
         },
@@ -159,6 +164,11 @@ export default {
                             type: 'error'
                         });
                     }
+                });
+            } else {
+                messageStore.commit('addMessage', {
+                    text: 'please select an item first',
+                    type: 'warning'
                 });
             }
         }

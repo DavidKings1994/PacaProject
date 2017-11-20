@@ -41,6 +41,7 @@
 </template>
 
 <script>
+var messageStore = require('./../../../messages.js');
 export default {
     props: ['badge'],
     computed: {
@@ -60,7 +61,15 @@ export default {
                 if (result.status == 'OK') {
                     this.$emit('saved');
                     $('#badgeFormModal .btn-danger').click();
+                    messageStore.commit('addMessage', {
+                        text: 'Badge ' + (this.badge == null ? 'registered' : 'updated'),
+                        type: 'success'
+                    });
                 } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to save badge\'s information. ' + response.error,
+                        type: 'error'
+                    });
                     console.error(result.error);
                 }
             });

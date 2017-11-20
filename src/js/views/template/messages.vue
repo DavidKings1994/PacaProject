@@ -22,7 +22,6 @@ export default {
     },
     methods: {
         removeMessage: function(id) {
-            console.log(id);
             messageStore.commit('removeMessage', id);
         }
     }

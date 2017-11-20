@@ -40,6 +40,7 @@
 </template>
 
 <script>
+var messageStore = require('./../../../messages.js');
 export default {
     data: function() {
         return {
@@ -70,7 +71,15 @@ export default {
                     if (result.status == 'OK') {
                         this.$emit('saved');
                         $('#userFormModal .btn-danger').click();
+                        messageStore.commit('addMessage', {
+                            text: 'User registered',
+                            type: 'success'
+                        });
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to save user\'s information. ' + response.error,
+                            type: 'error'
+                        });
                         console.error(result.error);
                     }
                 });
@@ -85,7 +94,15 @@ export default {
                     if (result.status == 'OK') {
                         this.$emit('saved');
                         $('#userFormModal .btn-danger').click();
+                        messageStore.commit('addMessage', {
+                            text: 'User\'s info updated',
+                            type: 'success'
+                        });
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to update user\'s information. ' + response.error,
+                            type: 'error'
+                        });
                         console.error(result.error);
                     }
                 });
@@ -98,6 +115,11 @@ export default {
                 var result = JSON.parse(json);
                 if (result.status == 'OK') {
                     this.statusList = result.statusList;
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load status list',
+                        type: 'error'
+                    });
                 }
             });
         },

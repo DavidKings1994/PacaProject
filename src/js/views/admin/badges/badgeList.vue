@@ -30,6 +30,7 @@
 
 <script>
 var navigation = require('./../../../navigation.js');
+var messageStore = require('./../../../messages.js');
 var VueBootstrapTable  = require('vue-bootstrap-table');
 export default {
     data() {
@@ -95,6 +96,11 @@ export default {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.badges = json.badges;
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load badge list',
+                        type: 'warning'
+                    });
                 }
             });
         },
@@ -144,8 +150,16 @@ export default {
                 let response = JSON.parse(json);
                 if (response.status == 'OK') {
                     this.loadBadges();
+                    messageStore.commit('addMessage', {
+                        text: 'Item ' + this.selectedBadge.name + ' deleted',
+                        type: 'info'
+                    });
                     callback();
                 } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to delete item ' + this.selectedItem.name + '. ' + response.error,
+                        type: 'error'
+                    });
                     console.error(response.error);
                 }
             });

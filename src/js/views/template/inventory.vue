@@ -29,6 +29,7 @@
 
 <script>
 var domtoimage = require('dom-to-image');
+var messageStore = require('./../../messages.js');
 export default {
     data: function() {
         return {
@@ -66,6 +67,10 @@ export default {
                 this.close();
             })
             .catch(function (error) {
+                messageStore.commit('addMessage', {
+                    text: 'Sorry, an error occurred while creating the image. Error: ' + error,
+                    type: 'error'
+                });
                 console.error('oops, something went wrong!', error);
             });
         },
@@ -79,6 +84,10 @@ export default {
                     if (response.status == 'OK') {
                         this.badges = response.badges;
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load character\'s badges. ' + response.error,
+                            type: 'error'
+                        });
                         console.error(response.error);
                     }
                 });
@@ -94,6 +103,10 @@ export default {
                     if (inventory.status == 'OK') {
                         this.inventory = inventory.items;
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load users\'s inventory. ' + response.error,
+                            type: 'error'
+                        });
                         console.error(inventory.error);
                     }
                 });
@@ -106,6 +119,10 @@ export default {
                     if (inventory.status == 'OK') {
                         this.inventory = inventory.items;
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load character\'s inventory. ' + response.error,
+                            type: 'error'
+                        });
                         console.error(inventory.error);
                     }
                 });

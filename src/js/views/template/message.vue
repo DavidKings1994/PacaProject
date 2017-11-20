@@ -20,7 +20,7 @@ export default {
         },
         close: function() {
             clearTimeout(this.timmer);
-            $('.message[data-id="' + this.id + '"]').fadeOut();
+            $('.message[data-id="' + this.id + '"]').fadeOut("slow");
             this.$emit('close', this.id);
         }
     },
@@ -34,33 +34,30 @@ export default {
 <style lang="css">
 .message {
     width: 300px;
-    padding: 10px 20px;
+    padding: 10px;
     border-radius: 5px;
     display:none;
     margin: 5px;
+    color: #ffffff;
 }
 
 .message.message-error {
-    background: red;
-    border: solid 3px black;
-    color: white;
+    background: #ac2925;
+    border: solid 3px #761c19;
 }
 
 .message.message-warning {
-    background: yellow;
-    border: solid 3px black;
-    color: rgb(50,50,50);
+    background: #f0ad4e;
+    border: solid 3px #eea236;
 }
 
 .message.message-info {
-    background: blue;
-    border: solid 3px black;
-    color: white;
+    background: #5bc0de;
+    border: solid 3px #46b8da;
 }
 
 .message.message-success {
-    background: green;
-    border: solid 3px black;
-    color: white;
+    background: #5cb85c;
+    border: solid 3px #4cae4c;
 }
 </style>

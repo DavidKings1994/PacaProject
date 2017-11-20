@@ -23,6 +23,7 @@
 
 <script>
 var domtoimage = require('dom-to-image');
+var messageStore = require('./../../../messages.js');
 export default {
     props: ['log'],
     methods: {
@@ -37,6 +38,10 @@ export default {
                 this.$emit('saved');
             })
             .catch(function (error) {
+                messageStore.commit('addMessage', {
+                    text: 'Sorry, an error occurred while creating the image. Error: ' + error,
+                    type: 'error'
+                });
                 console.error('oops, something went wrong!', error);
             });
         }

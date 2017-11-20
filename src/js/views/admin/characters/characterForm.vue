@@ -69,6 +69,7 @@
 
 <script>
 import vSelect from 'vue-select';
+var messageStore = require('./../../../messages.js');
 export default {
     data: function() {
         return {
@@ -123,7 +124,15 @@ export default {
                 if (result.status == 'OK') {
                     this.$emit('saved');
                     this.close();
+                    messageStore.commit('addMessage', {
+                        text: 'Character ' + (this.character == null ? 'registered' : 'updated'),
+                        type: 'success'
+                    });
                 } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to save character\'s information. ' + response.error,
+                        type: 'error'
+                    });
                     console.error(result.error);
                 }
             });

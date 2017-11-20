@@ -31,6 +31,7 @@
 
 <script>
 var navigation = require('./../../../navigation.js');
+var messageStore = require('./../../../messages.js');
 var domtoimage = require('dom-to-image');
 export default {
     props: [
@@ -50,6 +51,10 @@ export default {
                 $('#balanceModal' + this.userId + ' .btn-danger').click();
             })
             .catch(function (error) {
+                messageStore.commit('addMessage', {
+                    text: 'Sorry, an error occurred while creating the image. Error: ' + error,
+                    type: 'error'
+                });
                 console.error('oops, something went wrong!', error);
             });
         }
