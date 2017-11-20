@@ -85,7 +85,10 @@ export default {
         character: function() {
             if (this.character != null) {
                 $("#characterFormModal select[name='status']").val(this.character.status);
-                this.selected = this.character.ownerName;
+                this.selected = {
+                    value: this.character.idCharacter,
+                    label: this.character.ownerName
+                };
             } else {
                 this.selected = null;
             }
@@ -117,8 +120,11 @@ export default {
             });
         },
         save: function() {
+            console.log(this.selected);
             $.post('./php/controllers/characterController.php',
-            $("#characterFormModal form").serialize() + '&owner=' + encodeURIComponent(this.selected != null ? this.selected.label : ''),
+            $("#characterFormModal form").serialize() +
+            '&owner=' +
+            encodeURIComponent(this.selected != null ? this.selected.label : ''),
             (json) => {
                 var result = JSON.parse(json);
                 if (result.status == 'OK') {

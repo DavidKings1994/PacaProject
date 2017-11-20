@@ -110,6 +110,8 @@ export default {
             $('#objectTransactionModal .panel').removeClass('selected');
             this.selected = null;
             this.quantity = 1;
+            this.characters = [];
+            this.checked = false;
             this.$emit('closed');
         },
         getUsers: function(search, loading) {
@@ -120,6 +122,9 @@ export default {
             }, (json) => {
                 var result = JSON.parse(json);
                 this.users = result.users;
+                this.characters = [];
+                this.checked = false;
+                this.selected = null;
                 loading(false);
             });
         },
@@ -158,6 +163,10 @@ export default {
                     if (response.status == 'OK') {
                         $('#objectTransactionModal .btn-danger').click();
                         this.close();
+                        messageStore.commit('addMessage', {
+                            text: 'Items transfered',
+                            type: 'success'
+                        });
                     } else {
                         messageStore.commit('addMessage', {
                             text: response.error,
@@ -167,7 +176,7 @@ export default {
                 });
             } else {
                 messageStore.commit('addMessage', {
-                    text: 'please select an item first',
+                    text: 'please select who you wanna transfer the item',
                     type: 'warning'
                 });
             }
