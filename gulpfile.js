@@ -21,7 +21,7 @@ var paths = {
     srcCSS: 'src/**/*.css',
     srcJS: 'src/**/*.js',
     srcPHP: 'src/php/**/*.php',
-    srcIMG: 'src/**/*.{png,jpg,gif,svg}',
+    srcIMG: 'src/assets/**/*.*',
 
     public: 'public',
     publicIndex: 'public/index.php',
@@ -62,6 +62,7 @@ gulp.task("webpack", function(callback) {
                 'jquery': __dirname + '/node_modules/jquery/dist/jquery.js',
                 'bootstrap': __dirname + '/node_modules/bootstrap/dist/js/bootstrap.js',
                 'dom-to-image':  __dirname + '/node_modules/dom-to-image/src/dom-to-image.js',
+                'file-saver':  __dirname + '/node_modules/file-saver/FileSaver.js',
                 'vue-bootstrap-toggle':  __dirname + '/node_modules/vue-bootstrap-toggle/dist/index.js',
                 'vue': __dirname + '/node_modules/vue/dist/vue.js',
                 'vuex':  __dirname + '/node_modules/vuex/dist/vuex.js',
@@ -131,7 +132,7 @@ gulp.task('php', function () {
 });
 
 gulp.task('img', function () {
-    return gulp.src(paths.srcIMG).pipe(gulp.dest(paths.public));
+    return gulp.src(paths.srcIMG).pipe(gulp.dest('./public/assets'));
 });
 
 // copia las dependecias listadas en el package.json a la direccion especificada

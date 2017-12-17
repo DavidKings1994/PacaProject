@@ -203,7 +203,6 @@ export default {
                     '<li class="dropdown-header">Download images</li>' +
                     '<li><a data-toggle="modal" data-target="' + target + '">Currency</a></li>' +
                     '<li><a data-iduser="' + entry.idUser + '" data-option="inventory">Inventory</a></li>' +
-                    '<li><a>Profile</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
                     '<li><a data-iduser="' + entry.idUser + '" data-option="currency">Currency</a></li>' +
                     '<li><a data-iduser="' + entry.idUser + '" data-option="giveItem">Give item</a></li>' +

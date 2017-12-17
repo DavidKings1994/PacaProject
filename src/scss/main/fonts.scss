@@ -18,4 +18,12 @@
 }
 
 @import url('https://fonts.googleapis.com/css?family=Roboto');
+@include font-face('paca-font', '/assets/Pacapillar.ttf', 'bold', 'normal');
+@font-face {
+	font-family: "pacafont";
+	font-style: normal;
+	font-weight: bold;
+	src: url("/assets/Pacapillar.ttf");
+}
 $mainFont: 'Roboto', sans-serif;
+$pacaFont: 'pacafont', sans-serif;

@@ -123,7 +123,7 @@ export default {
             return description;
         },
         renderTypeColumn: function(colname, entry) {
-            return '<span class="label label-' + (entry.type == 'WHITDRAW' ? 'danger' : 'success') + '">' + entry.type + '</span>';
+            return '<span class="label label-' + (entry.type == 'WHITDRAW' ? 'danger' : 'success') + '">' + (entry.type == 'WHITDRAW' ? 'Withdraw' : 'Deposit') + '</span>';
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
