@@ -118,7 +118,7 @@ export default {
             this.selectedUser = null;
         },
         loadUsers: function() {
-            $.post('./php/controllers/usercontroller.php', {
+            $.post('./php/controllers/userController.php', {
                 action: 'getUsers'
             }, (msg) => {
                 var json = JSON.parse(msg);

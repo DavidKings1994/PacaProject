@@ -35,6 +35,8 @@ module.exports = new Vuex.Store({
                     var session = $.parseJSON(json);
                     if (session.status == "OK") {
                         context.commit('updateSession', session.data);
+                    } else {
+                        console.error(session);
                     }
                     resolve();
                 });

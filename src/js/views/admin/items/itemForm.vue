@@ -67,7 +67,7 @@ export default {
                     });
                 } else {
                     messageStore.commit('addMessage', {
-                        text: 'Unable to register item\'s information. ' + response.error,
+                        text: 'Unable to register item\'s information. ' + result.error,
                         type: 'error'
                     });
                     console.error(result.error);

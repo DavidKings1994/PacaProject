@@ -26,7 +26,7 @@
                         </div>
                         <div class="logFooter">
                             <span>{{ today }}</span>
-                            <span v-if="this.character != null">Owner: {{ this.character.ownerName }}</span>
+                            <span v-if="this.character != null">Owner: {{ ownerName }}</span>
                         </div>
                     </div>
                 </div>
@@ -44,6 +44,7 @@
 var domtoimage = require('dom-to-image');
 var filesaver = require('file-saver');
 var messageStore = require('./../../messages.js');
+var navigation = require('./../../navigation.js');
 export default {
     data: function() {
         return {
@@ -62,6 +63,9 @@ export default {
         }
     },
     computed: {
+        ownerName: function() {
+            return this.character.ownerName != null ? this.character.ownerName : navigation.state.session.name;
+        },
         inventoryName: function() {
             return (this.user == null ? (this.character == null ? '' : this.character.name) : this.user.userName);
         },

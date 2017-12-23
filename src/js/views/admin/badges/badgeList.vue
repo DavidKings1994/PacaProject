@@ -90,7 +90,7 @@ export default {
     },
     methods: {
         loadBadges: function() {
-            $.post('./php/controllers/badgecontroller.php', {
+            $.post('./php/controllers/badgeController.php', {
                 action: 'getBadges'
             }, (msg) => {
                 var json = JSON.parse(msg);

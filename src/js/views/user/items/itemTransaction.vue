@@ -163,6 +163,7 @@ export default {
                     if (response.status == 'OK') {
                         $('#objectTransactionModal .btn-danger').click();
                         this.close();
+                        this.$emit('saved');
                         messageStore.commit('addMessage', {
                             text: 'Items transfered',
                             type: 'success'

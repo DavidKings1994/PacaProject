@@ -5,6 +5,7 @@
         <paca-user-item-transaction
             :id="this.id"
             :item="selectedItem"
+            v-on:saved="loadItems"
         >
         </paca-user-item-transaction>
         <vue-bootstrap-table

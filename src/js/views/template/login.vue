@@ -5,6 +5,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <form>
+                        <span v-if="this.errorMessage != null" class="error">{{ this.errorMessage }}</span>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input id="name" type="text" class="form-control" name="name" placeholder="Name">
@@ -30,20 +31,39 @@
 <script>
 var navigation = require('./../../navigation.js');
 export default {
-    mounted: function() {
-
+    data: function() {
+        return {
+            errorMessage: null
+        };
     },
     methods: {
         login: function() {
             navigation.dispatch('login', {
                 name: $('#loginModal input[name="name"]').val(),
                 pass: $('#loginModal input[name="password"]').val()
+            }).then(() => {
+                if (navigation.state.session == null) {
+                    this.errorMessage = 'Your user or password were incorrect.'
+                } else {
+                    this.close();
+                }
             });
+        },
+        close: function() {
+            this.errorMessage = null;
             $('#loginModal .modal-footer button.btn-danger').click();
+            $('.modal-backdrop').remove();
         }
     }
 }
 </script>
 
 <style lang="css">
+    #loginModal span.error {
+        display: block;
+        color: red;
+        text-align: center;
+        margin: 10px 0;
+        font-size: 14px;
+    }
 </style>

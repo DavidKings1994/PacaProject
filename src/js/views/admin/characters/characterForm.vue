@@ -136,7 +136,7 @@ export default {
                     });
                 } else {
                     messageStore.commit('addMessage', {
-                        text: 'Unable to save character\'s information. ' + response.error,
+                        text: 'Unable to save character\'s information. ' + result.error,
                         type: 'error'
                     });
                     console.error(result.error);

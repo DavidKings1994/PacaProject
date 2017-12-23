@@ -91,7 +91,7 @@ export default {
     },
     methods: {
         loadItems: function() {
-            $.post('./php/controllers/itemcontroller.php', {
+            $.post('./php/controllers/itemController.php', {
                 action: 'getItems'
             }, (msg) => {
                 var json = JSON.parse(msg);

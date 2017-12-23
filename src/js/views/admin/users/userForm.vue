@@ -77,7 +77,7 @@ export default {
                         });
                     } else {
                         messageStore.commit('addMessage', {
-                            text: 'Unable to save user\'s information. ' + response.error,
+                            text: 'Unable to save user\'s information. ' + result.error,
                             type: 'error'
                         });
                         console.error(result.error);
@@ -100,7 +100,7 @@ export default {
                         });
                     } else {
                         messageStore.commit('addMessage', {
-                            text: 'Unable to update user\'s information. ' + response.error,
+                            text: 'Unable to update user\'s information. ' + result.error,
                             type: 'error'
                         });
                         console.error(result.error);
