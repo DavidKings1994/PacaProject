@@ -3,12 +3,12 @@
     <head>
         <!-- src/index.html -->
         <meta charset="utf-8">
-        <title>Pacapillars</title>
+        <title>Sirnus</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="keywords" content="pacas,pacapillars,deviant,art">
-        <meta name="description" content="The place to register and manage your pacapillars!">
-        <link rel="shortcut icon" type="image/x-icon" href="img/guitar-icon.png"/>
+        <meta name="keywords" content="Sirnus,deviant,art">
+        <meta name="description" content="The Sirnus website!">
+        <!--<link rel="shortcut icon" type="image/x-icon" href="img/guitar-icon.png"/> -->
 
         <!-- External libraries -->
         <script src="https://use.fontawesome.com/65cecb8678.js"></script>
@@ -32,8 +32,8 @@
             <div v-else class="row" id="mainContainer">
                 <div class="container" id="loginMessage">
                     <div class="jumbotron">
-                        <h1>Pacapillars</h1>
-                        <p>Welcome to pacapillars: the paca manager site. To use it please log in first</p>
+                        <h1>Sirnus</h1>
+                        <p>Welcome to Sirnus: the paca manager site. To use it please log in first</p>
                     </div>
                 </div>
             </div>

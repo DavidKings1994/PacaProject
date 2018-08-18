@@ -10,8 +10,8 @@
         <div v-else class="row" id="mainContainer">
             <div class="container" id="loginMessage">
                 <div class="jumbotron">
-                    <h1>Pacapillars</h1>
-                    <p>Welcome to pacapillars: the paca manager site. To use it please log in first</p>
+                    <h1>Sirnus</h1>
+                    <p>Welcome to Sirnus, please log in first</p>
                 </div>
             </div>
             <paca-login></paca-login>
