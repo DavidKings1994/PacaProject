@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 include_once  './../connection.php';
 $connection = new Connection();
 
@@ -48,13 +49,25 @@ if(isset($_POST['action'])) {
                 $_POST['image']
             );
             if($query->execute()) {
-                $query->bind_result($resul, $message);
-                $query->fetch();
-                $data = array(
-                    'status' => ($resul == 0 ? 'OK' : 'ERROR'),
-                    'error' => $message
-                );
-                echo json_encode($data);
+                if ($query->bind_result($resul, $message)) {
+                    if ($query->fetch()){
+                        $data = array(
+                            'status' => ($resul == 0 ? 'OK' : 'ERROR'),
+                            'error' => $message
+                        );
+                        echo json_encode($data);
+                    } else {
+                        echo json_encode(array(
+                            'status' => 'ERROR',
+                            'error' => 'error while fetching data: ' . $query->error
+                        ));
+                    }
+                } else {
+                    echo json_encode(array(
+                        'status' => 'ERROR',
+                        'error' => 'error while binding data: ' . $query->error
+                    ));
+                }
             } else {
                 echo json_encode(array(
                     'status' => 'ERROR',

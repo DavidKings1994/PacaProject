@@ -46,6 +46,7 @@
 
 <script>
 import BootstrapToggle from 'vue-bootstrap-toggle';
+var messageStore = require('./../../../messages.js');
 export default {
     data: function() {
         return {
@@ -73,7 +74,15 @@ export default {
                 if (response.status == 'OK') {
                     this.reset();
                     this.$emit('saved');
+                    messageStore.commit('addMessage', {
+                        text: 'Currency modified',
+                        type: 'success'
+                    });
                 } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable change currency. ' + response.error,
+                        type: 'error'
+                    });
                     console.error(response.error);
                 }
             })

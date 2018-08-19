@@ -21,6 +21,7 @@
 
 <script>
 var VueBootstrapTable  = require('vue-bootstrap-table');
+var messageStore = require('./../../../messages.js');
 export default {
     data() {
         return {
@@ -95,6 +96,11 @@ export default {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.tickets = json.tickets;
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load ticket list',
+                        type: 'error'
+                    });
                 }
             });
         },
@@ -117,7 +123,7 @@ export default {
             return description;
         },
         renderTypeColumn: function(colname, entry) {
-            return '<span class="label label-' + (entry.type == 'WHITDRAW' ? 'danger' : 'success') + '">' + entry.type + '</span>';
+            return '<span class="label label-' + (entry.type == 'WHITDRAW' ? 'danger' : 'success') + '">' + (entry.type == 'WHITDRAW' ? 'Withdraw' : 'Deposit') + '</span>';
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {

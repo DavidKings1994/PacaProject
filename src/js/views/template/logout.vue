@@ -21,8 +21,10 @@ var navigation = require('./../../navigation.js');
 export default {
     methods: {
         logout: function() {
-            navigation.dispatch('logout');
-            $('#logoutModal .modal-footer button.btn-danger').click();
+            navigation.dispatch('logout').then(() => {
+                $('#logoutModal .modal-footer button.btn-danger').click();
+                location.reload(true);
+            });
         }
     }
 }

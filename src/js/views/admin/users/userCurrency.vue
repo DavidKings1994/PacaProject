@@ -1,5 +1,5 @@
 <template lang="html">
-    <div :id="'balanceModal' + this.userId" class="modal fade" role="dialog">
+    <div :id="'balanceModal' + this.userId" class="modal fade balanceModal" role="dialog">
         <div class="modal-dialog">
 
             <!-- Modal content-->
@@ -8,13 +8,10 @@
                     <h4 class="modal-title">User currency</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="currencyFrame">
-                        <div class="data">
-                            <h4>Balance</h4>
-                            <h2>{{ this.userName }}</h2>
-                            <h3>${{ this.userCurrency }}</h3>
-                        </div>
-                        <div class="currencyFooter">
+                    <div class="logFrame">
+                        <div id="title">{{ this.userName }}</div>
+                        <h3>${{ this.userCurrency }}</h3>
+                        <div class="logFooter">
                             {{ this.date }}
                         </div>
                     </div>
@@ -31,7 +28,9 @@
 
 <script>
 var navigation = require('./../../../navigation.js');
+var messageStore = require('./../../../messages.js');
 var domtoimage = require('dom-to-image');
+var filesaver = require('file-saver');
 export default {
     props: [
         'userId',
@@ -41,15 +40,19 @@ export default {
     ],
     methods: {
         save: function() {
-            domtoimage.toPng($('#balanceModal' + this.userId + ' .currencyFrame')[0])
-            .then((dataUrl) => {
-                var link = document.createElement('a');
-                link.download = this.userName + ' balance ' + this.date;
-                link.href = dataUrl;
-                link.click();
+            domtoimage.toBlob($('#balanceModal' + this.userId + ' .logFrame')[0], {
+                height: 600,
+                width: 800
+            })
+            .then((blob) => {
+                filesaver.saveAs(blob, this.userName + ' balance ' + this.date + '.png');
                 $('#balanceModal' + this.userId + ' .btn-danger').click();
             })
             .catch(function (error) {
+                messageStore.commit('addMessage', {
+                    text: 'Sorry, an error occurred while creating the image. Error: ' + error,
+                    type: 'error'
+                });
                 console.error('oops, something went wrong!', error);
             });
         }

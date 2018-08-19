@@ -72,6 +72,7 @@
 <script>
 import vSelect from 'vue-select';
 import BootstrapToggle from 'vue-bootstrap-toggle';
+var messageStore = require('./../../../messages.js');
 export default {
     data: function() {
         return {
@@ -109,6 +110,8 @@ export default {
             $('#objectTransactionModal .panel').removeClass('selected');
             this.selected = null;
             this.quantity = 1;
+            this.characters = [];
+            this.checked = false;
             this.$emit('closed');
         },
         getUsers: function(search, loading) {
@@ -119,6 +122,9 @@ export default {
             }, (json) => {
                 var result = JSON.parse(json);
                 this.users = result.users;
+                this.characters = [];
+                this.checked = false;
+                this.selected = null;
                 loading(false);
             });
         },
@@ -130,6 +136,11 @@ export default {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.characters = json.characters;
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load user\'s characters',
+                        type: 'error'
+                    });
                 }
             });
         },
@@ -140,13 +151,6 @@ export default {
         },
         save: function() {
             if (this.selected != null) {
-                console.log({
-                    owner: this.id,
-                    character: this.selectedCharacter,
-                    user: (this.selectedCharacter == null ? this.selected.value : null),
-                    item: this.item.idItem,
-                    quantity: this.quantity
-                });
                 $.post('./php/controllers/userController.php', {
                     action: 'transferItem',
                     owner: this.id,
@@ -159,9 +163,22 @@ export default {
                     if (response.status == 'OK') {
                         $('#objectTransactionModal .btn-danger').click();
                         this.close();
+                        this.$emit('saved');
+                        messageStore.commit('addMessage', {
+                            text: 'Items transfered',
+                            type: 'success'
+                        });
                     } else {
-                        console.error(response.error);
+                        messageStore.commit('addMessage', {
+                            text: response.error,
+                            type: 'error'
+                        });
                     }
+                });
+            } else {
+                messageStore.commit('addMessage', {
+                    text: 'please select who you wanna transfer the item',
+                    type: 'warning'
                 });
             }
         }

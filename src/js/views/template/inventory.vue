@@ -4,17 +4,30 @@
 
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">{{ inventoryName }}'s inventory</h4>
+                    <h4 class="modal-title">Inventory</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="inventoryFrame">
-                        <div id="itemsFrame">
-                            <img v-for="item in inventory" :src="item.image" :alt="item.name" height="50" width="50">
+                    <div :class="'logFrame ' + (this.character != null ? 'characterInv' : 'userInv')">
+                        <div id="title">
+                            {{ inventoryName }}
                         </div>
-                        <div class="badgesFrame" v-if="this.character != null">
-                            <img v-for="badge in badges" :src="badge.image" :alt="badge.name" height="50" width="50">
+                        <div id="itemsFrame" v-if="inventory.length > 0">
+                            <div
+                                v-for="item in inventory"
+                                :style="'background: url(' + item.image + ');'">
+                                <span v-if="item.total != null">x{{ item.total }}</span>
+                            </div>
                         </div>
-                        <h4 v-if="inventory.length == 0">Inventory is empty</h4>
+                        <div v-else id="emptyMessage">
+                            Empty
+                        </div>
+                        <div id="badgesFrame" v-if="this.character != null">
+                            <div v-for="badge in badges" :style="'background: url(' + badge.image + ');'"></div>
+                        </div>
+                        <div class="logFooter">
+                            <span>{{ today }}</span>
+                            <span v-if="this.character != null">Owner: {{ ownerName }}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -29,6 +42,9 @@
 
 <script>
 var domtoimage = require('dom-to-image');
+var filesaver = require('file-saver');
+var messageStore = require('./../../messages.js');
+var navigation = require('./../../navigation.js');
 export default {
     data: function() {
         return {
@@ -47,8 +63,24 @@ export default {
         }
     },
     computed: {
+        ownerName: function() {
+            return this.character.ownerName != null ? this.character.ownerName : navigation.state.session.name;
+        },
         inventoryName: function() {
             return (this.user == null ? (this.character == null ? '' : this.character.name) : this.user.userName);
+        },
+        today: function() {
+            let d = new Date();
+            let dformat = [
+                d.getFullYear(),
+                d.getMonth()+1,
+                d.getDate()
+            ].join('-')+' '+ [
+                d.getHours(),
+                d.getMinutes(),
+                d.getSeconds()
+            ].join(':');
+            return dformat;
         }
     },
     methods: {
@@ -56,16 +88,20 @@ export default {
             this.$emit('closed');
         },
         save: function() {
-            domtoimage.toPng($('#inventoryModal .inventoryFrame')[0])
-            .then((dataUrl) => {
-                var link = document.createElement('a');
-                link.download = this.inventoryName + '\'s inventory ';
-                link.href = dataUrl;
-                link.click();
+            domtoimage.toBlob($('#inventoryModal .logFrame')[0], {
+                height: 600,
+                width: 800
+            })
+            .then((blob) => {
+                filesaver.saveAs(blob, this.inventoryName + '\'s inventory.png');
                 $('#inventoryModal .btn-danger').click();
                 this.close();
             })
             .catch(function (error) {
+                messageStore.commit('addMessage', {
+                    text: 'Sorry, an error occurred while creating the image. Error: ' + error,
+                    type: 'error'
+                });
                 console.error('oops, something went wrong!', error);
             });
         },
@@ -79,6 +115,10 @@ export default {
                     if (response.status == 'OK') {
                         this.badges = response.badges;
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load character\'s badges. ' + response.error,
+                            type: 'error'
+                        });
                         console.error(response.error);
                     }
                 });
@@ -87,13 +127,17 @@ export default {
         loadInventory: function() {
             if (this.user != null) {
                 $.post('./php/controllers/userController.php', {
-                    action: 'getInventory',
+                    action: 'getInventoryCount',
                     id: this.user.idUser
                 }, (json) => {
                     var inventory = JSON.parse(json);
                     if (inventory.status == 'OK') {
                         this.inventory = inventory.items;
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load users\'s inventory. ' + response.error,
+                            type: 'error'
+                        });
                         console.error(inventory.error);
                     }
                 });
@@ -106,6 +150,10 @@ export default {
                     if (inventory.status == 'OK') {
                         this.inventory = inventory.items;
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load character\'s inventory. ' + response.error,
+                            type: 'error'
+                        });
                         console.error(inventory.error);
                     }
                 });

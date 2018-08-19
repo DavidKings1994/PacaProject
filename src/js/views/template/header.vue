@@ -10,11 +10,6 @@
                 <a class="navbar-brand" href="./index.php">Sirnus</a>
             </div>
             <div class="collapse navbar-collapse" id="pacaNavbar">
-                <ul class="nav navbar-nav">
-                    <!-- <li class="active"><a href="#">Juego</a></li>
-                    <li><a href="#">Ranking</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#configurations">Configuracion</a></li> -->
-                </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li v-if="logged">
                         <a href="#" data-toggle="modal" data-target="#logoutModal">

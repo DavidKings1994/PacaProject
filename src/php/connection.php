@@ -1,9 +1,11 @@
 <?php
+ini_set('max_execution_time', 300);
+error_reporting(0);
 class Connection {
     private $server = 'localhost';
-    private $user = 'root'; //'id2845823_pacaadmin';
-    private $password = 'root';//'jjkli8jlkjlu';
-    private $database = 'paca_project_db'; //'id2845823_paca_project_db';
+    private $user = 'root';
+    private $password = 'root';
+    private $database = 'paca_project_db';
     private $connection = null;
 
     function __construct() {

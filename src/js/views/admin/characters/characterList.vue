@@ -42,6 +42,7 @@
 
 <script>
 var navigation = require('./../../../navigation.js');
+var messageStore = require('./../../../messages.js');
 var VueBootstrapTable  = require('vue-bootstrap-table');
 export default {
     data() {
@@ -125,6 +126,11 @@ export default {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.characters = json.characters;
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load character list.',
+                        type: 'error'
+                    });
                 }
             });
         },

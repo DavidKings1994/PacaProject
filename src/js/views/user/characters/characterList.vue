@@ -2,12 +2,6 @@
     <div class="content" id="characterList">
         <div class="row text-right" id="upperBar">
         </div>
-        <paca-inventory-transaction
-            :idCharacter="idCharacter"
-            :transaction="transaction"
-            v-on:closed="resetInventory"
-        >
-        </paca-inventory-transaction>
         <paca-inventory-use
             :idCharacter="idCharacter"
             v-on:closed="resetInventory"
@@ -34,6 +28,7 @@
 
 <script>
 var navigation = require('./../../../navigation.js');
+var messageStore = require('./../../../messages.js');
 var VueBootstrapTable  = require('vue-bootstrap-table');
 export default {
     data() {
@@ -110,6 +105,11 @@ export default {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.characters = json.characters;
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load user\'s characters',
+                        type: 'error'
+                    });
                 }
             });
         },
@@ -135,16 +135,6 @@ export default {
                         })[0];
                         $("#inventoryModal").modal();
                     });
-                    // set up the give-item button
-                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="giveItem"]').click((event) => {
-                        let id = $(event.target).attr('data-idcharacter');
-                        this.selectedCharacter = null;
-                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
-                            return n.idCharacter == id;
-                        })[0];
-                        this.transaction = 'giveItem';
-                        $("#inventoryTransactionModal").modal();
-                    });
                     // set up the inventory use button
                     $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="useItem"]').click((event) => {
                         var id = $(event.target).attr('data-idcharacter');
@@ -167,7 +157,6 @@ export default {
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="inventory">Inventory</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="useItem">Use item</a></li>' +
-                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="giveItem">Give item</a></li>' +
                 '</ul>' +
             '</div>';
         }

@@ -41,6 +41,7 @@
 </template>
 
 <script>
+var messageStore = require('./../../../messages.js');
 export default {
     props: ['item'],
     computed: {
@@ -60,7 +61,15 @@ export default {
                 if (result.status == 'OK') {
                     this.$emit('saved');
                     $('#itemFormModal .btn-danger').click();
+                    messageStore.commit('addMessage', {
+                        text: 'Item ' + (this.item == null ? 'registered' : 'updated'),
+                        type: 'success'
+                    });
                 } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to register item\'s information. ' + result.error,
+                        type: 'error'
+                    });
                     console.error(result.error);
                 }
             });

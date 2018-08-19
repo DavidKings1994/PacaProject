@@ -48,6 +48,7 @@
 </template>
 
 <script>
+var messageStore = require('./../../messages.js');
 export default {
     data: function() {
         return {
@@ -100,6 +101,10 @@ export default {
                         this.items = response.items;
                         this.itemsFiltered = this.items;
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load user\'s items',
+                            type: 'error'
+                        });
                         console.error(response.error);
                     }
                 });
@@ -113,6 +118,10 @@ export default {
                         this.items = response.items;
                         this.itemsFiltered = this.items;
                     } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load character\'s items',
+                            type: 'error'
+                        });
                         console.error(response.error);
                     }
                 });
@@ -137,7 +146,15 @@ export default {
                         if (response.status == 'OK') {
                             $('#inventoryUseModal .btn-danger').click();
                             this.close();
+                            messageStore.commit('addMessage', {
+                                text: 'Items used',
+                                type: 'info'
+                            });
                         } else {
+                            messageStore.commit('addMessage', {
+                                text: 'Cannot use items. ' + response.error,
+                                type: 'error'
+                            });
                             console.error(response.error);
                         }
                     });
@@ -152,7 +169,15 @@ export default {
                         if (response.status == 'OK') {
                             $('#inventoryUseModal .btn-danger').click();
                             this.close();
+                            messageStore.commit('addMessage', {
+                                text: 'Items used',
+                                type: 'info'
+                            });
                         } else {
+                            messageStore.commit('addMessage', {
+                                text: 'Cannot use items. ' + response.error,
+                                type: 'error'
+                            });
                             console.error(response.error);
                         }
                     });

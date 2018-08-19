@@ -5,6 +5,7 @@
         <paca-user-item-transaction
             :id="this.id"
             :item="selectedItem"
+            v-on:saved="loadItems"
         >
         </paca-user-item-transaction>
         <vue-bootstrap-table
@@ -23,6 +24,7 @@
 
 <script>
 var navigation = require('./../../../navigation.js');
+var messageStore = require('./../../../messages.js');
 var VueBootstrapTable  = require('vue-bootstrap-table');
 export default {
     data() {
@@ -90,6 +92,11 @@ export default {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.items = json.items;
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load user\'s characters',
+                        type: 'error'
+                    });
                 }
             });
         },

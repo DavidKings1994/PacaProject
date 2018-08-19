@@ -69,6 +69,7 @@
 
 <script>
 import vSelect from 'vue-select';
+var messageStore = require('./../../../messages.js');
 export default {
     data: function() {
         return {
@@ -84,7 +85,10 @@ export default {
         character: function() {
             if (this.character != null) {
                 $("#characterFormModal select[name='status']").val(this.character.status);
-                this.selected = this.character.ownerName;
+                this.selected = {
+                    value: this.character.idCharacter,
+                    label: this.character.ownerName
+                };
             } else {
                 this.selected = null;
             }
@@ -116,14 +120,25 @@ export default {
             });
         },
         save: function() {
+            console.log(this.selected);
             $.post('./php/controllers/characterController.php',
-            $("#characterFormModal form").serialize() + '&owner=' + encodeURIComponent(this.selected != null ? this.selected.label : ''),
+            $("#characterFormModal form").serialize() +
+            '&owner=' +
+            encodeURIComponent(this.selected != null ? this.selected.label : ''),
             (json) => {
                 var result = JSON.parse(json);
                 if (result.status == 'OK') {
                     this.$emit('saved');
                     this.close();
+                    messageStore.commit('addMessage', {
+                        text: 'Character ' + (this.character == null ? 'registered' : 'updated'),
+                        type: 'success'
+                    });
                 } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to save character\'s information. ' + result.error,
+                        type: 'error'
+                    });
                     console.error(result.error);
                 }
             });

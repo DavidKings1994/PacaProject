@@ -50,6 +50,7 @@
 </template>
 
 <script>
+var messageStore = require('./../../messages.js');
 export default {
     data: function() {
         return {
@@ -117,7 +118,10 @@ export default {
                     this.badges = response.badges;
                     this.badgesFiltered = this.badges;
                 } else {
-                    console.error(response.error);
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load badges',
+                        type: 'error'
+                    });
                 }
             });
         },
@@ -130,7 +134,10 @@ export default {
                     this.items = response.items;
                     this.itemsFiltered = this.items;
                 } else {
-                    console.error(response.error);
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to load items',
+                        type: 'error'
+                    });
                 }
             });
         },
@@ -153,7 +160,15 @@ export default {
                         if (response.status == 'OK') {
                             $('#inventoryTransactionModal .btn-danger').click();
                             this.close();
+                            messageStore.commit('addMessage', {
+                                text: 'Items given to user',
+                                type: 'success'
+                            });
                         } else {
+                            messageStore.commit('addMessage', {
+                                text: 'Unable to give items to user. ' + response.error,
+                                type: 'error'
+                            });
                             console.error(response.error);
                         }
                     });
@@ -170,7 +185,15 @@ export default {
                                 if (response.status == 'OK') {
                                     $('#inventoryTransactionModal .btn-danger').click();
                                     this.close();
+                                    messageStore.commit('addMessage', {
+                                        text: 'Items given to character',
+                                        type: 'success'
+                                    });
                                 } else {
+                                    messageStore.commit('addMessage', {
+                                        text: 'Unable to give items to character. ' + response.error,
+                                        type: 'error'
+                                    });
                                     console.error(response.error);
                                 }
                             });
@@ -186,7 +209,15 @@ export default {
                                 if (response.status == 'OK') {
                                     $('#inventoryTransactionModal .btn-danger').click();
                                     this.close();
+                                    messageStore.commit('addMessage', {
+                                        text: 'Badge given to character',
+                                        type: 'success'
+                                    });
                                 } else {
+                                    messageStore.commit('addMessage', {
+                                        text: 'Unable to give badge to character. ' + response.error,
+                                        type: 'error'
+                                    });
                                     console.error(response.error);
                                 }
                             });

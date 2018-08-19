@@ -7,8 +7,20 @@
                     <h4 class="modal-title">Ticket {{ this.ticket.idTicket }}</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="ticketFrame">
-
+                    <div class="logFrame">
+                        <div id="title">
+                            {{ this.ticket.type }}
+                        </div>
+                        <div id="itemsFrame">
+                            None
+                        </div>
+                        <div class="currencyTransfered">
+                            ${{ this.ticket.currency }}
+                        </div>
+                        <div class="logFooter">
+                            <span>{{ this.ticket.date }}</span>
+                            <span>{{ parties }}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -23,20 +35,49 @@
 
 <script>
 var domtoimage = require('dom-to-image');
+var filesaver = require('file-saver');
+var messageStore = require('./../../../messages.js');
 export default {
     props: ['ticket'],
+    computed: {
+        parties: function() {
+            let description = '';
+            let from = '';
+            let to = '';
+            if (this.ticket.userOrigin != null) {
+                from = this.ticket.userOrigin;
+            } else {
+                from = 'Bank';
+            }
+            if (this.ticket.characterDestiny != null) {
+                to = this.ticket.characterOwner + '\'s ' + this.ticket.characterDestiny;
+            } else if (this.ticket.userDestiny != null) {
+                to = this.ticket.userDestiny;
+            }
+            if (this.ticket.type == 'DEPOSIT') {
+                description = 'From: ' + from + ' / To: ' + to;
+            } else {
+                description = 'From: ' + to + ' / To: ' + from;
+            }
+            return description;
+        }
+    },
     methods: {
         save: function() {
-            domtoimage.toPng($('#ticketModal .ticketFrame')[0])
-            .then((dataUrl) => {
-                var link = document.createElement('a');
-                link.download = 'ticket ' + this.ticket.idTicket;
-                link.href = dataUrl;
-                link.click();
+            domtoimage.toBlob($('#ticketModal .logFrame')[0], {
+                height: 600,
+                width: 800
+            })
+            .then((blob) => {
+                filesaver.saveAs(blob, 'ticket ' + this.ticket.idTicket + '.png');
                 $('#ticketModal .btn-danger').click();
                 this.$emit('saved');
             })
             .catch(function (error) {
+                messageStore.commit('addMessage', {
+                    text: 'Sorry, an error occurred while creating the image. Error: ' + error,
+                    type: 'error'
+                });
                 console.error('oops, something went wrong!', error);
             });
         }
