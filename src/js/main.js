@@ -147,7 +147,7 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
             router: router,
             watch: {
                 $route: function (to, from) {
-                    $("title").text('Paca manager | ' + to.name.charAt(0).toUpperCase() + to.name.slice(1));
+                    $("title").text('Sirnus | ' + to.name.charAt(0).toUpperCase() + to.name.slice(1));
                 }
             },
             computed: {

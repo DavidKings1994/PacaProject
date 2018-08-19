@@ -1,3 +1,4 @@
+//compilado y servidor
 var gulp = require('gulp');
 var gutil = require("gulp-util");
 var webpack = require("webpack");
@@ -8,11 +9,18 @@ var gnf = require('gulp-npm-files');
 var vueify = require('gulp-vueify');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+//Creacion del ambiente public
 var htmlclean = require('gulp-htmlclean');
 var cleanCSS = require('gulp-clean-css');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var del = require('del');
+
+//deploy
+var argv  = require('minimist')(process.argv);
+var rsync = require('gulp-rsync');
+var prompt = require('gulp-prompt');
+var gulpif = require('gulp-if');
 
 // Directorios generales
 var paths = {
@@ -221,3 +229,61 @@ gulp.task('clean', function () {
 });
 
 gulp.task('default', ['watch']);
+
+gulp.task('deploy', function() {
+
+    // Dirs and Files to sync
+    rsyncPaths = [paths.public];
+
+    // Default options for rsync
+    rsyncConf = {
+        progress: true,
+        incremental: true,
+        relative: true,
+        emptyDirectories: true,
+        recursive: true,
+        clean: true,
+        exclude: [],
+    };
+
+    // Staging
+    if (argv.staging) {
+
+        rsyncConf.hostname = ''; // hostname
+        rsyncConf.username = ''; // ssh username
+        rsyncConf.destination = ''; // path where uploaded files go
+
+        // Production
+    } else if (argv.production) {
+
+        rsyncConf.hostname = 'sirnus.com'; // hostname
+        rsyncConf.username = 'ph19757465091'; // ssh username
+        rsyncConf.destination = 'sirnus.com'; // path where uploaded files go
+
+
+        // Missing/Invalid Target
+    } else {
+        throwError('deploy', gutil.colors.red('Missing or invalid target'));
+    }
+
+
+    // Use gulp-rsync to sync the files
+    return gulp.src(rsyncPaths)
+    .pipe(gulpif(
+        argv.production,
+        prompt.confirm({
+            message: 'Heads Up! Are you SURE you want to push to PRODUCTION?',
+            default: false
+        })
+    ))
+    .pipe(rsync(rsyncConf));
+
+});
+
+
+function throwError(taskName, msg) {
+    throw new gutil.PluginError({
+        plugin: taskName,
+        message: msg
+    });
+}
