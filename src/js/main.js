@@ -149,6 +149,11 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
             router: router,
             watch: {
                 $route: function (to, from) {
+                    if (to.path == "/") {
+                        $("#mainContainer").addClass('fondo');
+                    } else {
+                        $("#mainContainer").removeClass('fondo');
+                    }
                     $("title").text('Sirnus | ' + to.name.charAt(0).toUpperCase() + to.name.slice(1));
                 }
             },

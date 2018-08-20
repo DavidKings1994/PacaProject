@@ -16,10 +16,9 @@ body {
 
     #mainContainer {
         margin-top: 51px;
-        //margin-left: 0;
+        margin-left: 0;
         margin-right: 0;
         min-height: $appHeight;
-        //width: 100vw;
 
         .mainContent {
             height: calc(100vh - 51px);
@@ -323,7 +322,7 @@ body {
             text-align: center;
 
             .jumbotron {
-                background: $main;
+                background: none;
                 color: $main-text;
             }
         }
@@ -347,6 +346,17 @@ body {
             a.router-link-active {
                 background: $main-selected;
             }
+        }
+    }
+
+    .fondo {
+        background: url('/assets/foresto.png');
+        background-size: 100%;
+    }
+
+    .navbar-header {
+        img {
+            height: 20px;
         }
     }
 

@@ -7,10 +7,10 @@
             </div>
             <paca-logout></paca-logout>
         </div>
-        <div v-else class="row" id="mainContainer">
+        <div v-else class="row fondo" id="mainContainer">
             <div class="container" id="loginMessage">
                 <div class="jumbotron">
-                    <h1>Sirnus</h1>
+                    <img src="/assets/sirnus_white.png" alt="Sirnus logo">
                     <p>Welcome to Sirnus, please log in first</p>
                 </div>
             </div>
