@@ -43,7 +43,8 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
                 {
                     path: 'home',
                     component: require('./views/admin/home.vue'),
-                    name: 'home'
+                    name: 'home',
+                    alias: '/admin'
                 },
                 {
                     path: 'users',
