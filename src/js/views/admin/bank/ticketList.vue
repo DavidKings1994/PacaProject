@@ -6,6 +6,7 @@
             v-on:saved="reset">
         </paca-admin-ticket>
         <vue-bootstrap-table
+            v-if="tickets.length > 0"
             :columns="columns"
             :values="tickets"
             :show-filter="true"

@@ -9,6 +9,7 @@
         >
         </paca-user-item-transaction>
         <vue-bootstrap-table
+            v-if="items.length > 0"
             :columns="columns"
             :values="items"
             :show-filter="true"

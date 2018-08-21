@@ -15,6 +15,7 @@
             :onAccept="deleteBadge">
         </paca-dialog>
         <vue-bootstrap-table
+            v-if="badges.length > 0"
             :columns="columns"
             :values="badges"
             :show-filter="true"

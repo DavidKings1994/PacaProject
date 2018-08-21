@@ -6,6 +6,7 @@
             v-on:saved="reset">
         </paca-admin-log>
         <vue-bootstrap-table
+            v-if="logs.length > 0"
             :columns="columns"
             :values="logs"
             :show-filter="true"
