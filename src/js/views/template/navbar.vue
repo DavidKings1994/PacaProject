@@ -1,5 +1,5 @@
 <template>
-    <div class="lateral-navbar col-md-2">
+    <div class="lateral-navbar col-sm-2 collapse in" id="lateralNavbar">
         <div v-if="rol == 'admin'">
             <router-link to="/admin/home" id="nav-home">
                 <i class="fa fa-home"></i> Home
@@ -44,6 +44,24 @@ export default {
         userId: function() {
             return navigation.state.session.idUser;
         }
+    },
+    mounted: function() {
+        $(document).ready(function(){
+            if ($(window).width() <= 780 || $(window).height() <= 480){
+                $('#lateralNavbar').collapse('hide');
+                $('#lateralNavbar').addClass('compact');
+            }
+        });
+        $(window).resize(function(){
+            if ($(window).width() >= 780 && $(window).height() >= 480){
+                $('#lateralNavbar').collapse('show');
+                $('#lateralNavbar').removeClass('compact');
+            }
+            if ($(window).width() <= 780 || $(window).height() <= 480){
+                $('#lateralNavbar').collapse('hide');
+                $('#lateralNavbar').addClass('compact');
+            }
+        });
     }
 }
 </script>

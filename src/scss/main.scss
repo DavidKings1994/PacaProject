@@ -30,6 +30,10 @@ body {
                 div.btn-toolbar {
                     margin-bottom: 50px;
                 }
+
+                div:nth-child(3) {
+                    overflow-x: scroll;
+                }
             }
         }
 
@@ -332,6 +336,10 @@ body {
             height: $appHeight;
             background: $background-dark;
             padding: 0px;
+
+            &.compact {
+                height: auto;
+            }
 
             a {
                 display: block;
