@@ -47,6 +47,16 @@ export default {
     },
     mounted: function() {
         $(document).ready(function(){
+            $('#lateralNavbar').on('hidden.bs.collapse', function () {
+                $('.mainContent').removeClass('col-md-10');
+                $('.mainContent').addClass('col-md-12');
+            });
+
+            $('#lateralNavbar').on('show.bs.collapse', function () {
+                $('.mainContent').removeClass('col-md-12');
+                $('.mainContent').addClass('col-md-10');
+            });
+
             if ($(window).width() <= 780 || $(window).height() <= 480){
                 $('#lateralNavbar').collapse('hide');
                 $('#lateralNavbar').addClass('compact');

@@ -8,7 +8,7 @@
             <paca-logout></paca-logout>
         </div>
         <div v-else class="row fondo" id="mainContainer">
-            <div class="container" id="loginMessage">
+            <div class="container col-md-8" id="loginMessage">
                 <div class="jumbotron">
                     <img src="/assets/sirnus_white.png" alt="Sirnus logo">
                     <p>Welcome to Sirnus, please log in first</p>
@@ -32,4 +32,9 @@ export default {
 </script>
 
 <style lang="css">
+#loginMessage img {
+    width: 100%;
+    display: block;
+    margin: 0px auto 15px;
+}
 </style>

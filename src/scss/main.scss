@@ -20,6 +20,7 @@ body {
         margin-left: 0;
         margin-right: 0;
         min-height: $appHeight;
+        width: 100vw;
 
         .mainContent {
             height: calc(100vh - 51px);
@@ -325,6 +326,8 @@ body {
             left: 50%;
             transform: translate(-50%,-50%);
             text-align: center;
+            width: 100vw;
+            max-width: 700px;
 
             .jumbotron {
                 background: none;
@@ -360,7 +363,9 @@ body {
 
     .fondo {
         background: url('/assets/foresto.png');
-        background-size: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: left top;
     }
 
     .navbar-header {

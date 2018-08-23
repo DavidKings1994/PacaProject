@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="" data-toggle="collapse" data-target="#lateralNavbar"
-                id="lateralNavbarcollapse" v-on:click="changeSize">
+                id="lateralNavbarcollapse" v-if="logged">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -107,15 +107,6 @@ export default {
         },
         activate: function() {
             this.active = !this.active;
-        },
-        changeSize: function() {
-            if($('.mainContent').hasClass('col-md-10')) {
-                $('.mainContent').removeClass('col-md-10');
-                $('.mainContent').addClass('col-md-12');
-            } else {
-                $('.mainContent').removeClass('col-md-12');
-                $('.mainContent').addClass('col-md-10');
-            }
         }
     }
 };

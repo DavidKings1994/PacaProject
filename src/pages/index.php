@@ -4,7 +4,7 @@
         <!-- src/index.html -->
         <meta charset="utf-8">
         <title>Sirnus</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="keywords" content="Sirnus,deviant,art">
         <meta name="description" content="The Sirnus website!">
