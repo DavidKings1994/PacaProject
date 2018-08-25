@@ -4,11 +4,15 @@ var Vuex = require('vuex');
 Vue.use(Vuex);
 module.exports = new Vuex.Store({
     state: {
-        session: null
+        session: null,
+        guest: false
     },
     mutations: {
         updateSession: function(state, session) {
             state.session = session;
+        },
+        setGuestState: function(state, isGuest) {
+            state.guest = isGuest;
         }
     },
     actions: {
@@ -51,6 +55,12 @@ module.exports = new Vuex.Store({
                     resolve();
                 });
             });
+        },
+        allowGuest (context) {
+            context.commit('setGuestState', true);
+        },
+        blockGuest (context) {
+            context.commit('setGuestState', false);
         }
     }
 });

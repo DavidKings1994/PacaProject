@@ -76,13 +76,14 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
         {
             path: '/user/:id',
             component: require('./views/template/mainContainer.vue'),
-            redirect: '/user/:id/profile',
+            redirect: '/admin/:id/profile',
             props: true,
             children: [
                 {
                     path: 'profile',
                     component: require('./views/user/profile.vue'),
                     name: 'user profile',
+                    alias: '/user/:id',
                     props: true
                 },
                 {
@@ -95,6 +96,12 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
                     path: 'characters',
                     component: require('./views/user/characters/characterList.vue'),
                     name: 'user characters',
+                    props: true
+                },
+                {
+                    path: 'config',
+                    component: require('./views/user/config.vue'),
+                    name: 'user config',
                     props: true
                 }
             ]
@@ -125,7 +132,15 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
                 }
             } else {
                 if (navigation.state.session == null) {
-                    next('/');
+                    if (to.name == 'user profile'){
+                        navigation.dispatch('allowGuest').then(() => {
+                            next();
+                        });
+                    } else {
+                        navigation.dispatch('blockGuest').then(() => {
+                            next('/');
+                        });
+                    }
                 } else {
                     if ((to.path.includes('admin') && navigation.state.session.rol != 'admin') ||
                         (!to.path.includes('admin') && navigation.state.session.rol != 'user')) {

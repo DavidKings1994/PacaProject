@@ -20,6 +20,12 @@
             </div>
             <div class="collapse navbar-collapse" id="pacaNavbar">
                 <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" v-if="logged && rol == 'user'">
+                            <span v-if="stars > 0"><img src="/assets/star.png" alt="stars"> {{ stars }}</span>
+                            <span><img src="/assets/shard.png" alt="shards"> {{ shards }}</span>
+                        </a>
+                    </li>
                     <li v-if="logged">
                         <a href="#" data-toggle="modal" data-target="#logoutModal">
                             <span class="glyphicon glyphicon-log-out"></span> Logout
@@ -30,51 +36,6 @@
                             <span class="glyphicon glyphicon-log-in"></span> Login
                         </a>
                     </li>
-                    <!-- <li v-if="rol == 'admin' && active" v-on:click="menubutton">
-                        <router-link to="/admin/home" id="nav-home">
-                            <i class="fa fa-home"></i> Home
-                        </router-link>
-                    </li>
-                    <li v-if="rol == 'admin' && active" v-on:click="menubutton">
-                        <router-link to="/admin/users" id="nav-users">
-                            <i class="fa fa-users"></i> Users
-                        </router-link>
-                    </li>
-                    <li v-if="rol == 'admin' && active" v-on:click="menubutton">
-                        <router-link to="/admin/characters" id="nav-characters">
-                            <i class="fa fa-heart"></i> Characters
-                        </router-link>
-                    </li>
-                    <li v-if="rol == 'admin' && active" v-on:click="menubutton">
-                        <router-link to="/admin/items" id="nav-items">
-                            <i class="fa fa-briefcase"></i> Items
-                        </router-link>
-                    </li>
-                    <li v-if="rol == 'admin' && active" v-on:click="menubutton">
-                        <router-link to="/admin/badges" id="nav-badges">
-                            <i class="fa fa-certificate"></i> Badges
-                        </router-link>
-                    </li>
-                    <li v-if="rol == 'admin' && active" v-on:click="menubutton">
-                        <router-link to="/admin/bank" id="nav-bank">
-                            <i class="fa fa-university"></i> Bank
-                        </router-link>
-                    </li>
-                    <li v-if="rol == 'user' && active" v-on:click="menubutton">
-                        <router-link :to="'/user/' + userId + '/profile'" id="nav-profile">
-                            <i class="fa fa-user"></i> Profile
-                        </router-link>
-                    </li>
-                    <li v-if="rol == 'user' && active" v-on:click="menubutton">
-                        <router-link :to="'/user/' + userId + '/characters'" id="nav-characters">
-                            <i class="fa fa-heart"></i> Characters
-                        </router-link>
-                    </li>
-                    <li v-if="rol == 'user' && active" v-on:click="menubutton">
-                        <router-link :to="'/user/' + userId + '/inventory'" id="nav-items">
-                            <i class="fa fa-briefcase"></i> Inventory
-                        </router-link>
-                    </li> -->
                 </ul>
             </div>
         </div>
@@ -98,6 +59,24 @@ export default {
         },
         userId: function() {
             return this.logged ? navigation.state.session.idUser : null;
+        },
+        stars: function() {
+            let stars = 0;
+            let shards = 0;
+            if (this.logged) {
+                shards = navigation.state.session.currency;
+                stars = Math.floor(navigation.state.session.currency / 500);
+            }
+            return stars > 0 ? stars : 0;
+        },
+        shards: function() {
+            let stars = 0;
+            let shards = 0;
+            if (this.logged) {
+                shards = navigation.state.session.currency;
+                stars = Math.floor(navigation.state.session.currency / 500);
+            }
+            return shards - (stars * 500);
         }
     },
     methods: {

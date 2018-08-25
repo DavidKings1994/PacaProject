@@ -368,6 +368,90 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'getProfile': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL getProfile(?)");
+            $query->bind_param('s', $_POST['name']);
+            if($query->execute()) {
+                $query->bind_result($idUser, $name, $rol, $status, $currency);
+                if($query->fetch()) {
+                    $data = array(
+                        'status' => 'OK',
+                        'profile' => array(
+                            'idUser' => $idUser,
+                            'name' => $name,
+                            'rol' => $rol,
+                            'status' => $status,
+                            'currency' => $currency
+                        )
+                    );
+                    echo json_encode($data);
+                } else {
+                    echo json_encode(array(
+                        'status' => 'ERROR',
+                        'error' => '404'
+                    ));
+                }
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
+        case 'uploadProfilePic': {
+            $localDir = '/assets/profilePics/';
+            $allow = array("jpg", "jpeg", "gif", "png");
+            $todir = $_SERVER['DOCUMENT_ROOT'].$localDir;
+            $fileError = $_FILES['file']['error'];
+            if($fileError == UPLOAD_ERR_OK){
+                if ( !!$_FILES['file']['tmp_name'] ) {
+                    $info = explode('.', strtolower( $_FILES['file']['name']) );
+                    if ( in_array( end($info), $allow) ) {
+                        $milliseconds = round(microtime(true) * 1000);
+                        $info = pathinfo($_FILES['file']['name']);
+                        $ext = $info['extension'];
+                        $newname = $milliseconds.".".$ext;
+                        if ( move_uploaded_file( $_FILES['file']['tmp_name'], $todir . $newname ) ) {
+                            echo $localDir . $newname ;
+                        }
+                    } else {
+                        $message = 'Unable to upload profile image';
+                    }
+                }
+            }else{
+                switch($fileError){
+                    case UPLOAD_ERR_INI_SIZE:
+                    $message = 'Error al intentar subir un archivo que excede el tamaño permitido.';
+                    break;
+                    case UPLOAD_ERR_FORM_SIZE:
+                    $message = 'Error al intentar subir un archivo que excede el tamaño permitido.';
+                    break;
+                    case UPLOAD_ERR_PARTIAL:
+                    $message = 'Error: no terminó la acción de subir el archivo.';
+                    break;
+                    case UPLOAD_ERR_NO_FILE:
+                    $message = 'Error: ningún archivo fue subido.';
+                    break;
+                    case UPLOAD_ERR_NO_TMP_DIR:
+                    $message = 'Error: servidor no configurado para carga de archivos.';
+                    break;
+                    case UPLOAD_ERR_CANT_WRITE:
+                    $message= 'Error: posible falla al grabar el archivo.';
+                    break;
+                    case  UPLOAD_ERR_EXTENSION:
+                    $message = 'Error: carga de archivo no completada.';
+                    break;
+                    default: $message = 'Error: carga de archivo no completada.';
+                    break;
+                }
+            }
+            echo json_encode(array(
+                'status' => ($fileError == UPLOAD_ERR_OK ? 'OK' : 'ERROR'),
+                'message' => $message
+            ));
+            break;
+        }
     };
 }
 ?>

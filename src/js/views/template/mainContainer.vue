@@ -1,11 +1,12 @@
 <template lang="html">
     <div class="">
-        <div v-if="logged" class="row" id="mainContainer">
-            <paca-navbar></paca-navbar>
-            <div class="mainContent col-md-10">
+        <div v-if="logged || isGuest" class="row" id="mainContainer">
+            <paca-navbar v-if="logged"></paca-navbar>
+            <div class="mainContent" v-bind:class="{ 'col-md-10': logged,  'col-md-12': !logged }">
                 <router-view></router-view>
             </div>
-            <paca-logout></paca-logout>
+            <paca-logout v-if="logged"></paca-logout>
+            <paca-login v-else></paca-login>
         </div>
         <div v-else class="row fondo" id="mainContainer">
             <div class="container col-md-8" id="loginMessage">
@@ -26,6 +27,9 @@ export default {
     computed: {
         logged: function() {
             return navigation.state.session != null;
+        },
+        isGuest: function() {
+            return navigation.state.guest;
         }
     }
 }
