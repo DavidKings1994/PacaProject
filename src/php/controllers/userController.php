@@ -372,7 +372,7 @@ if(isset($_POST['action'])) {
             $query = mysqli_prepare($connection->getConnection(), "CALL getProfile(?)");
             $query->bind_param('s', $_POST['name']);
             if($query->execute()) {
-                $query->bind_result($idUser, $name, $rol, $status, $currency);
+                $query->bind_result($idUser, $name, $rol, $image, $status, $currency);
                 if($query->fetch()) {
                     $data = array(
                         'status' => 'OK',
@@ -380,6 +380,7 @@ if(isset($_POST['action'])) {
                             'idUser' => $idUser,
                             'name' => $name,
                             'rol' => $rol,
+                            'image' => $image,
                             'status' => $status,
                             'currency' => $currency
                         )
@@ -399,8 +400,32 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'deleteProfilePic': {
+            $data = $_POST['url'];
+            $data =  basename($data);
+            $dir = $_SERVER['DOCUMENT_ROOT'].'/assets/profile_pics';
+            $dirHandle = opendir($dir);
+            while ($file = readdir($dirHandle)) {
+                if($file==$data) {
+                    unlink($dir."/".$file);
+                }
+            }
+            closedir($dirHandle);
+
+            $query = mysqli_prepare($connection->getConnection(), "CALL deleteProfilePic(?)");
+            $query->bind_param('i', $_POST['user']);
+            if($query->execute()) {
+                echo json_encode(array('status' => 'OK'));
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'uploadProfilePic': {
-            $localDir = '/assets/profilePics/';
+            $localDir = '/assets/profile_pics/';
             $allow = array("jpg", "jpeg", "gif", "png");
             $todir = $_SERVER['DOCUMENT_ROOT'].$localDir;
             $fileError = $_FILES['file']['error'];
@@ -414,9 +439,26 @@ if(isset($_POST['action'])) {
                         $newname = $milliseconds.".".$ext;
                         if ( move_uploaded_file( $_FILES['file']['tmp_name'], $todir . $newname ) ) {
                             echo $localDir . $newname ;
+                            $query = mysqli_prepare($connection->getConnection(), "CALL setProfilePic(?)");
+                            $query->bind_param('is', $_POST['user'], $localDir . $newname);
+                            if($query->execute()) {
+                                $data = array(
+                                    'status' => 'OK'
+                                );
+                                echo json_encode($data);
+                            } else {
+                                echo json_encode(array(
+                                    'status' => 'ERROR',
+                                    'error' => $query->error
+                                ));
+                            }
                         }
                     } else {
                         $message = 'Unable to upload profile image';
+                        echo json_encode(array(
+                            'status' => 'ERROR',
+                            'error' => $message
+                        ));
                     }
                 }
             }else{
@@ -445,11 +487,11 @@ if(isset($_POST['action'])) {
                     default: $message = 'Error: carga de archivo no completada.';
                     break;
                 }
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'message' => $message
+                ));
             }
-            echo json_encode(array(
-                'status' => ($fileError == UPLOAD_ERR_OK ? 'OK' : 'ERROR'),
-                'message' => $message
-            ));
             break;
         }
     };

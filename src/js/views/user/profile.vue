@@ -4,7 +4,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h1>
-                        <img src="/assets/avatar_placeholder.png" alt="avatar" class="avatar"> {{ profile.name }}
+                        <img :src="profilePic" alt="avatar" class="avatar"> {{ profile.name }}
                     </h1>
                 </div>
                 <div class="panel-body">
@@ -62,6 +62,10 @@ export default {
         },
         userId: function() {
             return this.profile != null ? this.profile.name : null;
+        },
+        profilePic: function() {
+            let placeholder = '/assets/profile_pics/avatar_placeholder.png';
+            return this.profile != null ? (this.profile.image != null ? this.profile.image : placeholder) : placeholder;
         }
     },
     methods: {
