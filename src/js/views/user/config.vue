@@ -3,24 +3,32 @@
         <div class="panel panel-default">
             <div class="panel-heading"><h3>Change profile picture</h3></div>
             <div class="panel-body">
-                <form enctype="multipart/form-data">
-                    <div class="input-group">
-                        <span class="input-group-btn">
-                            <span class="btn btn-default btn-file">
-                                <i class="glyphicon glyphicon-camera"></i> Upload image <input type="file" id="imgInp">
-                            </span>
-                        </span>
-                        <input type="text" class="form-control" readonly>
+                <form enctype="multipart/form-data" class="form-inline" id="profilePicForm">
+                    <div class="col-md-2">
+                        <img id="img-upload" class="img-thumbnail" :src="profilePic"/>
                     </div>
-                    <img id="img-upload" class="img-thumbnail"/>
-                    <button type="button" name="button">
-                        <i class="glyphicon glyphicon-floppy-disk"></i> 
-                        Save profile picture
-                    </button>
-                    <button type="button" name="button">
-                        <i class="glyphicon glyphicon-trash"></i>
-                        Delete profile picture
-                    </button>
+                    <div class="col-md-10" style="text-align: left;">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <span class="btn btn-primary btn-file" style="border-radius: 4px;">
+                                    <i class="glyphicon glyphicon-camera"></i> Upload image
+                                    <input type="file" id="imgInp" name="file">
+                                </span>
+                            </span>
+                        </div>
+                        <div class="input-group" v-if="newImage">
+                            <button type="button" name="button" class="btn btn-success" v-on:click="uploadImage">
+                                <i class="glyphicon glyphicon-floppy-disk"></i>
+                                Save profile picture
+                            </button>
+                        </div>
+                        <div class="input-group" v-if="hasImage">
+                            <button type="button" name="button" class="btn btn-danger">
+                                <i class="glyphicon glyphicon-trash"></i>
+                                Delete profile picture
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -47,34 +55,37 @@
 var navigation = require('./../../navigation.js');
 var messageStore = require('./../../messages.js');
 export default {
+    data: function() {
+        return {
+            profile: {},
+            newImage: false
+        }
+    },
+    props: ['id'],
+    computed: {
+        hasImage: function() {
+            return this.profile != null ? (this.profile.image != null ? true: false) : false;
+        },
+        profilePic: function() {
+            let placeholder = '/assets/profile_pics/avatar_placeholder.png';
+            return this.profile != null ? (this.profile.image != null ? this.profile.image : placeholder) : placeholder;
+        }
+    },
+    created: function() {
+        this.loadUserInfo().then(() => {
+
+        });
+    },
     mounted: function() {
-        $(document).ready( function() {
-            $(document).on('change', '.btn-file :file', function() {
-                var input = $(this),
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [label]);
-            });
-
-            $('.btn-file :file').on('fileselect', function(event, label) {
-
-                var input = $(this).parents('.input-group').find(':text'),
-                log = label;
-
-                if( input.length ) {
-                    input.val(log);
-                } else {
-                    if( log ) alert(log);
-                }
-
-            });
+        $(document).ready(() => {
+            let self = this;
             function readURL(input) {
                 if (input.files && input.files[0]) {
                     var reader = new FileReader();
-
                     reader.onload = function (e) {
                         $('#img-upload').attr('src', e.target.result);
+                        self.newImage = true;
                     }
-
                     reader.readAsDataURL(input.files[0]);
                 }
             }
@@ -85,6 +96,54 @@ export default {
         });
     },
     methods: {
+        loadUserInfo: function() {
+            return new Promise(resolve => {
+                $.post('./php/controllers/userController.php', {
+                    action: 'getProfile',
+                    name: this.id
+                }, (msg) => {
+                    let json = JSON.parse(msg);
+                    if (json.status == 'OK') {
+                        this.profile = json.profile;
+                    } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Ups! User does\'t exist',
+                            type: 'error'
+                        });
+                    }
+                    resolve();
+                });
+            });
+        },
+        uploadImage: function() {
+            let formData = new FormData;
+            formData.append("file", $("#imgInp")[0].files[0]);
+            formData.append("action", "uploadProfilePic");
+            formData.append("id", this.profile.idUser);
+            $.ajax({
+                url: './php/controllers/userController.php',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache : false,
+                success: (msg) => {
+                    console.log(msg);
+                    var json = JSON.parse(msg);
+                    if (json.status != 'ERROR') {
+                        messageStore.commit('addMessage', {
+                            text: 'Profile picture uploaded!',
+                            type: 'success'
+                        });
+                    } else {
+                        messageStore.commit('addMessage', {
+                            text: json.error,//'Ups! there was an error somewhere',
+                            type: 'error'
+                        });
+                    }
+                }
+            });
+        },
         changePassword: function() {
             if (/([^\s])/.test($('input#pass').val().trim()) && /([^\s])/.test($('input#newpass').val())) {
                 if ($('input#pass').val() == $('input#newpass').val()) {
@@ -94,7 +153,6 @@ export default {
                         id: this.id,
                         newPass: newPass
                     }, (msg) => {
-                        var json = JSON.parse(msg);
                         if (json.status != 'ERROR') {
                             messageStore.commit('addMessage', {
                                 text: 'Password changed',

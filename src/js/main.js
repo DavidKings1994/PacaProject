@@ -76,7 +76,6 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
         {
             path: '/user/:id',
             component: require('./views/template/mainContainer.vue'),
-            redirect: '/admin/:id/profile',
             props: true,
             children: [
                 {
@@ -123,7 +122,7 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
                             break;
                         }
                         case 'user': {
-                            next('/user/' + navigation.state.session.idUser);
+                            next('/user/' + navigation.state.session.name);
                             break;
                         }
                     }
@@ -147,7 +146,7 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
                         next(false);
                     } else {
                         if (navigation.state.session.rol == 'user') {
-                            if (to.path.split('/')[2] == navigation.state.session.idUser) {
+                            if (to.path.split('/')[2] == navigation.state.session.name) {
                                 next();
                             } else {
                                 next(false);

@@ -48,7 +48,7 @@ export default {
             return navigation.state.session.rol;
         },
         userId: function() {
-            return navigation.state.session.idUser;
+            return navigation.state.session.name;
         }
     },
     mounted: function() {
