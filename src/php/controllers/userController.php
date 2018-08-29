@@ -412,7 +412,7 @@ if(isset($_POST['action'])) {
             }
             closedir($dirHandle);
 
-            $query = mysqli_prepare($connection->getConnection(), "CALL deleteProfilePic(?)");
+            $query = mysqli_prepare($connection->getConnection(), "CALL deleteProfilePicture(?)");
             $query->bind_param('i', $_POST['user']);
             if($query->execute()) {
                 echo json_encode(array('status' => 'OK'));

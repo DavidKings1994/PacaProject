@@ -23,7 +23,7 @@
                             </button>
                         </div>
                         <div class="input-group" v-if="hasImage">
-                            <button type="button" name="button" class="btn btn-danger">
+                            <button type="button" name="button" class="btn btn-danger" v-on:click="deleteImage">
                                 <i class="glyphicon glyphicon-trash"></i>
                                 Delete profile picture
                             </button>
@@ -128,16 +128,43 @@ export default {
                 contentType: false,
                 cache : false,
                 success: (msg) => {
-                    console.log(msg);
-                    var json = JSON.parse(msg);
+                    let json = JSON.parse(msg);
                     if (json.status != 'ERROR') {
+                        this.newImage = false;
+                        this.loadUserInfo();
                         messageStore.commit('addMessage', {
                             text: 'Profile picture uploaded!',
                             type: 'success'
                         });
                     } else {
                         messageStore.commit('addMessage', {
-                            text: json.error,//'Ups! there was an error somewhere',
+                            text: 'Ups! there was an error somewhere',
+                            type: 'error'
+                        });
+                    }
+                }
+            });
+        },
+        deleteImage: function() {
+            $.ajax({
+                url: './php/controllers/userController.php',
+                type: "POST",
+                data: {
+                    action: 'deleteProfilePic',
+                    user: this.profile.idUser,
+                    url: this.profile.image
+                },
+                success: (msg) => {
+                    let json = JSON.parse(msg);
+                    if (json.status != 'ERROR') {
+                        this.loadUserInfo();
+                        messageStore.commit('addMessage', {
+                            text: 'Profile picture deleted!',
+                            type: 'success'
+                        });
+                    } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Ups! there was an error somewhere',
                             type: 'error'
                         });
                     }
