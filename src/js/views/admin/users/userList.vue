@@ -214,6 +214,20 @@ export default {
     },
     created: function() {
         this.loadUsers();
+    },
+    mounted: function() {
+        $(document).on("shown.bs.dropdown", ".dropdown", function () {
+            let $ul = $(this).children(".dropdown-menu");
+            let $div = $(this).closest('table');
+            var ulOffset = $ul.offset();
+            var divOffset = $div.offset();
+            var spaceDown = (ulOffset.top + $ul.height()) - (divOffset.top + $div.height());
+            if (spaceDown > 0) {
+                $(this).addClass("dropup");
+            }
+        }).on("hidden.bs.dropdown", ".dropdown", function() {
+            $(this).removeClass("dropup");
+        });
     }
 }
 </script>
