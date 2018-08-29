@@ -5,7 +5,8 @@
             <div class="panel-body">
                 <form enctype="multipart/form-data" class="form-inline" id="profilePicForm">
                     <div class="col-md-2">
-                        <img id="img-upload" class="img-thumbnail" :src="profilePic"/>
+                        <img id="img-upload" class="img-thumbnail" :src="profilePic"
+                        data-toggle="tooltip" data-placement="bottom" title="Profile pictures are cropped and centered to fit 150x150 pixels"/>
                     </div>
                     <div class="col-md-10" style="text-align: left;">
                         <div class="input-group">
@@ -233,5 +234,6 @@ export default {
 #img-upload{
     width: 150px;
     height: 150px;
+    object-fit: cover;
 }
 </style>

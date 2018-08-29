@@ -1,7 +1,7 @@
 <template lang="html">
     <div id="profileView">
         <div class="well">
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="text-align: center;">
                 <div class="panel-heading">
                     <h1>
                         <img :src="profilePic" alt="avatar" class="avatar"> {{ profile.name }}
@@ -135,6 +135,8 @@ export default {
     padding: 25px;
 }
 #profileView .avatar{
+    width: 150px;
     height: 150px;
+    object-fit: cover;
 }
 </style>
