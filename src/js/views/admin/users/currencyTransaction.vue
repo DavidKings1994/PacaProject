@@ -7,7 +7,7 @@
                     <h4 class="modal-title">Bank operation</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
+                    <div class="container">
                         <form class="form-horizontal">
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="operation">Operation:</label>

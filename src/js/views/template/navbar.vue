@@ -1,5 +1,5 @@
 <template>
-    <div class="lateral-navbar col-sm-2 collapse in" id="lateralNavbar">
+    <div class="lateral-navbar col-md-2 collapse in" id="lateralNavbar">
         <div v-if="rol == 'admin'">
             <router-link to="/admin/home" id="nav-home">
                 <i class="fa fa-home"></i> Home

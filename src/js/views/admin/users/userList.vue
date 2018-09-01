@@ -55,6 +55,7 @@
 var navigation = require('./../../../navigation.js');
 var messageStore = require('./../../../messages.js');
 var VueBootstrapTable  = require('vue-bootstrap-table');
+var swal = require('swal');
 export default {
     data() {
         return {
@@ -119,18 +120,21 @@ export default {
             this.selectedUser = null;
         },
         loadUsers: function() {
-            $.post('./php/controllers/userController.php', {
-                action: 'getUsers'
-            }, (msg) => {
-                var json = JSON.parse(msg);
-                if (json.status == 'OK') {
-                    this.users = json.users;
-                } else {
-                    messageStore.commit('addMessage', {
-                        text: 'Unable to load users',
-                        type: 'warning'
-                    });
-                }
+            return new Promise(resolve => {
+                $.post('./php/controllers/userController.php', {
+                    action: 'getUsers'
+                }, (msg) => {
+                    var json = JSON.parse(msg);
+                    if (json.status == 'OK') {
+                        this.users = json.users;
+                    } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Unable to load users',
+                            type: 'warning'
+                        });
+                    }
+                    resolve();
+                });
             });
         },
         newUser: function() {
@@ -143,6 +147,7 @@ export default {
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
                 if ($('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"]').length > 0) {
+                    this.setUpSwall();
                     // set up the form button
                     $('ul.dropdown-menu a[data-iduser="' + entry.idUser + '"][data-option="profile"]').click((event) => {
                         var id = $(event.target).attr('data-iduser');
@@ -193,7 +198,7 @@ export default {
                 }
             }, 100);
             var target = "#balanceModal" + entry.idUser;
-            return '<div class="dropdown">' +
+            return '<div ' + (!$('#lateralNavbar').hasClass('compact') ? 'class="dropdown"' : '') + '>' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
                     'Options ' +
                     '<span class="caret"></span>' +
@@ -210,23 +215,94 @@ export default {
                     '<li><a data-iduser="' + entry.idUser + '" data-option="useItem">Use item</a></li>' +
                 '</ul>' +
             '</div>';
+        },
+        setUpSwall: function() {
+            let self = this;
+            $('.table tr td:last-child div:not(.dropdown)').off('click');
+            $('.table tr td:last-child div:not(.dropdown)').on('click', function() {
+                let options = $(this).find('.dropdown-menu');
+                let wrapper = document.createElement('div');
+                wrapper.innerHTML = options.get(0).outerHTML;
+                wrapper.className = 'swalDropDown';
+                swal({
+                    content: wrapper,
+                    button: {
+                        visible: false
+                    }
+                }).then(() => {
+                    $('.swalDropDown').remove();
+                });
+                $('.swalDropDown').find('a').click((event) => {
+                    swal.close();
+                });
+                $('.swalDropDown').find('a[data-option="profile"]').click((event) => {
+                    let id = $(event.target).attr('data-iduser');
+                    self.selectedUser = null;
+                    self.selectedUser = $(self.users).filter(function(i,n) {
+                        return n.idUser == id;
+                    })[0];
+                    $("#userFormModal").modal();
+                });
+                // set up the give-item button
+                $('.swalDropDown').find('a[data-option="giveItem"]').click((event) => {
+                    let id = $(event.target).attr('data-iduser');
+                    self.selectedUser = null;
+                    self.selectedUser = $(self.users).filter(function(i,n) {
+                        return n.idUser == id;
+                    })[0];
+                    self.transaction = 'giveItem';
+                    $("#inventoryTransactionModal").modal();
+                });
+                // set up the inventory button
+                $('.swalDropDown').find('a[data-option="inventory"]').click((event) => {
+                    let id = $(event.target).attr('data-iduser');
+                    self.selectedUser = null;
+                    self.selectedUser = $(self.users).filter(function(i,n) {
+                        return n.idUser == id;
+                    })[0];
+                    $("#inventoryModal").modal();
+                });
+                // set up the currency-transaction button
+                $('.swalDropDown').find('a[data-option="currency"]').click((event) => {
+                    let id = $(event.target).attr('data-iduser');
+                    self.selectedUser = null;
+                    self.selectedUser = $(self.users).filter(function(i,n) {
+                        return n.idUser == id;
+                    })[0];
+                    $("#currencyTransactionModal").modal();
+                });
+                // set up the inventory use button
+                $('.swalDropDown').find('a[data-option="useItem"]').click((event) => {
+                    let id = $(event.target).attr('data-iduser');
+                    self.selectedUser = null;
+                    self.selectedUser = $(self.users).filter(function(i,n) {
+                        return n.idUser == id;
+                    })[0];
+                    $("#inventoryUseModal").modal();
+                });
+            });
         }
     },
     created: function() {
-        this.loadUsers();
+        this.loadUsers().then(() => {
+            $(document).ready(() => {
+                if ($(window).width() <= 780 || $(window).height() <= 480){
+                    $('.table tr td:last-child div').removeClass('dropdown');
+                    this.setUpSwall();
+                }
+            });
+        });
     },
     mounted: function() {
-        $(document).on("shown.bs.dropdown", ".dropdown", function () {
-            let $ul = $(this).children(".dropdown-menu");
-            let $div = $(this).closest('table');
-            var ulOffset = $ul.offset();
-            var divOffset = $div.offset();
-            var spaceDown = (ulOffset.top + $ul.height()) - (divOffset.top + $div.height());
-            if (spaceDown > 0) {
-                $(this).addClass("dropup");
+        $(window).resize(() =>{
+            if ($(window).width() >= 780 && $(window).height() >= 480){
+                $('.table tr td:last-child div').addClass('dropdown');
+                $('.table tr td:last-child div').off('click');
             }
-        }).on("hidden.bs.dropdown", ".dropdown", function() {
-            $(this).removeClass("dropup");
+            if ($(window).width() <= 780 || $(window).height() <= 480){
+                $('.table tr td:last-child div').removeClass('dropdown');
+                this.setUpSwall();
+            }
         });
     }
 }

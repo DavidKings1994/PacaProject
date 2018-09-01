@@ -152,6 +152,7 @@ export default {
             var checker = setTimeout(() => {
                  // if the opttions menu is already rendered
                 if ($('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"]').length > 0) {
+                    this.setUpSwall();
                     // set up the form button
                     $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="profile"]').click((event) => {
                         let id = $(event.target).attr('data-idcharacter');
@@ -202,7 +203,7 @@ export default {
                     clearTimeout(checker);
                 }
             }, 100);
-            return '<div class="dropdown">' +
+            return '<div ' + (!$('#lateralNavbar').hasClass('compact') ? 'class="dropdown"' : '') + '>' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
                     'Options' +
                     '<span class="caret"></span>' +
@@ -218,23 +219,88 @@ export default {
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="giveBadge">Give badge</a></li>' +
                 '</ul>' +
             '</div>';
+        },
+        setUpSwall: function() {
+            let self = this;
+            $('.table tr td:last-child div:not(.dropdown)').off('click');
+            $('.table tr td:last-child div:not(.dropdown)').on('click', function() {
+                let options = $(this).find('.dropdown-menu');
+                let wrapper = document.createElement('div');
+                wrapper.innerHTML = options.get(0).outerHTML;
+                wrapper.className = 'swalDropDown';
+                swal({
+                    content: wrapper,
+                    button: {
+                        visible: false
+                    }
+                }).then(() => {
+                    $('.swalDropDown').remove();
+                });
+                $('.swalDropDown').find('a').click((event) => {
+                    swal.close();
+                });
+                $('.swalDropDown').find('a[data-option="profile"]').click((event) => {
+                    let id = $(event.target).attr('data-idcharacter');
+                    self.selectedCharacter = null;
+                    self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                        return n.idCharacter == id;
+                    })[0];
+                    $("#characterFormModal").modal();
+                });
+                // set up the inventory button
+                $('.swalDropDown').find('a[data-option="inventory"]').click((event) => {
+                    let id = $(event.target).attr('data-idcharacter');
+                    self.selectedCharacter = null;
+                    self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                        return n.idCharacter == id;
+                    })[0];
+                    $("#inventoryModal").modal();
+                });
+                // set up the give-badge button
+                $('.swalDropDown').find('a[data-option="giveBadge"]').click((event) => {
+                    let id = $(event.target).attr('data-idcharacter');
+                    self.selectedCharacter = null;
+                    self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                        return n.idCharacter == id;
+                    })[0];
+                    $("#inventoryTransactionModal").modal();
+                    self.transaction = 'giveBadge';
+                });
+                // set up the give-item button
+                $('.swalDropDown').find('a[data-option="giveItem"]').click((event) => {
+                    let id = $(event.target).attr('data-idcharacter');
+                    self.selectedCharacter = null;
+                    self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                        return n.idCharacter == id;
+                    })[0];
+                    self.transaction = 'giveItem';
+                    $("#inventoryTransactionModal").modal();
+                });
+                // set up the inventory use button
+                $('.swalDropDown').find('a[data-option="useItem"]').click((event) => {
+                    var id = $(event.target).attr('data-idcharacter');
+                    self.selectedCharacter = null;
+                    self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                        return n.idCharacter == id;
+                    })[0];
+                    $("#inventoryUseModal").modal();
+                });
+            });
         }
     },
     created: function() {
         this.loadCharacters();
     },
     mounted: function() {
-        $(document).on("shown.bs.dropdown", ".dropdown", function () {
-            let $ul = $(this).children(".dropdown-menu");
-            let $div = $(this).closest('table');
-            var ulOffset = $ul.offset();
-            var divOffset = $div.offset();
-            var spaceDown = (ulOffset.top + $ul.height()) - (divOffset.top + $div.height());
-            if (spaceDown > 0) {
-                $(this).addClass("dropup");
+        $(window).resize(() =>{
+            if ($(window).width() >= 780 && $(window).height() >= 480){
+                $('.table tr td:last-child div').addClass('dropdown');
+                $('.table tr td:last-child div').off('click');
             }
-        }).on("hidden.bs.dropdown", ".dropdown", function() {
-            $(this).removeClass("dropup");
+            if ($(window).width() <= 780 || $(window).height() <= 480){
+                $('.table tr td:last-child div').removeClass('dropdown');
+                this.setUpSwall();
+            }
         });
     }
 }

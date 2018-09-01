@@ -27,7 +27,7 @@
                             <div class="panel-footer">{{ badge.name }}</div>
                         </div>
                     </div>
-                    <div class="row" v-if="this.transactionType == 'Give item'">
+                    <div class="container" v-if="this.transactionType == 'Give item'">
                         <form class="form-horizontal">
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="quantity">Quantity:</label>

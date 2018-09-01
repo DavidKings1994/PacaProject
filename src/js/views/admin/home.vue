@@ -123,6 +123,7 @@ export default {
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
                 if ($('ul.dropdown-menu a[data-idlog="' + entry.idLog + '"]').length > 0) {
+                    this.setUpSwall();
                     // set up the form button
                     $('ul.dropdown-menu a[data-idlog="' + entry.idLog + '"][data-option="log"]').click((event) => {
                         var id = $(event.target).attr('data-idlog');
@@ -135,7 +136,7 @@ export default {
                     clearTimeout(checker);
                 }
             }, 100);
-            return '<div class="dropdown">' +
+            return '<div ' + (!$('#lateralNavbar').hasClass('compact') ? 'class="dropdown"' : '') + '>' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
                     'Options ' +
                     '<span class="caret"></span>' +
@@ -144,10 +145,52 @@ export default {
                     '<li><a data-idlog="' + entry.idLog + '" data-option="log">Download log</a></li>' +
                 '</ul>' +
             '</div>';
+        },
+        setUpSwall: function() {
+            let self = this;
+            $('.table tr td:last-child div:not(.dropdown)').off('click');
+            $('.table tr td:last-child div:not(.dropdown)').on('click', function() {
+                let options = $(this).find('.dropdown-menu');
+                let wrapper = document.createElement('div');
+                wrapper.innerHTML = options.get(0).outerHTML;
+                wrapper.className = 'swalDropDown';
+                swal({
+                    content: wrapper,
+                    button: {
+                        visible: false
+                    }
+                }).then(() => {
+                    $('.swalDropDown').remove();
+                });
+                $('.swalDropDown').find('a').click((event) => {
+                    swal.close();
+                });
+                // set up the form button
+                $('.swalDropDown').find('a[data-option="log"]').click((event) => {
+                    var id = $(event.target).attr('data-idlog');
+                    self.selectedLog = null;
+                    self.selectedLog = $(self.logs).filter(function(i,n) {
+                        return n.idLog == id;
+                    })[0];
+                    $("#logModal").modal();
+                });
+            });
         }
     },
     created: function() {
         this.loadLogs();
+    },
+    mounted: function() {
+        $(window).resize(() =>{
+            if ($(window).width() >= 780 && $(window).height() >= 480){
+                $('.table tr td:last-child div').addClass('dropdown');
+                $('.table tr td:last-child div').off('click');
+            }
+            if ($(window).width() <= 780 || $(window).height() <= 480){
+                $('.table tr td:last-child div').removeClass('dropdown');
+                this.setUpSwall();
+            }
+        });
     }
 }
 </script>

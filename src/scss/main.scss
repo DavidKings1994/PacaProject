@@ -9,6 +9,16 @@ body {
     width: auto;
     height: auto;
     overflow: auto;
+
+    .btn-primary {
+        background-color: $main !important;
+        border-color: $main !important;
+
+        &:hover {
+            background-color: $main-selected !important;
+            border-color: $main-selected !important;
+        }
+    }
 }
 
 #App {
@@ -33,23 +43,13 @@ body {
                 }
 
                 div:nth-child(3) {
-                    overflow-x: scroll;
+                    overflow-x: auto;
                 }
             }
         }
 
         .dropdown-menu a:hover {
             cursor: pointer;
-        }
-
-        .btn-primary {
-            background-color: $main;
-            border-color: $main;
-
-            &:hover {
-                background-color: $main-selected;
-                border-color: $main-selected;
-            }
         }
 
         #objectTransactionModal, #inventoryTransactionModal, #inventoryUseModal, #profileView .panels {
@@ -377,4 +377,35 @@ body {
     textarea {
         resize: none;
     }
+
+    td {
+        height: 45px;
+    }
+}
+
+.modal {
+    overflow-x: auto !important;
+    overflow-y: auto;
+}
+
+.swalDropDown .dropdown-menu {
+    position: initial !important;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    float: none !important;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: center !important;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: none !important;
+    border-radius: 4px;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
 }

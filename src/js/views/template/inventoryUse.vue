@@ -25,7 +25,7 @@
                             There are no items in the inventory, sorry
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="container">
                         <form class="form-horizontal">
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="quantity">Quantity:</label>

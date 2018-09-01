@@ -76,7 +76,8 @@ gulp.task("webpack", function(callback) {
                 'vuex':  __dirname + '/node_modules/vuex/dist/vuex.js',
                 'vue-router':  __dirname + '/node_modules/vue-router/dist/vue-router.js',
                 'vue-select':  __dirname + '/node_modules/vue-select/dist/vue-select.js',
-                'vue-bootstrap-table':  __dirname + '/node_modules/vue2-bootstrap-table2/dist/vue-bootstrap-table.js'
+                'vue-bootstrap-table':  __dirname + '/node_modules/vue2-bootstrap-table2/dist/vue-bootstrap-table.js',
+                'swal':  __dirname + '/node_modules/sweetalert/dist/sweetalert.min.js'
             }
         },
         module: {

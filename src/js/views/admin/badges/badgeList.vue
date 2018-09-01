@@ -115,6 +115,7 @@ export default {
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
                 if ($('ul.dropdown-menu a[data-idbadge="' + entry.idBadge + '"]').length > 0) {
+                    this.setUpSwall();
                     $('ul.dropdown-menu a[data-idbadge="' + entry.idBadge + '"][data-option="profile"]').click((event) => {
                         var id = $(event.target).attr('data-idbadge');
                         this.selectedBadge = $(this.badges).filter(function(i,n) {
@@ -132,7 +133,7 @@ export default {
                     clearTimeout(checker);
                 }
             }, 100);
-            return '<div class="dropdown">' +
+            return '<div ' + (!$('#lateralNavbar').hasClass('compact') ? 'class="dropdown"' : '') + '>' +
                 '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' +
                     'Options' +
                     '<span class="caret"></span>' +
@@ -164,23 +165,56 @@ export default {
                     console.error(response.error);
                 }
             });
+        },
+        setUpSwall: function() {
+            let self = this;
+            $('.table tr td:last-child div:not(.dropdown)').off('click');
+            $('.table tr td:last-child div:not(.dropdown)').on('click', function() {
+                let options = $(this).find('.dropdown-menu');
+                let wrapper = document.createElement('div');
+                wrapper.innerHTML = options.get(0).outerHTML;
+                wrapper.className = 'swalDropDown';
+                swal({
+                    content: wrapper,
+                    button: {
+                        visible: false
+                    }
+                }).then(() => {
+                    $('.swalDropDown').remove();
+                });
+                $('.swalDropDown').find('a').click((event) => {
+                    swal.close();
+                });
+                $('.swalDropDown').find('a[data-option="profile"]').click((event) => {
+                    var id = $(event.target).attr('data-idbadge');
+                    self.selectedBadge = $(self.badges).filter(function(i,n) {
+                        return n.idBadge == id;
+                    })[0];
+                    $("#badgeFormModal").modal();
+                });
+                $('.swalDropDown').find('a[data-option="delete"]').click((event) => {
+                    var id = $(event.target).attr('data-idbadge');
+                    self.selectedBadge = $(self.badges).filter(function(i,n) {
+                        return n.idBadge == id;
+                    })[0];
+                    $("#dialogModal").modal();
+                })
+            });
         }
     },
     created: function() {
         this.loadBadges();
     },
     mounted: function() {
-        $(document).on("shown.bs.dropdown", ".dropdown", function () {
-            let $ul = $(this).children(".dropdown-menu");
-            let $div = $(this).closest('table');
-            var ulOffset = $ul.offset();
-            var divOffset = $div.offset();
-            var spaceDown = (ulOffset.top + $ul.height()) - (divOffset.top + $div.height());
-            if (spaceDown > 0) {
-                $(this).addClass("dropup");
+        $(window).resize(() =>{
+            if ($(window).width() >= 780 && $(window).height() >= 480){
+                $('.table tr td:last-child div').addClass('dropdown');
+                $('.table tr td:last-child div').off('click');
             }
-        }).on("hidden.bs.dropdown", ".dropdown", function() {
-            $(this).removeClass("dropup");
+            if ($(window).width() <= 780 || $(window).height() <= 480){
+                $('.table tr td:last-child div').removeClass('dropdown');
+                this.setUpSwall();
+            }
         });
     }
 }
