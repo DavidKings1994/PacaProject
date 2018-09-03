@@ -103,6 +103,28 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'changeEmail': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL changeEmail(?,?)");
+            $query->bind_param('is',
+                $_POST['id'],
+                $_POST['newEmail']
+            );
+            if($query->execute()) {
+                $query->bind_result($status, $message);
+                $query->fetch();
+                $data = array(
+                    'status' => $status,
+                    'error' => $message
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'getUsers': {
             $resul = mysqli_query($connection->getConnection(), "CALL getUsers()");
             $users = array();
@@ -372,7 +394,7 @@ if(isset($_POST['action'])) {
             $query = mysqli_prepare($connection->getConnection(), "CALL getProfile(?)");
             $query->bind_param('s', $_POST['name']);
             if($query->execute()) {
-                $query->bind_result($idUser, $name, $image, $rol, $status, $currency);
+                $query->bind_result($idUser, $name, $image, $rol, $status, $currency, $email);
                 if($query->fetch()) {
                     $data = array(
                         'status' => 'OK',
@@ -382,7 +404,8 @@ if(isset($_POST['action'])) {
                             'rol' => $rol,
                             'image' => $image,
                             'status' => $status,
-                            'currency' => $currency
+                            'currency' => $currency,
+                            'email' => $email
                         )
                     );
                     echo json_encode($data);

@@ -95,6 +95,25 @@ export default {
         }
     },
     methods: {
+        loadUserInfo: function() {
+            return new Promise(resolve => {
+                $.post('./php/controllers/userController.php', {
+                    action: 'getProfile',
+                    name: this.id
+                }, (msg) => {
+                    var json = JSON.parse(msg);
+                    if (json.status == 'OK') {
+                        this.profile = json.profile;
+                    } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Ups! User does\'t exist',
+                            type: 'error'
+                        });
+                    }
+                    resolve();
+                });
+            });
+        },
         resetInventory: function() {
             this.selectedCharacter = null;
         },
@@ -102,7 +121,7 @@ export default {
             this.characters = [];
             $.post('./php/controllers/userController.php', {
                 action: 'getCharacters',
-                id: this.id
+                id: this.profile.idUser
             }, (msg) => {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
@@ -204,7 +223,9 @@ export default {
         }
     },
     created: function() {
-        this.loadCharacters();
+        this.loadUserInfo().then(() => {
+            this.loadCharacters();
+        });
     },
     mounted: function() {
         $(window).resize(() =>{

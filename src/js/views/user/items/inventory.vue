@@ -85,10 +85,29 @@ export default {
         }
     },
     methods: {
+        loadUserInfo: function() {
+            return new Promise(resolve => {
+                $.post('./php/controllers/userController.php', {
+                    action: 'getProfile',
+                    name: this.id
+                }, (msg) => {
+                    var json = JSON.parse(msg);
+                    if (json.status == 'OK') {
+                        this.profile = json.profile;
+                    } else {
+                        messageStore.commit('addMessage', {
+                            text: 'Ups! User does\'t exist',
+                            type: 'error'
+                        });
+                    }
+                    resolve();
+                });
+            });
+        },
         loadItems: function() {
             $.post('./php/controllers/userController.php', {
                 action: 'getInventoryCount',
-                id: this.id
+                id: this.profile.idUser
             }, (msg) => {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
@@ -129,7 +148,9 @@ export default {
         }
     },
     created: function() {
-        this.loadItems();
+        this.loadUserInfo().then(() => {
+            this.loadItems();
+        });
     }
 }
 </script>

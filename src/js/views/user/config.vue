@@ -34,6 +34,25 @@
             </div>
         </div>
         <div class="panel panel-default">
+            <div class="panel-heading"><h3>Account email</h3></div>
+            <div class="panel-body">
+                <form>
+                    <div class="form-group">
+                        <p v-if="hasEmail">Current: {{ userEmail }}</p>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="e-mail" required="true">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="conemail" placeholder="Confirm e-mail" required="true">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-danger" v-on:click="changeEmail">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
             <div class="panel-heading"><h3>Change password</h3></div>
             <div class="panel-body">
                 <form>
@@ -70,6 +89,12 @@ export default {
         profilePic: function() {
             let placeholder = '/assets/profile_pics/avatar_placeholder.png';
             return this.profile != null ? (this.profile.image != null ? this.profile.image : placeholder) : placeholder;
+        },
+        userEmail: function() {
+            return this.profile != null ? (this.profile.email != null ? this.profile.email : '') : '';
+        },
+        hasEmail: function() {
+            return this.profile != null ? (this.profile.image != null ? true : false) : false;
         }
     },
     created: function() {
@@ -172,15 +197,56 @@ export default {
                 }
             });
         },
+        changeEmail: function() {
+            if (
+                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test($('input#email').val().trim()) &&
+                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test($('input#conemail').val().trim())
+            ) {
+                if ($('input#email').val() == $('input#conemail').val()) {
+                    let newEmail = $('input#email').val();
+                    $.post('./php/controllers/userController.php', {
+                        action: 'changeEmail',
+                        id: this.profile.idUser,
+                        newEmail: newEmail
+                    }, (msg) => {
+                        let json = JSON.parse(msg);
+                        if (json.status != 'ERROR') {
+                            messageStore.commit('addMessage', {
+                                text: 'E-mail changed',
+                                type: 'success'
+                            });
+                            this.profile.email = newEmail;
+                        } else {
+                            messageStore.commit('addMessage', {
+                                text: 'Unable to change e-mail',
+                                type: 'error'
+                            });
+                            console.error(json.error);
+                        }
+                    });
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'emails doesn\'t match',
+                        type: 'warning'
+                    });
+                }
+            } else {
+                messageStore.commit('addMessage', {
+                    text: 'e-mail has not a correct format.',
+                    type: 'warning'
+                });
+            }
+        },
         changePassword: function() {
             if (/([^\s])/.test($('input#pass').val().trim()) && /([^\s])/.test($('input#newpass').val())) {
                 if ($('input#pass').val() == $('input#newpass').val()) {
                     let newPass = $('input#pass').val();
                     $.post('./php/controllers/userController.php', {
                         action: 'changePassword',
-                        id: this.id,
+                        id: this.profile.idUser,
                         newPass: newPass
                     }, (msg) => {
+                        let json = JSON.parse(msg);
                         if (json.status != 'ERROR') {
                             messageStore.commit('addMessage', {
                                 text: 'Password changed',
