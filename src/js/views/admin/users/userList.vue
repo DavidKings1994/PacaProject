@@ -120,6 +120,7 @@ export default {
             this.selectedUser = null;
         },
         loadUsers: function() {
+            this.users = [];
             return new Promise(resolve => {
                 $.post('./php/controllers/userController.php', {
                     action: 'getUsers'

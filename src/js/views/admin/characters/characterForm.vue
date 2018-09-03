@@ -120,7 +120,6 @@ export default {
             });
         },
         save: function() {
-            console.log(this.selected);
             $.post('./php/controllers/characterController.php',
             $("#characterFormModal form").serialize() +
             '&owner=' +
@@ -139,7 +138,6 @@ export default {
                         text: 'Unable to save character\'s information. ' + result.error,
                         type: 'error'
                     });
-                    console.error(result.error);
                 }
             });
         }

@@ -91,6 +91,7 @@ export default {
     },
     methods: {
         loadBadges: function() {
+            this.badges = [];
             $.post('./php/controllers/badgeController.php', {
                 action: 'getBadges'
             }, (msg) => {

@@ -99,6 +99,7 @@ export default {
             this.selectedCharacter = null;
         },
         loadCharacters: function() {
+            this.characters = [];
             $.post('./php/controllers/userController.php', {
                 action: 'getCharacters',
                 id: this.id

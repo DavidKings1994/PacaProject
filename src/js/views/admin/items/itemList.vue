@@ -92,6 +92,7 @@ export default {
     },
     methods: {
         loadItems: function() {
+            this.items = [];
             $.post('./php/controllers/itemController.php', {
                 action: 'getItems'
             }, (msg) => {

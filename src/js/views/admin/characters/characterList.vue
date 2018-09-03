@@ -121,10 +121,11 @@ export default {
             this.selectedCharacter = null;
         },
         loadCharacters: function() {
+            this.characters = [];
             $.post('./php/controllers/characterController.php', {
                 action: 'getCharacters'
             }, (msg) => {
-                var json = JSON.parse(msg);
+                let json = JSON.parse(msg);
                 if (json.status == 'OK') {
                     this.characters = json.characters;
                 } else {
