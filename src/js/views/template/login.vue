@@ -46,6 +46,7 @@ export default {
                     this.errorMessage = 'Your user or password were incorrect.'
                 } else {
                     this.close();
+                    this.$router.push('/');
                 }
             });
         },

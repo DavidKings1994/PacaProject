@@ -144,12 +144,16 @@ gulp.task('img', function () {
     return gulp.src(paths.srcIMG).pipe(gulp.dest('./public/assets'));
 });
 
+gulp.task('composer', function () {
+    return gulp.src('./vendor/**/*').pipe(gulp.dest('./public/php'));
+});
+
 // copia las dependecias listadas en el package.json a la direccion especificada
 gulp.task('copyNpm', function() {
     gulp.src(gnf(), {base:'./'}).pipe(gulp.dest('./public/build'));
 });
 
-gulp.task('copy', ['html', 'bundles', 'php', 'img', 'copyNpm']);
+gulp.task('copy', ['html', 'bundles', 'php', 'img', 'copyNpm', 'composer']);
 
 // inyecta las nuevas direcciones publicas de los archivos de css y js en el index de la carpeta public
 gulp.task('inject', ['copy'], function () {

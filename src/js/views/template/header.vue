@@ -36,6 +36,11 @@
                             <span class="glyphicon glyphicon-log-in"></span> Login
                         </a>
                     </li>
+                    <li v-if="!logged">
+                        <router-link to="/passwordRestore" id="passwordRestore">
+                            <span>Forgot your password?</span>
+                        </router-link>
+                    </li>
                 </ul>
             </div>
         </div>

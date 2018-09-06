@@ -33,12 +33,24 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
         {
             path: '/',
             component: require('./views/template/mainContainer.vue'),
-            name: 'login'
+            name: 'login',
+            children: [
+                {
+                    path: '/passwordRestore',
+                    component: require('./views/template/passwordRestore.vue'),
+                    name: 'password restore'
+                },
+                {
+                    path: '/passwordRestore/:tempkey',
+                    component: require('./views/template/passwordRestore.vue'),
+                    name: 'password restore key',
+                    props: true
+                }
+            ]
         },
         {
             path: '/admin',
             component: require('./views/template/mainContainer.vue'),
-            redirect: '/admin/home',
             children: [
                 {
                     path: 'home',
@@ -114,49 +126,60 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
     var navigation = require('./navigation.js');
     navigation.dispatch('checkSession').then(() => {
         router.beforeEach((to, from, next) => {
-            if (to.path == "/") {
-                if (navigation.state.session != null) {
-                    switch (navigation.state.session.rol) {
-                        case 'admin': {
-                            next('/admin');
-                            break;
+            navigation.dispatch('checkSession').then(() => {
+                if (to.path == "/") {
+                    if (navigation.state.session != null) {
+                        switch (navigation.state.session.rol) {
+                            case 'admin': {
+                                next('/admin');
+                                break;
+                            }
+                            case 'user': {
+                                next('/user/' + navigation.state.session.name);
+                                break;
+                            }
                         }
-                        case 'user': {
-                            next('/user/' + navigation.state.session.name);
-                            break;
-                        }
-                    }
-                } else {
-                    next();
-                }
-            } else {
-                if (navigation.state.session == null) {
-                    if (to.name == 'user profile'){
-                        navigation.dispatch('allowGuest').then(() => {
-                            next();
-                        });
                     } else {
                         navigation.dispatch('blockGuest').then(() => {
-                            next('/');
+                            next();
                         });
                     }
                 } else {
-                    if ((to.path.includes('admin') && navigation.state.session.rol != 'admin') ||
-                        (!to.path.includes('admin') && navigation.state.session.rol != 'user')) {
-                        next(false);
-                    } else {
-                        if (navigation.state.session.rol == 'user') {
-                            if (to.path.split('/')[2] == navigation.state.session.name) {
-                                next();
-                            } else {
-                                next(false);
+                    if (navigation.state.session == null) {
+                        switch (to.name) {
+                            case 'password restore':
+                            case 'password restore key':
+                            case 'user profile': {
+                                navigation.dispatch('allowGuest').then(() => {
+                                    next();
+                                });
+                                break;
                             }
+                            default: {
+                                navigation.dispatch('blockGuest').then(() => {
+                                    next('/');
+                                });
+                                break;
+                            }
+                        }
+                    } else {
+                        if ((to.path.includes('admin') && navigation.state.session.rol != 'admin') ||
+                            (!to.path.includes('admin') && navigation.state.session.rol != 'user')) {
+                            next(false);
                         } else {
-                            next();
+                            if (navigation.state.session.rol == 'user') {
+                                if (to.path.split('/')[2] == navigation.state.session.name) {
+                                    next();
+                                } else {
+                                    next(false);
+                                }
+                            } else {
+                                next();
+                            }
                         }
                     }
                 }
-            }
+            });
         });
 
         new Vue({
