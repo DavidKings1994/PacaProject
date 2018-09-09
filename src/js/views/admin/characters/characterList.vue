@@ -67,10 +67,22 @@ export default {
                     title: "Description"
                 },
                 {
-                    name: "status",
-                    title: "Status",
-                    renderfunction: this.renderStatusColumn
+                    name: "type",
+                    title: "Type"
                 },
+                {
+                    name: "species",
+                    title: "Species"
+                },
+                {
+                    name: "traits",
+                    title: "Traits"
+                },
+                // {
+                //     name: "class",
+                //     title: "Class",
+                //     renderfunction: this.renderStatusColumn
+                // },
                 {
                     name: "ownerName",
                     title: "Owner"

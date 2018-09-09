@@ -46,15 +46,42 @@
                                 <input type="text" class="form-control" name="image" id="image" placeholder="Enter character image link" :value="this.characterImage">
                             </div>
                         </div>
-                        <div class="form-group" v-if="this.character != null">
-                            <label class="control-label col-sm-2" for="status">Location:</label>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="type">Type:</label>
                             <div class="col-sm-10">
-                                <select class="form-control" id="status" name="status">
+                                <select class="form-control" id="type" name="type">
+                                    <option value="1">City</option>
+                                    <option value="2">Wild</option>
+                                    <option value="3">Neutral</option>
+                                    <option value="4">Void</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="species">Species:</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="species" name="species">
+                                    <option value="1">Louxe</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="traits">Traits:</label>
+                            <div class="col-sm-10">
+                                <textarea type="text" class="form-control" name="traits" id="traits"
+                                placeholder="Enter character's traits" :value="this.characterTraits" maxlength="250">
+                                </textarea>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group" v-if="this.character != null">
+                            <label class="control-label col-sm-2" for="class">Class:</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="class" name="class">
                                     <option value="HOME">Home</option>
                                     <option value="NOT_HOME">Not home</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -84,7 +111,9 @@ export default {
     watch: {
         character: function() {
             if (this.character != null) {
-                $("#characterFormModal select[name='status']").val(this.character.status);
+                $("#characterFormModal select[name='class']").val(this.character.clas);
+                $("#characterFormModal select[name='type']").val(this.character.type);
+                $("#characterFormModal select[name='species']").val(this.character.species);
                 this.selected = {
                     value: this.character.idCharacter,
                     label: this.character.ownerName
@@ -99,6 +128,7 @@ export default {
         characterName: function() { return this.character == null ? '' : this.character.name; },
         characterDesc: function() { return this.character == null ? '' : this.character.description; },
         characterImage: function() { return this.character == null ? '' : this.character.image; },
+        characterTraits: function() { return this.character == null ? '' : this.character.traits; },
         buttonText: function() { return this.character == null ? 'Register' : 'Save'; },
         action: function() { return this.character == null ? 'registerCharacter' : 'updateCharacter'; }
     },

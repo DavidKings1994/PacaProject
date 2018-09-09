@@ -17,12 +17,15 @@ if(isset($_POST['action'])) {
             break;
         }
         case 'registerCharacter': {
-            $query = mysqli_prepare($connection->getConnection(), "CALL registerCharacter(?,?,?,?,?)");
-            $query->bind_param('sssss',
+            $query = mysqli_prepare($connection->getConnection(), "CALL registerCharacter(?,?,?,?,?,?,?,?)");
+            $query->bind_param('ssssiiss',
                 $_POST['id'],
                 $_POST['image'],
                 $_POST['name'],
                 $_POST['desc'],
+                $_POST['type'],
+                $_POST['species'],
+                $_POST['traits'],
                 $_POST['owner']
             );
             if($query->execute()) {
@@ -42,14 +45,17 @@ if(isset($_POST['action'])) {
             break;
         }
         case 'updateCharacter': {
-            $query = mysqli_prepare($connection->getConnection(), "CALL updateCharacter(?,?,?,?,?,?)");
-            $query->bind_param('ssssss',
+            $query = mysqli_prepare($connection->getConnection(), "CALL updateCharacter(?,?,?,?,?,?,?,?,?)");
+            $query->bind_param('ssssiisss',
                 $_POST['id'],
                 $_POST['image'],
                 $_POST['name'],
                 $_POST['desc'],
+                $_POST['type'],
+                $_POST['species'],
+                $_POST['traits'],
                 $_POST['owner'],
-                $_POST['status']
+                $_POST['class']
             );
             if($query->execute()) {
                 $query->bind_result($resul, $message);
