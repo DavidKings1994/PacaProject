@@ -4,7 +4,7 @@
         <!-- src/index.html -->
         <meta charset="utf-8">
         <title>Sirnus</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="keywords" content="Sirnus,deviant,art">
         <meta name="description" content="The Sirnus website!">
@@ -12,6 +12,7 @@
 
         <!-- External libraries -->
         <script src="https://use.fontawesome.com/65cecb8678.js"></script>
+        <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
         <!-- /External libraries -->
 
         <!--[htmlclean-protect]-->

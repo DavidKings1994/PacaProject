@@ -63,17 +63,21 @@ export default {
                 $('.mainContent').addClass('col-md-10');
             });
 
-            if ($(window).width() <= 780 || $(window).height() <= 480){
+            let realWidth = $(window).width() / window.devicePixelRatio;
+            let realHeight = $(window).height() / window.devicePixelRatio;
+            if (realWidth <= 780 || realHeight <= 480){
                 $('#lateralNavbar').collapse('hide');
                 $('#lateralNavbar').addClass('compact');
             }
         });
         $(window).resize(function(){
-            if ($(window).width() >= 780 && $(window).height() >= 480){
+            let realWidth = $(window).width() / window.devicePixelRatio;
+            let realHeight = $(window).height() / window.devicePixelRatio;
+            if (realWidth >= 780 && realHeight >= 480){
                 $('#lateralNavbar').collapse('show');
                 $('#lateralNavbar').removeClass('compact');
             }
-            if ($(window).width() <= 780 || $(window).height() <= 480){
+            if (realWidth <= 780 || realHeight <= 480){
                 $('#lateralNavbar').collapse('hide');
                 $('#lateralNavbar').addClass('compact');
             }

@@ -206,36 +206,49 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
                     value = value.toString();
                     return value.charAt(0).toUpperCase() + value.slice(1);
                 }
+            },
+            created: function() {
+                Pusher.logToConsole = true;
+
+                const pusher = new Pusher('1f4e2261136ad4420076', {
+                    cluster: 'us2',
+                    forceTLS: true
+                });
+
+                const channel = pusher.subscribe('my-channel');
+                channel.bind('my-event', function(data) {
+                    alert(JSON.stringify(data));
+                });
             }
         });
     });
 
     //Make the dropdown part of the body instead of the table to move it easier
-    $(document).ready(() => {
-        window.button = null;
-        $(document).on("shown.bs.dropdown", ".dropdown", function () {
-            $(this).closest('td').attr('data-anchor', 'here');
-            let $ul = $(this).children(".dropdown-menu");
-            let $div = $(this).closest('table');
-            let ulOffset = $ul.offset();
-            let divOffset = $div.offset();
-            let spaceDown = (ulOffset.top + $ul.height()) - (divOffset.top + $div.height());
-            if (spaceDown > 0) {
-                $(this).addClass("dropup");
-            }
-            $('#App').append($(this).css({
-                position: 'absolute',
-                left: $(this).offset().left,
-                top: $(this).offset().top
-            }).detach());
-        }).on("hidden.bs.dropdown", ".dropdown", function() {
-            $(this).removeClass("dropup");
-            $("[data-anchor='here']").append($(this).css({
-                position: 'initial',
-                left: 0,
-                top: 0
-            }).detach());
-            $(this).closest('td').removeAttr('data-anchor');
-        });
-    });
+    // $(document).ready(() => {
+    //     window.button = null;
+    //     $(document).on("shown.bs.dropdown", "td > span > .dropdown", function () {
+    //         $(this).closest('td').attr('data-anchor', 'here');
+    //         let $ul = $(this).children(".dropdown-menu");
+    //         let $div = $(this).closest('table');
+    //         let ulOffset = $ul.offset();
+    //         let divOffset = $div.offset();
+    //         let spaceDown = (ulOffset.top + $ul.height()) - (divOffset.top + $div.height());
+    //         if (spaceDown > 0) {
+    //             $(this).addClass("dropup");
+    //         }
+    //         $('#App').append($(this).css({
+    //             position: 'absolute',
+    //             left: $(this).offset().left,
+    //             top: $(this).offset().top
+    //         }).detach());
+    //     }).on("hidden.bs.dropdown", "td > span > .dropdown", function() {
+    //         $(this).removeClass("dropup");
+    //         $("[data-anchor='here']").append($(this).css({
+    //             position: 'initial',
+    //             left: 0,
+    //             top: 0
+    //         }).detach());
+    //         $(this).closest('td').removeAttr('data-anchor');
+    //     });
+    // });
 });

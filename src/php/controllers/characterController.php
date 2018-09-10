@@ -1,4 +1,10 @@
 <?php
+require './../autoload.php';
+require('./../pusher/pusher-php-server/src/Pusher.php');
+require('./../pusher/pusher-php-server/src/PusherCrypto.php');
+require('./../pusher/pusher-php-server/src/PusherException.php');
+require('./../pusher/pusher-php-server/src/PusherInstance.php');
+require('./../pusher/pusher-php-server/src/Webhook.php');
 include_once  './../connection.php';
 $connection = new Connection();
 
@@ -71,6 +77,19 @@ if(isset($_POST['action'])) {
                     'error' => $query->error
                 ));
             }
+            // $options = array(
+            //     'cluster' => 'us2',
+            //     'useTLS' => true
+            // );
+            // $pusher = new Pusher\Pusher(
+            //     '1f4e2261136ad4420076',
+            //     'fbd2b761ae45b3230055',
+            //     '596250',
+            //     $options
+            // );
+            //
+            // $data['message'] = 'hello world';
+            // $pusher->trigger('my-channel', 'my-event', $data);
             break;
         }
         case 'giveItem': {

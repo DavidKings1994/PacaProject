@@ -20,6 +20,17 @@
             </div>
             <div class="collapse navbar-collapse" id="pacaNavbar">
                 <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown" v-if="logged">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i id="notificationbell" v-bind:class="{ active: hasUnreadNotifications }"
+                            class="glyphicon glyphicon-bell dropdown-toggle">
+                            </i>
+                            <span v-if="hasUnreadNotifications" class="badge">{{ unreadNotifications }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li v-if="!hasUnreadNotifications">Nothing here yet, come back later!</li>
+                        </ul>
+                    </li>
                     <li>
                         <a href="#" v-if="logged && rol == 'user'">
                             <span v-if="stars > 0"><img src="/assets/star.png" alt="stars"> {{ stars }}</span>
@@ -52,7 +63,8 @@ var navigation = require('./../../navigation.js');
 export default {
     data: function() {
         return {
-            active: false
+            active: false,
+            notifications: []
         }
     },
     computed: {
@@ -82,6 +94,12 @@ export default {
                 stars = Math.floor(navigation.state.session.currency / 500);
             }
             return shards - (stars * 500);
+        },
+        hasUnreadNotifications: function() {
+            return this.notifications.length > 0;
+        },
+        unreadNotifications: function() {
+            return this.notifications.length;
         }
     },
     methods: {
@@ -91,6 +109,9 @@ export default {
         },
         activate: function() {
             this.active = !this.active;
+        },
+        loadNotifications: function() {
+
         }
     }
 };
@@ -121,5 +142,9 @@ export default {
     height: 2px;
     border-radius: 1px;
     margin-top: 4px;
+}
+
+#notificationbell.active {
+    color: #1fe0c9 !important;
 }
 </style>
