@@ -76,7 +76,8 @@ export default {
                 },
                 {
                     name: "traits",
-                    title: "Traits"
+                    title: "Traits",
+                    renderfunction: this.renderTraitsColumn
                 },
                 // {
                 //     name: "class",
@@ -155,11 +156,24 @@ export default {
         renderImageColumn: function (colname, entry) {
             return '<img src="' + entry.image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
         },
-        renderStatusColumn: function (colname, entry) {
-            return '<span class="label label-' + (entry.status == 'HOME' ? 'success' : 'danger') + '">' + (entry.status == 'HOME' ? 'Home' : 'Not home') + '</span>';
-        },
+        // renderStatusColumn: function (colname, entry) {
+        //     return '<span class="label label-' + (entry.status == 'HOME' ? 'success' : 'danger') + '">' + (entry.status == 'HOME' ? 'Home' : 'Not home') + '</span>';
+        // },
         renderRegisterColumn: function (colname, entry) {
             return '<span class="label label-' + (entry.registered == 1 ? 'success' : 'danger') + '">' + (entry.registered == 1 ? 'YES' : 'NO') + '</span>';
+        },
+        renderTraitsColumn: function (colname, entry) {
+            let render = '';
+            if (entry.traits != null && entry.traits != '') {
+                render = '<p>';
+                console.log(entry.traits);
+                let lines = entry.traits.split(/\n/);
+                lines.forEach((line) => {
+                    render += line + '<br>';
+                });
+                render += '</p>';
+            }
+            return render;
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {

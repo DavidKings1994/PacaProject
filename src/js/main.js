@@ -28,6 +28,8 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
     // user components
     Vue.component('paca-user-item-transaction', require('./views/user/items/itemTransaction.vue'));
     Vue.component('paca-user-character-form', require('./views/user/characters/characterForm.vue'));
+    Vue.component('paca-user-character-transaction', require('./views/user/characters/characterTransaction.vue'));
+    // Vue.component('paca-user-character-transfer-list', require('./views/user/characters/characterTransferList.vue'));
 
     const routes = [
         {
@@ -113,6 +115,12 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
                     path: 'config',
                     component: require('./views/user/config.vue'),
                     name: 'user config',
+                    props: true
+                },
+                {
+                    path: 'requests',
+                    component: require('./views/user/characters/characterTransferList.vue'),
+                    name: 'transfer requests',
                     props: true
                 }
             ]
@@ -206,19 +214,6 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
                     value = value.toString();
                     return value.charAt(0).toUpperCase() + value.slice(1);
                 }
-            },
-            created: function() {
-                Pusher.logToConsole = true;
-
-                const pusher = new Pusher('1f4e2261136ad4420076', {
-                    cluster: 'us2',
-                    forceTLS: true
-                });
-
-                const channel = pusher.subscribe('my-channel');
-                channel.bind('my-event', function(data) {
-                    alert(JSON.stringify(data));
-                });
             }
         });
     });

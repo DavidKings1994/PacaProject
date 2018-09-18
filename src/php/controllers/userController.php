@@ -1,8 +1,8 @@
 <?php
+require './../autoload.php';
 require('./../phpmailer/phpmailer/src/PHPMailer.php');
 require('./../phpmailer/phpmailer/src/Exception.php');
 require('./../phpmailer/phpmailer/src/SMTP.php');
-require './../autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 include_once  './../connection.php';
 $connection = new Connection();
@@ -420,6 +420,36 @@ if(isset($_POST['action'])) {
                         'error' => '404'
                     ));
                 }
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
+        case 'getNotifications': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL getNotifications(?)");
+            $query->bind_param('i', $_POST['user']);
+            if($query->execute()) {
+                $query->bind_result($id, $date, $status, $characterName, $characterImage, $userName, $ownerName);
+                $notifications = array();
+                while($query->fetch()) {
+                    $notifications[] = array(
+                        'id' => $id,
+                        'date' => $date,
+                        'status' => $status,
+                        'characterName' => $characterName,
+                        'characterImage' => $characterImage,
+                        'userName' => $userName,
+                        'ownerName' => $ownerName
+                    );
+                }
+                $data = array(
+                    'status' => 'OK',
+                    'notifications' => $notifications
+                );
+                echo json_encode($data);
             } else {
                 echo json_encode(array(
                     'status' => 'ERROR',

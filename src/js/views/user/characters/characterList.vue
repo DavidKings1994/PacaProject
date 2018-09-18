@@ -12,6 +12,11 @@
             v-on:closed="resetInventory"
         >
         </paca-inventory>
+        <paca-user-character-transaction
+            :character="selectedCharacter"
+            v-on:saved="loadCharacters"
+        >
+        </paca-user-character-transaction>
         <vue-bootstrap-table
             v-if="characters.length > 0"
             :columns="columns"
@@ -50,13 +55,27 @@ export default {
                 },
                 {
                     name: "description",
-                    title: "Description"
+                    title: "Description",
+                    renderfunction: this.renderTraitsColumn
                 },
                 {
-                    name: "status",
-                    title: "Status",
-                    renderfunction: this.renderStatusColumn
+                    name: "type",
+                    title: "Type"
                 },
+                {
+                    name: "species",
+                    title: "Species"
+                },
+                {
+                    name: "traits",
+                    title: "Traits",
+                    renderfunction: this.renderTraitsColumn
+                },
+                // {
+                //     name: "status",
+                //     title: "Status",
+                //     renderfunction: this.renderStatusColumn
+                // },
                 {
                     name: "options",
                     title: "Options",
@@ -118,14 +137,13 @@ export default {
             this.selectedCharacter = null;
         },
         loadCharacters: function() {
-            this.characters = [];
             $.post('./php/controllers/userController.php', {
                 action: 'getCharacters',
                 id: this.profile.idUser
             }, (msg) => {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
-                    this.characters = json.characters;
+                    this.$set(this, 'characters', json.characters);
                 } else {
                     messageStore.commit('addMessage', {
                         text: 'Unable to load user\'s characters',
@@ -137,11 +155,24 @@ export default {
         renderImageColumn: function (colname, entry) {
             return '<img src="' + entry.image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
         },
-        renderStatusColumn: function (colname, entry) {
-            return '<span class="label label-' + (entry.status == 'HOME' ? 'success' : 'danger') + '">' + entry.status + '</span>';
-        },
+        // renderStatusColumn: function (colname, entry) {
+        //     return '<span class="label label-' + (entry.status == 'HOME' ? 'success' : 'danger') + '">' + entry.status + '</span>';
+        // },
         renderRegisterColumn: function (colname, entry) {
             return '<span class="label label-' + (entry.registered == 1 ? 'success' : 'danger') + '">' + (entry.registered == 1 ? 'YES' : 'NO') + '</span>';
+        },
+        renderTraitsColumn: function (colname, entry) {
+            let render = '';
+            if (entry.traits != null && entry.traits != '') {
+                render = '<p>';
+                console.log(entry.traits);
+                let lines = entry.traits.split(/\n/);
+                lines.forEach((line) => {
+                    render += line + '<br>';
+                });
+                render += '</p>';
+            }
+            return render;
         },
         renderOptionsColumn: function(colname, entry) {
             var checker = setTimeout(() => {
@@ -166,6 +197,15 @@ export default {
                         })[0];
                         $("#inventoryUseModal").modal();
                     });
+                    // set up the transfer character button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="transferCharacter"]').click((event) => {
+                        var id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == id;
+                        })[0];
+                        $("#characterTransactionModal").modal();
+                    });
                     clearTimeout(checker);
                 }
             }, 100);
@@ -179,6 +219,7 @@ export default {
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="inventory">Inventory</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="useItem">Use item</a></li>' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="transferCharacter">Transfer character</a></li>' +
                 '</ul>' +
             '</div>';
         },
@@ -219,6 +260,15 @@ export default {
                     })[0];
                     $("#inventoryUseModal").modal();
                 });
+                // set up the transfer character button
+                $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="transferCharacter"]').click((event) => {
+                    var id = $(event.target).attr('data-idcharacter');
+                    this.selectedCharacter = null;
+                    this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                        return n.idCharacter == id;
+                    })[0];
+                    $("#characterTransactionModal").modal();
+                });
             });
         }
     },
@@ -238,6 +288,12 @@ export default {
                 this.setUpSwall();
             }
         });
+
+        $(document).ready(() => {
+            $(window).on('reloadCharacters', () => {
+                this.loadCharacters();
+            });
+        })
     }
 }
 </script>
