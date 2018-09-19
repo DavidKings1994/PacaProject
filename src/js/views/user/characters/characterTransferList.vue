@@ -62,9 +62,6 @@ export default {
                         text: (status == 3 ? 'The character is now yours!' : 'Request declined'),
                         type: (status == 3 ? 'success' : 'info')
                     });
-                    if (status == 3) {
-                        $.trigger('reloadCharacters');
-                    }
                 } else {
                     messageStore.commit('addMessage', {
                         text: 'Ups! something went wrong.',

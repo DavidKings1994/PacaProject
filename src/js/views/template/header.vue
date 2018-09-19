@@ -37,8 +37,8 @@
                                         </div>
                                         <div class="media-body">
                                             <h4 class="media-heading" v-html="notificationMessage(notification)">
-                                                <b v-if="notification.status == 1">{{ notification.ownerName }}</b>
-                                                <b v-if="notification.status != 1 && notification.userName != userName">{{ notification.userName }}</b>
+                                                <!-- <b v-if="notification.status < 3">{{ notification.ownerName }}</b>
+                                                <b v-if="notification.status != 1 && notification.userName != userName">{{ notification.userName }}</b> -->
                                                 {{ notificationMessage(notification) }}
                                             </h4>
                                             <p>{{ notification.date }}</p>
@@ -138,12 +138,12 @@ export default {
         notificationMessage: function(notification) {
             switch (notification.status) {
                 case 1: {
-                    return 'sent you a transfer request for ' + notification.characterName;
+                    return '<b>' + notification.ownerName + '</b> sent you a transfer request for ' + notification.characterName;
                     break;
                 }
                 case 2: {
                     if (notification.ownerName == this.userName) {
-                        return 'has declined your transfer request';
+                        return '<b>' + notification.userName + '</b> has declined your transfer request';
                     } else {
                         return 'You declined <b>' + notification.ownerName + '</b> transfer request for ' + notification.characterName;
                     }
@@ -151,7 +151,7 @@ export default {
                 }
                 case 3: {
                     if (notification.ownerName == this.userName) {
-                        return 'has accepted your transfer request';
+                        return '<b>' + notification.userName + '</b> has accepted your transfer request';
                     } else {
                         return 'you accepted <b>' + notification.ownerName + '</b> transfer request';
                     }
@@ -171,7 +171,8 @@ export default {
                 action: 'getNotifications',
                 user: this.userId
             }, (msg) => {
-                var json = JSON.parse(msg);
+                let json = JSON.parse(msg);
+                // console.log(json);
                 if (json.status == 'OK') {
                     this.$set(this, 'notifications', json.notifications);
                     $(document).ready(() => {
@@ -196,6 +197,7 @@ export default {
         var channel = pusher.subscribe('sirnusNotifications');
         channel.bind('newNotification', (data) => {
             this.loadNotifications();
+            window.eventBus.$emit('updateCharacters');
         });
     },
     mounted: function() {

@@ -55,8 +55,7 @@ export default {
                 },
                 {
                     name: "description",
-                    title: "Description",
-                    renderfunction: this.renderTraitsColumn
+                    title: "Description"
                 },
                 {
                     name: "type",
@@ -165,7 +164,6 @@ export default {
             let render = '';
             if (entry.traits != null && entry.traits != '') {
                 render = '<p>';
-                console.log(entry.traits);
                 let lines = entry.traits.split(/\n/);
                 lines.forEach((line) => {
                     render += line + '<br>';
@@ -261,7 +259,7 @@ export default {
                     $("#inventoryUseModal").modal();
                 });
                 // set up the transfer character button
-                $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="transferCharacter"]').click((event) => {
+                $('.swalDropDown').find('a[data-option="transferCharacter"]').click((event) => {
                     var id = $(event.target).attr('data-idcharacter');
                     this.selectedCharacter = null;
                     this.selectedCharacter = $(this.characters).filter(function(i,n) {
@@ -289,11 +287,9 @@ export default {
             }
         });
 
-        $(document).ready(() => {
-            $(window).on('reloadCharacters', () => {
-                this.loadCharacters();
-            });
-        })
+        window.eventBus.$on('updateCharacters', data => {
+            this.loadCharacters();
+        });
     }
 }
 </script>

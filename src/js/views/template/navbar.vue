@@ -68,6 +68,7 @@ export default {
             if (realWidth <= 780 || realHeight <= 480){
                 $('#lateralNavbar').collapse('hide');
                 $('#lateralNavbar').addClass('compact');
+                $('#maindiv').addClass('compact');
             }
         });
         $(window).resize(function(){
@@ -76,10 +77,12 @@ export default {
             if (realWidth >= 780 && realHeight >= 480){
                 $('#lateralNavbar').collapse('show');
                 $('#lateralNavbar').removeClass('compact');
+                $('#maindiv').removeClass('compact');
             }
             if (realWidth <= 780 || realHeight <= 480){
                 $('#lateralNavbar').collapse('hide');
                 $('#lateralNavbar').addClass('compact');
+                $('#maindiv').addClass('compact');
             }
         });
     }

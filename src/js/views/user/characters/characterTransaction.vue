@@ -84,7 +84,7 @@ export default {
                         });
                     } else {
                         messageStore.commit('addMessage', {
-                            text: response.error,
+                            text: response.message,
                             type: 'error'
                         });
                     }

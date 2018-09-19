@@ -42,8 +42,10 @@ body {
                     margin-bottom: 50px;
                 }
 
-                div:nth-child(3) {
-                    overflow-x: auto;
+                &.compact {
+                    div:nth-child(3) {
+                        overflow-x: auto;
+                    }
                 }
             }
         }

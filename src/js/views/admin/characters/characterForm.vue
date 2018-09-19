@@ -50,10 +50,10 @@
                             <label class="control-label col-sm-2" for="type">Type:</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="type" name="type">
-                                    <option value="1">City</option>
-                                    <option value="2">Wild</option>
-                                    <option value="3">Neutral</option>
-                                    <option value="4">Void</option>
+                                    <option value="city">City</option>
+                                    <option value="wild">Wild</option>
+                                    <option value="neutral">Neutral</option>
+                                    <option value="void">Void</option>
                                 </select>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                             <label class="control-label col-sm-2" for="species">Species:</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="species" name="species">
-                                    <option value="1">Louxe</option>
+                                    <option value="louxe">Louxe</option>
                                 </select>
                             </div>
                         </div>

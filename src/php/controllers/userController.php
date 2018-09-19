@@ -322,7 +322,7 @@ if(isset($_POST['action'])) {
             $query->bind_param('i', $_POST['id']);
             if($query->execute()) {
                 $characters = array();
-                $query->bind_result($idCharacter, $image, $name, $desc, $status);
+                $query->bind_result($idCharacter, $image, $name, $desc, $status, $traits, $type, $species);
                 while ($query->fetch()) {
                     $characters[] = array(
                         'idCharacter' => $idCharacter,
@@ -330,6 +330,9 @@ if(isset($_POST['action'])) {
                         'name' => $name,
                         'description' => $desc,
                         'status' => $status,
+                        'traits' => $traits,
+                        'type' => $type,
+                        'species' => $species
                     );
                 }
                 $data = array(
