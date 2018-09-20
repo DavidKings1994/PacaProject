@@ -1,5 +1,8 @@
 <template id="">
     <div class="container-fluid" id="requestList">
+        <div class="well" v-if="!hasNotifications">
+            <h4 style="text-align: center;">Nothing here yet!</h4>
+        </div>
         <div class="panel panel-default" v-for="notification in notifications" :data-id="notification.id" v-if="notification.status == 1">
           <div class="panel-heading row">
               <div class="col-md-2">
@@ -33,6 +36,9 @@ export default {
         },
         userId: function() {
             return this.logged ? navigation.state.session.idUser : null;
+        },
+        hasNotifications: function() {
+            return this.notifications.find(n => { return n.status == 1; });
         }
     },
     methods: {

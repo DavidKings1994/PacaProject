@@ -25,6 +25,18 @@ body {
     $appHeight: calc(100vh - 51px);
     font-family: $mainFont;
 
+    &.compact {
+        #maindiv {
+            div:nth-child(3) {
+                overflow-x: auto;
+            }
+        }
+
+        #pacaNavbar #notificationList {
+            display: none;
+        }
+    }
+
     #mainContainer {
         margin-top: 51px;
         margin-left: 0;
@@ -40,12 +52,6 @@ body {
             #maindiv {
                 div.btn-toolbar {
                     margin-bottom: 50px;
-                }
-
-                &.compact {
-                    div:nth-child(3) {
-                        overflow-x: auto;
-                    }
                 }
             }
         }

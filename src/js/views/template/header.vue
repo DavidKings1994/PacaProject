@@ -21,12 +21,18 @@
             <div class="collapse navbar-collapse" id="pacaNavbar">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown" v-if="logged && rol == 'user'">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" v-if="!this.$root.$el.className.includes('compact')">
                             <i id="notificationbell" v-bind:class="{ active: hasUnreadNotifications }"
                             class="glyphicon glyphicon-bell dropdown-toggle">
                             </i>
                             <span v-if="hasUnreadNotifications" class="badge">{{ unreadNotifications }}</span>
                         </a>
+                        <router-link :to="'/user/' + userName + '/requests'" class="dropdown-toggle" data-toggle="dropdown" v-else>
+                            <i id="notificationbell" v-bind:class="{ active: hasUnreadNotifications }"
+                            class="glyphicon glyphicon-bell dropdown-toggle">
+                            </i>
+                            <span v-if="hasUnreadNotifications" class="badge">{{ unreadNotifications }}</span>
+                        </router-link>
                         <ul class="dropdown-menu" id="notificationList">
                             <li v-if="!hasNotifications">Nothing here yet, come back later!</li>
                             <li v-for="notification in notifications" v-if="showNotification(notification)" :data-id="notification.id" v-bind:class="{ active: notification.status == 1 }">
@@ -37,8 +43,6 @@
                                         </div>
                                         <div class="media-body">
                                             <h4 class="media-heading" v-html="notificationMessage(notification)">
-                                                <!-- <b v-if="notification.status < 3">{{ notification.ownerName }}</b>
-                                                <b v-if="notification.status != 1 && notification.userName != userName">{{ notification.userName }}</b> -->
                                                 {{ notificationMessage(notification) }}
                                             </h4>
                                             <p>{{ notification.date }}</p>

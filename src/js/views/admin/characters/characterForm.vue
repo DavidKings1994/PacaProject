@@ -8,7 +8,7 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <input type="hidden" name="action" :value="action">
-                        <div class="form-group">
+                        <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="owner">Owner:</label>
                             <div class="col-sm-10">
                                 <v-select
@@ -21,7 +21,7 @@
                                 </v-select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="id">Registry number:</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="id" id="id" placeholder="Enter character registry number" :value="this.characterId">
@@ -40,13 +40,13 @@
                                 </textarea>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="image">Image:</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="image" id="image" placeholder="Enter character image link" :value="this.characterImage">
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="type">Type:</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="type" name="type">
@@ -57,7 +57,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="species">Species:</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="species" name="species">
@@ -65,7 +65,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="traits">Traits:</label>
                             <div class="col-sm-10">
                                 <textarea type="text" class="form-control" name="traits" id="traits"
@@ -97,6 +97,7 @@
 <script>
 import vSelect from 'vue-select';
 var messageStore = require('./../../../messages.js');
+var navigation = require('./../../../navigation.js');
 export default {
     data: function() {
         return {
@@ -110,7 +111,7 @@ export default {
     props: ['character'],
     watch: {
         character: function() {
-            if (this.character != null) {
+            if (this.character != null && this.rol == 'admin') {
                 $("#characterFormModal select[name='class']").val(this.character.clas);
                 $("#characterFormModal select[name='type']").val(this.character.type);
                 $("#characterFormModal select[name='species']").val(this.character.species);
@@ -124,6 +125,9 @@ export default {
         }
     },
     computed: {
+        logged: function() { return navigation.state.session != null; },
+        rol: function() { return this.logged ? navigation.state.session.rol : null; },
+        userName: function() { return this.logged ? navigation.state.session.name : null; },
         characterId: function() { return this.character == null ? '' : this.character.idCharacter; },
         characterName: function() { return this.character == null ? '' : this.character.name; },
         characterDesc: function() { return this.character == null ? '' : this.character.description; },
@@ -150,10 +154,25 @@ export default {
             });
         },
         save: function() {
-            $.post('./php/controllers/characterController.php',
-            $("#characterFormModal form").serialize() +
-            '&owner=' +
-            encodeURIComponent(this.selected != null ? this.selected.label : ''),
+            let data;
+            if (this.rol == 'admin') {
+                data = $("#characterFormModal form").serialize() + '&owner=' +
+                encodeURIComponent(this.selected != null ? this.selected.label : '');
+            } else {
+                data = {
+                    action: 'updateCharacter',
+                    id: this.character.idCharacter,
+                    image: this.character.image,
+                    name: $('#characterFormModal input#name').val(),
+                    desc: $('#characterFormModal textarea#desc').val(),
+                    type: this.character.type,
+                    species: this.character.species,
+                    traits: this.character.traits,
+                    owner: this.userName,
+                    class: this.character.class
+                };
+            }
+            $.post('./php/controllers/characterController.php', data,
             (json) => {
                 var result = JSON.parse(json);
                 if (result.status == 'OK') {

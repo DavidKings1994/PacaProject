@@ -2,6 +2,11 @@
     <div class="content" id="characterList">
         <div class="row text-right" id="upperBar">
         </div>
+        <paca-admin-character-form
+            :character="selectedCharacter"
+            v-on:saved="loadCharacters"
+        >
+        </paca-admin-character-form>
         <paca-inventory-use
             :idCharacter="idCharacter"
             v-on:closed="resetInventory"
@@ -177,6 +182,15 @@ export default {
                  // if the opttions menu is already rendered
                 if ($('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"]').length > 0) {
                     this.setUpSwall();
+                    // set up the form button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="profile"]').click((event) => {
+                        let id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == id;
+                        })[0];
+                        $("#characterFormModal").modal();
+                    });
                     // set up the inventory button
                     $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="inventory"]').click((event) => {
                         let id = $(event.target).attr('data-idcharacter');
@@ -213,6 +227,8 @@ export default {
                     '<span class="caret"></span>' +
                 '</button>' +
                 '<ul class="dropdown-menu">' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="profile">Edit character</a></li>' +
+                    '<li class="divider"></li>' +
                     '<li class="dropdown-header">Download images</li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="inventory">Inventory</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
@@ -239,6 +255,14 @@ export default {
                 });
                 $('.swalDropDown').find('a').click((event) => {
                     swal.close();
+                });
+                $('.swalDropDown').find('a[data-option="profile"]').click((event) => {
+                    let id = $(event.target).attr('data-idcharacter');
+                    self.selectedCharacter = null;
+                    self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                        return n.idCharacter == id;
+                    })[0];
+                    $("#characterFormModal").modal();
                 });
                 // set up the inventory button
                 $('.swalDropDown').find('a[data-option="inventory"]').click((event) => {

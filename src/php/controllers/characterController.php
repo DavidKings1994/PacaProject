@@ -24,7 +24,7 @@ if(isset($_POST['action'])) {
         }
         case 'registerCharacter': {
             $query = mysqli_prepare($connection->getConnection(), "CALL registerCharacter(?,?,?,?,?,?,?,?)");
-            $query->bind_param('ssssiiss',
+            $query->bind_param('ssssssss',
                 $_POST['id'],
                 $_POST['image'],
                 $_POST['name'],
@@ -52,7 +52,7 @@ if(isset($_POST['action'])) {
         }
         case 'updateCharacter': {
             $query = mysqli_prepare($connection->getConnection(), "CALL updateCharacter(?,?,?,?,?,?,?,?,?)");
-            $query->bind_param('ssssiisss',
+            $query->bind_param('sssssssss',
                 $_POST['id'],
                 $_POST['image'],
                 $_POST['name'],
