@@ -69,7 +69,7 @@
                             <label class="control-label col-sm-2" for="traits">Traits:</label>
                             <div class="col-sm-10">
                                 <textarea type="text" class="form-control" name="traits" id="traits"
-                                placeholder="Enter character's traits" :value="this.characterTraits" maxlength="250">
+                                placeholder="Enter character's traits" :value="this.characterTraits" maxlength="800">
                                 </textarea>
                             </div>
                         </div>
