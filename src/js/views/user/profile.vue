@@ -1,5 +1,7 @@
 <template lang="html">
     <div id="profileView">
+        <paca-character-card :selectedId="selectedCharacter" :characters="characters">
+        </paca-character-card>
         <div class="well">
             <div class="panel panel-default" style="text-align: center;">
                 <div class="panel-heading">
@@ -27,13 +29,14 @@
             <div class="panel panel-default panels">
                 <div class="panel-heading"><h3>My characters</h3></div>
                 <div class="panel-body">
-                    <div class="panel panel-default" v-for="character in characters" :data-id="character.idcharacter">
-                        <router-link :to="'/user/' + userId + '/characters'">
-                            <div class="panel-body">
-                                <img :src="character.image" :alt="character.name" width="50" height="50">
-                            </div>
-                            <div class="panel-footer">{{ character.name }} <span :class="'label label-' + (character.status == 'HOME' ? 'success' : 'danger')">{{ character.status }}</span></div>
-                        </router-link>
+                    <div class="panel panel-default"
+                    v-for="(character, index) in characters"
+                    :data-id="character.idCharacter"
+                    v-on:click="selectedCharacter = index">
+                        <div class="panel-body">
+                            <img :src="character.image" :alt="character.name" width="50" height="50">
+                        </div>
+                        <div class="panel-footer">{{ character.name }} <span :class="'label label-' + (character.status == 'HOME' ? 'success' : 'danger')">{{ character.status }}</span></div>
                     </div>
                 </div>
             </div>
@@ -49,7 +52,9 @@ export default {
         return {
             profile: {},
             characters: [],
-            items: []
+            selectedCharacter: null,
+            items: [],
+            selectedItem: null
         };
     },
     props: ['id'],

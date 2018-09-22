@@ -12,6 +12,7 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
     Vue.component('paca-inventory', require('./views/template/inventory.vue'));
     Vue.component('paca-inventory-use', require('./views/template/inventoryUse.vue'));
     Vue.component('paca-inventory-transaction', require('./views/template/inventoryTransaction.vue'));
+    Vue.component('paca-character-card', require('./views/template/characterCard.vue'));
     Vue.component('messages', require('./views/template/messages.vue'));
     Vue.component('message', require('./views/template/message.vue'));
 
