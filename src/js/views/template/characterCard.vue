@@ -13,16 +13,18 @@
                     <div id="closeCard" v-on:click="close">
                         <i class="glyphicon glyphicon-remove"></i>
                     </div>
-                    <div class="characterCardBody">
+                    <div class="characterCardBody" v-on:click="toggleInfo">
                         <img src="/assets/character_card_background.png" alt="background" class="character_card_background">
-                        <img :src="characters[index].image" alt="character" class="characterImage">
+                        <div class="characterContainer" v-bind:class="{characterContainer:showInfo, characterContainerLarge:!showInfo}">
+                            <img :src="characters[index].image" alt="character" class="characterImage">
+                        </div>
                         <img src="/assets/character_card_foreground.png" alt="foreground" class="character_card_foreground">
-                        <h2 style="top: 5%;"><b>{{ characters[index].idCharacter }}</b></h2>
-                        <h4 style="top: 15%;">{{ characters[index].name }}</h4>
-                        <p style="top: 55%;">{{ characters[index].description }}</p>
-                        <p style="top: 65%;">
+                        <h2 style="top: 5%;" v-if="showInfo"><b>{{ characters[index].idCharacter }}</b></h2>
+                        <h4 style="top: 15%;" v-if="showInfo">{{ characters[index].name }}</h4>
+                        <p style="top: 55%;" v-if="showInfo">{{ characters[index].description }}</p>
+                        <p style="top: 65%;" v-if="showInfo">
                             <b>Traits:</b> <br>
-                            <ul style="padding: 0 40px;">
+                            <ul style="padding: 0 40px;" id="characterTraits">
                                 <li v-for="(trait, index) in (characters[index].traits != null ? characters[index].traits.split(/\n/) : [])" id="index">
                                     {{ trait }}
                                 </li>
@@ -40,7 +42,8 @@ export default {
     data: function() {
         return {
             open: false,
-            index: 0
+            index: 0,
+            showInfo: false
         }
     },
     props: ['characters', 'selectedId'],
@@ -76,6 +79,9 @@ export default {
             if (this.index > 0) {
                 this.index--;
             }
+        },
+        toggleInfo: function() {
+            this.showInfo = !this.showInfo;
         }
     }
 }
@@ -138,10 +144,23 @@ export default {
         text-align: center;
     }
 
-    .characterCard .characterImage {
+    .characterCard .characterContainer {
         top: 20%;
+        overflow: hidden;
         height: 35%;
-        width: auto !important;
+    }
+
+    .characterCard .characterContainerLarge {
+        top: 15%;
+        overflow: hidden;
+        height: 60%;
+    }
+
+    .characterCard .characterImage {
+        height: 100%;
+        position: relative;
+        left: 100%;
+        margin-left: -200%;
     }
 
     #closeCard {
@@ -165,6 +184,14 @@ export default {
 
     #prevCard {
         left: 5vw;
+    }
+
+    #characterTraits {
+        height: 10vh;
+        max-height: 70px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        word-wrap: break-word;
     }
 
     .fade-enter-active, .fade-leave-active {
