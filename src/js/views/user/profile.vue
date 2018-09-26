@@ -1,6 +1,6 @@
 <template lang="html">
     <div id="profileView">
-        <paca-character-card :selectedId="selectedCharacter" :characters="characters">
+        <paca-character-card :selectedId="selectedCharacter" :characters="characters" v-on:close="selectedCharacter = null">
         </paca-character-card>
         <div class="well">
             <div class="panel panel-default" style="text-align: center;">

@@ -1,17 +1,33 @@
 <template id="">
     <transition name="fade">
-        <div class="character_card_background" v-if="selectedId != null">
-            <transition name="card-enter">
-                <div class="characterCard" v-if="selectedId != null">
+        <div class="character_card_veil" v-if="open" :key="selectedId" :data-index="selectedId">
+            <div id="prevCard" v-on:click="prev" v-if="showPrev">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+            </div>
+            <div id="nextCard" v-on:click="next" v-if="showNext">
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </div>
+            <transition name="card">
+                <div class="characterCard" v-if="characters[index] != null" :key="index" :data-index="index">
+                    <span>{{ characters[index].idCharacter + ': ' + characters[index].name}}</span>
+                    <div id="closeCard" v-on:click="close">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </div>
                     <div class="characterCardBody">
-                        <h4 class="head">ID</h4>
-                        <h5>nombre</h5>
-                        <div style="height:100%;">
-                            <img :src="characters[selectedId].image" alt="character">
-                            <img src="/assets/character_card_foreground.png" alt="foreground" class="character_card_background">
-                        </div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                        <p>traits</p>
+                        <img src="/assets/character_card_background.png" alt="background" class="character_card_background">
+                        <img :src="characters[index].image" alt="character" class="characterImage">
+                        <img src="/assets/character_card_foreground.png" alt="foreground" class="character_card_foreground">
+                        <h2 style="top: 5%;"><b>{{ characters[index].idCharacter }}</b></h2>
+                        <h4 style="top: 15%;">{{ characters[index].name }}</h4>
+                        <p style="top: 55%;">{{ characters[index].description }}</p>
+                        <p style="top: 65%;">
+                            <b>Traits:</b> <br>
+                            <ul style="padding: 0 40px;">
+                                <li v-for="(trait, index) in (characters[index].traits != null ? characters[index].traits.split(/\n/) : [])" id="index">
+                                    {{ trait }}
+                                </li>
+                            </ul>
+                        </p>
                     </div>
                 </div>
             </transition>
@@ -30,24 +46,43 @@ export default {
     props: ['characters', 'selectedId'],
     watch: {
         selectedId: function() {
-            console.log(this.selectedId);
             this.index = this.selectedId;
+            this.open = (this.index != null);
+        }
+    },
+    computed: {
+        showNext: function() {
+            return this.characters.length > 0 && this.index < this.characters.length - 1;
+        },
+        showPrev: function() {
+            return this.characters.length > 0 && this.index > 0;
         }
     },
     methods: {
+        open: function() {
+            this.open = true;
+        },
         close: function() {
             this.open = false;
+            this.index = null;
+            this.$emit('close');
+        },
+        next: function() {
+            if (this.index < this.characters.length - 1) {
+                this.index++;
+            }
+        },
+        prev: function() {
+            if (this.index > 0) {
+                this.index--;
+            }
         }
-    },
-    mounted: function() {
-        console.log(this.selectedId);
-        // window.eventBus.$emit('updateCharacters');
     }
 }
 </script>
 
 <style media="screen">
-    .character_card_background {
+    .character_card_veil {
         z-index: 1000;
         display: block;
         position: fixed;
@@ -56,10 +91,11 @@ export default {
         background: rgba(0,0,0,0.5);
         width: 100vw;
         height: 100vh;
+        overflow: auto;
     }
 
     .characterCard {
-        background: black;
+        background: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0) 100%);
         height: 80vh;
         min-height: 400px;
         min-width: 225px;
@@ -67,28 +103,75 @@ export default {
         left: 50%;
         top: 50%;
         transform: translate(-50%,-50%);
+        width: min-content;
+        border-top: 2vh solid black;
     }
 
-    .characterCard .characterCardBody{
-        background-image: url('/assets/character_card_background.png');
+    .characterCard > span {
+        color: white;
         position: absolute;
-        height: 100%;
-        background-size: contain;
+        top: -2%;
+        left: 5px;
     }
 
-    .character_card_background {
+    .characterCard .characterCardBody {
+        height: 100%;
+        color: white;
+    }
+
+    .characterCard .characterCardBody .character_card_foreground, .characterCard .characterCardBody .character_card_background {
         height: 100%;
     }
 
-    .fade-enter-active {
-        transition: all .3s ease;
+    .characterCard .characterCardBody .character_card_foreground {
+        position: absolute;
+        transform: translate(-50%,-50%) !important;
+        top: 50%;
+        left: 50%;
     }
-    .fade-leave-active {
-        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+
+    .characterCard .characterCardBody > *:not(.character_card_background) {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        width: 100%;
+        text-align: center;
     }
-    .fade-enter, .slide-fade-leave-to {
-        transform: translateX(10px);
-        opacity: 0;
+
+    .characterCard .characterImage {
+        top: 20%;
+        height: 35%;
+        width: auto !important;
+    }
+
+    #closeCard {
+        position: absolute;
+        top: -2%;
+        right: 2%;
+        color: white;
+    }
+
+    #nextCard, #prevCard {
+        font-size: 3em;
+        position: absolute;
+        top: 50vh;
+        color: white;
+        z-index: 1;
+    }
+
+    #nextCard {
+        right: 5vw;
+    }
+
+    #prevCard {
+        left: 5vw;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+      opacity: 0;
     }
 
     .card-enter-active {
@@ -98,7 +181,7 @@ export default {
         transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
     }
     .card-enter, .slide-fade-leave-to {
-        transform: rotateX(50);
+        transform: rotateY(90deg);
         opacity: 0;
     }
 </style>
