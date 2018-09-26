@@ -79,6 +79,23 @@ if(isset($_POST['action'])) {
             }
             break;
         }
+        case 'deleteCharacter': {
+            $query = mysqli_prepare($connection->getConnection(), "update `character` set deleteDate = NOW() where idCharacter = ?");
+            $query->bind_param('s',
+                $_POST['id']
+            );
+            if($query->execute()) {
+                echo json_encode(array(
+                    'status' => 'OK'
+                ));
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
         case 'sendTransferRequest': {
             $query = mysqli_prepare($connection->getConnection(), "CALL registerTransferRequest(?,?)");
             $query->bind_param('si',

@@ -153,6 +153,26 @@ export default {
             this.selectedCharacter = null;
             $('#characterFormModal').modal();
         },
+        deleteCharacter: function(id) {
+            $.post('./php/controllers/characterController.php', {
+                action: 'deleteCharacter',
+                id: id
+            }, (msg) => {
+                let json = JSON.parse(msg);
+                if (json.status == 'OK') {
+                    this.loadCharacters();
+                    messageStore.commit('addMessage', {
+                        text: 'Bye! character deleted.',
+                        type: 'success'
+                    });
+                } else {
+                    messageStore.commit('addMessage', {
+                        text: 'Unable to delete character.',
+                        type: json.error
+                    });
+                }
+            });
+        },
         renderImageColumn: function (colname, entry) {
             return '<img src="' + entry.image + '" class="" alt="' + entry.name + '" width="50" height="50" />';
         },
@@ -166,7 +186,6 @@ export default {
             let render = '';
             if (entry.traits != null && entry.traits != '') {
                 render = '<p>';
-                console.log(entry.traits);
                 let lines = entry.traits.split(/\n/);
                 lines.forEach((line) => {
                     render += line + '<br>';
@@ -227,6 +246,26 @@ export default {
                         })[0];
                         $("#inventoryUseModal").modal();
                     });
+                    // set up the delete button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="deleteCharacter"]').click((event) => {
+                        var id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == id;
+                        })[0];
+                        swal({
+                            title: "Delete character",
+                            text: "Once deleted, you will not be able to recover this character",
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true,
+                        })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                this.deleteCharacter(this.selectedCharacter.idCharacter);
+                            }
+                        });
+                    });
                     clearTimeout(checker);
                 }
             }, 100);
@@ -244,6 +283,8 @@ export default {
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="useItem">Use item</a></li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="giveItem">Give item</a></li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="giveBadge">Give badge</a></li>' +
+                    '<li class="divider"></li>' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="deleteCharacter">Delete character</a></li>' +
                 '</ul>' +
             '</div>';
         },
@@ -311,6 +352,26 @@ export default {
                         return n.idCharacter == id;
                     })[0];
                     $("#inventoryUseModal").modal();
+                });
+                // set up the delete button
+                $('.swalDropDown').find('a[data-option="deleteCharacter"]').click((event) => {
+                    var id = $(event.target).attr('data-idcharacter');
+                    this.selectedCharacter = null;
+                    this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                        return n.idCharacter == id;
+                    })[0];
+                    swal({
+                        title: "Delete character",
+                        text: "Once deleted, you will not be able to recover this character",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            this.deleteCharacter(this.selectedCharacter.idCharacter);
+                        }
+                    });
                 });
             });
         }
