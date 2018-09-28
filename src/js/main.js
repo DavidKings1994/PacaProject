@@ -68,7 +68,7 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
                 },
                 {
                     path: 'characters',
-                    component: require('./views/admin/characters/characterList.vue'),
+                    component: require('./views/template/characterGrid.vue'),
                     name: 'characters'
                 },
                 {
