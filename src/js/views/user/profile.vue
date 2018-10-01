@@ -29,15 +29,21 @@
             <div class="panel panel-default panels">
                 <div class="panel-heading"><h3>My characters</h3></div>
                 <div class="panel-body">
-                    <div class="panel panel-default"
-                    v-for="(character, index) in characters"
-                    :data-id="character.idCharacter"
-                    v-on:click="selectedCharacter = index">
-                        <div class="panel-body">
-                            <img :src="character.image" :alt="character.name" width="50" height="50">
+                    <transition-group name="slide-fade" tag="div">
+                        <div class="cardContainer" v-for="(character, index) in characters"
+                        :id="character.idCharacter"
+                        v-on:click="selectedCharacter = index"
+                        v-bind:key="character.idCharacter">
+                            <div class="characterCardSmall">
+                                <span>{{ character.idCharacter + ': ' + character.name }}</span>
+                                <img src="/assets/character_card_background_small.png" alt="background" class="character_card_background_small">
+                                <div class="characterImage">
+                                    <img :src="character.image" alt="character image">
+                                </div>
+                                <img src="/assets/character_card_foreground_small.png" alt="foreground" class="character_card_foreground_small">
+                            </div>
                         </div>
-                        <div class="panel-footer">{{ character.name }} <span :class="'label label-' + (character.status == 'HOME' ? 'success' : 'danger')">{{ character.status }}</span></div>
-                    </div>
+                    </transition-group>
                 </div>
             </div>
         </div>
@@ -143,5 +149,63 @@ export default {
     width: 150px;
     height: 150px;
     object-fit: cover;
+}
+.cardContainer {
+    float:left;
+    position:relative;
+}
+
+.characterCardSmall {
+    height: 100px;
+    border-top: solid black 20px;
+    width: min-content;
+    padding: 0;
+    margin-bottom: 35px;
+    margin-right: 2vw;
+}
+
+.characterCardSmall span {
+    position: absolute;
+    color: white;
+    top: 0;
+}
+
+.characterCardSmall .character_card_background_small {
+    display: block;
+    width: 140px;
+}
+
+.characterCardSmall .characterImage {
+    height: 80px;
+    width: 140px;
+    position: absolute;
+    overflow: hidden;
+    top: 20px;
+    text-align: center;
+}
+
+.characterCardSmall .characterImage img {
+    height: 80%;
+    margin-top: 10px;
+}
+
+.characterCardSmall .character_card_foreground_small {
+    position: absolute;
+    top: 20px;
+    width: 140px;
+}
+
+.slide-fade-move {
+    transition: transform 1s ease;
+}
+.slide-fade-enter-active {
+    transition: all .3s ease;
+}
+.slide-fade-leave-active {
+    transition: all .3s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+    transform: translateX(10px);
+    opacity: 0;
 }
 </style>

@@ -42,15 +42,17 @@ export default {
     data: function() {
         return {
             open: false,
-            index: 0,
+            index: null,
             showInfo: false
         }
     },
     props: ['characters', 'selectedId'],
     watch: {
         selectedId: function() {
-            this.index = this.selectedId;
-            this.open = (this.index != null);
+            if (this.index !== this.selectedId) {
+                this.index = this.selectedId;
+                this.open = (this.index != null);
+            }
         }
     },
     computed: {
@@ -73,11 +75,13 @@ export default {
         next: function() {
             if (this.index < this.characters.length - 1) {
                 this.index++;
+                this.$emit('indexChange', this.index);
             }
         },
         prev: function() {
             if (this.index > 0) {
                 this.index--;
+                this.$emit('indexChange', this.index);
             }
         },
         toggleInfo: function() {

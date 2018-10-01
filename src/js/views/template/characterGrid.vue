@@ -1,8 +1,15 @@
 <template id="">
-    <div class="container" id="characterList">
-        <paca-character-card :selectedId="selectedCharacter" :characters="filteredCharacters" v-on:close="selectedCharacter = null">
+    <div class="container-fluid" id="characterList">
+        <paca-character-card
+            :selectedId="selectedIndex"
+            :characters="filteredCharacters"
+            v-on:close="selectedIndex = null"
+            v-on:indexChange="changeselectedIndex">
         </paca-character-card>
-        <div class="row text-right" id="upperBar">
+        <button id="editCharacterButton" type="button" class="btn btn-primary" v-on:click="setUpSwall()" v-if="selectedIndex != null">
+            <i class="fa fa-pencil"></i>
+        </button>
+        <div class="row text-right" id="upperBar" v-if="rol == 'admin'">
             <button type="button" class="btn btn-success" v-on:click="newCharacter">
                 <i class="fa fa-plus"></i> Register new character
             </button>
@@ -44,7 +51,7 @@
             <transition-group name="slide-fade" tag="div">
                 <div class="cardContainer" v-for="(character, index) in page"
                 :id="character.idCharacter"
-                v-on:click="selectedCharacter = index"
+                v-on:click="selectIndex(currentPage * itemsPerPage + index)"
                 v-bind:key="character.idCharacter">
                     <div class="characterCardSmall">
                         <span>{{ character.idCharacter + ': ' + character.name }}</span>
@@ -89,9 +96,13 @@
                 currentPage: 0,
                 itemsPerPage: 30,
                 selectedCharacter: null,
-                transaction: null
+                bufferIndex: null,
+                selectedIndex: null,
+                transaction: null,
+                profile: null
             }
         },
+        props: ['id'],
         watch: {
             filter: function() {
                 this.filteredCharacters = $.map(this.characters, (c, i) => {
@@ -107,12 +118,16 @@
                     }
                 });
                 this.page = this.filteredCharacters.slice(this.currentPage * this.itemsPerPage, (this.currentPage * this.itemsPerPage) + this.itemsPerPage);
+                this.currentPage = 0;
             },
             currentPage: function() {
                 this.page = this.filteredCharacters.slice(this.currentPage * this.itemsPerPage, (this.currentPage * this.itemsPerPage) + this.itemsPerPage);
             }
         },
         computed: {
+            rol: function() {
+                return navigation.state.session.rol;
+            },
             idCharacter: function() {
                 return (this.selectedCharacter == null ? null : this.selectedCharacter.idCharacter);
             },
@@ -126,7 +141,7 @@
                 for (var i = 1; i < 6; i++) {
                     if(max - min < 5) {
                         min = (this.currentPage - i < 0 ? 0 : this.currentPage - i);
-                        max = (this.currentPage + i + 1 > this.pages ? this.pages : this.currentPage + i + 1);
+                        max = (this.currentPage + i + 1 > this.pages ? this.pages + 1 : this.currentPage + i + 1);
                     }
                 }
                 for (var i = min; i < max; i++) {
@@ -139,23 +154,69 @@
             resetInventory: function() {
                 this.selectedCharacter = null;
             },
+            changeselectedIndex: function(newindex) {
+                this.bufferIndex = newindex;
+            },
+            selectIndex: function(index) {
+                this.selectedIndex = this.bufferIndex = index;
+            },
+            loadUserInfo: function() {
+                return new Promise(resolve => {
+                    $.post('./php/controllers/userController.php', {
+                        action: 'getProfile',
+                        name: this.id
+                    }, (msg) => {
+                        var json = JSON.parse(msg);
+                        if (json.status == 'OK') {
+                            this.$set(this, 'profile', json.profile);
+                        } else {
+                            messageStore.commit('addMessage', {
+                                text: 'Ups! User does\'t exist',
+                                type: 'error'
+                            });
+                        }
+                        resolve();
+                    });
+                });
+            },
             loadCharacters: function() {
                 this.characters = [];
-                $.post('./php/controllers/characterController.php', {
-                    action: 'getCharacters'
-                }, (msg) => {
-                    let json = JSON.parse(msg);
-                    if (json.status == 'OK') {
-                        this.characters = json.characters;
-                        this.filteredCharacters = this.characters;
-                        this.page = this.filteredCharacters.slice(this.currentPage * this.itemsPerPage, (this.currentPage * this.itemsPerPage) + this.itemsPerPage);
-                    } else {
-                        messageStore.commit('addMessage', {
-                            text: 'Unable to load character list.',
-                            type: 'error'
+                if (this.rol == 'admin') {
+                    $.post('./php/controllers/characterController.php', {
+                        action: 'getCharacters'
+                    }, (msg) => {
+                        let json = JSON.parse(msg);
+                        if (json.status == 'OK') {
+                            this.characters = json.characters;
+                            this.filteredCharacters = this.characters;
+                            this.page = this.filteredCharacters.slice(this.currentPage * this.itemsPerPage, (this.currentPage * this.itemsPerPage) + this.itemsPerPage);
+                        } else {
+                            messageStore.commit('addMessage', {
+                                text: 'Unable to load character list.',
+                                type: 'error'
+                            });
+                        }
+                    });
+                } else {
+                    this.loadUserInfo().then(() => {
+                        $.post('./php/controllers/userController.php', {
+                            action: 'getCharacters',
+                            id: this.profile.idUser
+                        }, (msg) => {
+                            var json = JSON.parse(msg);
+                            if (json.status == 'OK') {
+                                this.characters = json.characters;
+                                this.filteredCharacters = this.characters;
+                                this.page = this.filteredCharacters.slice(this.currentPage * this.itemsPerPage, (this.currentPage * this.itemsPerPage) + this.itemsPerPage);
+                            } else {
+                                messageStore.commit('addMessage', {
+                                    text: 'Unable to load user\'s characters',
+                                    type: 'error'
+                                });
+                            }
                         });
-                    }
-                });
+                    });
+                }
             },
             newCharacter: function() {
                 this.selectedCharacter = null;
@@ -182,12 +243,22 @@
                 });
             },
             setUpSwall: function() {
+                let _idCharacter = this.characters[this.bufferIndex].idCharacter;
                 let self = this;
-                $('.table tr td:last-child div:not(.dropdown)').off('click');
-                $('.table tr td:last-child div:not(.dropdown)').on('click', function() {
-                    let options = $(this).find('.dropdown-menu');
-                    let wrapper = document.createElement('div');
-                    wrapper.innerHTML = options.get(0).outerHTML;
+                let wrapper = document.createElement('div');
+                if (this.rol == 'admin') {
+                    wrapper.innerHTML = '<ul class="dropdown-menu">' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="profile">Edit character</a></li>' +
+                            '<li class="divider"></li>' +
+                            '<li class="dropdown-header">Download images</li>' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="inventory">Inventory</a></li>' +
+                            '<li class="dropdown-header">Transactions</li>' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="useItem">Use item</a></li>' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="giveItem">Give item</a></li>' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="giveBadge">Give badge</a></li>' +
+                            '<li class="divider"></li>' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="deleteCharacter">Delete character</a></li>' +
+                        '</ul>';
                     wrapper.className = 'swalDropDown';
                     swal({
                         content: wrapper,
@@ -201,57 +272,51 @@
                         swal.close();
                     });
                     $('.swalDropDown').find('a[data-option="profile"]').click((event) => {
-                        let id = $(event.target).attr('data-idcharacter');
                         self.selectedCharacter = null;
                         self.selectedCharacter = $(self.characters).filter(function(i,n) {
-                            return n.idCharacter == id;
+                            return n.idCharacter == _idCharacter;
                         })[0];
                         $("#characterFormModal").modal();
                     });
                     // set up the inventory button
                     $('.swalDropDown').find('a[data-option="inventory"]').click((event) => {
-                        let id = $(event.target).attr('data-idcharacter');
                         self.selectedCharacter = null;
                         self.selectedCharacter = $(self.characters).filter(function(i,n) {
-                            return n.idCharacter == id;
+                            return n.idCharacter == _idCharacter;
                         })[0];
                         $("#inventoryModal").modal();
                     });
                     // set up the give-badge button
                     $('.swalDropDown').find('a[data-option="giveBadge"]').click((event) => {
-                        let id = $(event.target).attr('data-idcharacter');
                         self.selectedCharacter = null;
                         self.selectedCharacter = $(self.characters).filter(function(i,n) {
-                            return n.idCharacter == id;
+                            return n.idCharacter == _idCharacter;
                         })[0];
                         $("#inventoryTransactionModal").modal();
                         self.transaction = 'giveBadge';
                     });
                     // set up the give-item button
                     $('.swalDropDown').find('a[data-option="giveItem"]').click((event) => {
-                        let id = $(event.target).attr('data-idcharacter');
                         self.selectedCharacter = null;
                         self.selectedCharacter = $(self.characters).filter(function(i,n) {
-                            return n.idCharacter == id;
+                            return n.idCharacter == _idCharacter;
                         })[0];
                         self.transaction = 'giveItem';
                         $("#inventoryTransactionModal").modal();
                     });
                     // set up the inventory use button
                     $('.swalDropDown').find('a[data-option="useItem"]').click((event) => {
-                        var id = $(event.target).attr('data-idcharacter');
                         self.selectedCharacter = null;
                         self.selectedCharacter = $(self.characters).filter(function(i,n) {
-                            return n.idCharacter == id;
+                            return n.idCharacter == _idCharacter;
                         })[0];
                         $("#inventoryUseModal").modal();
                     });
                     // set up the delete button
                     $('.swalDropDown').find('a[data-option="deleteCharacter"]').click((event) => {
-                        var id = $(event.target).attr('data-idcharacter');
                         this.selectedCharacter = null;
                         this.selectedCharacter = $(this.characters).filter(function(i,n) {
-                            return n.idCharacter == id;
+                            return n.idCharacter == _idCharacter;
                         })[0];
                         swal({
                             title: "Delete character",
@@ -266,7 +331,60 @@
                             }
                         });
                     });
-                });
+                } else {
+                    wrapper.innerHTML = '<ul class="dropdown-menu">' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="profile">Edit character</a></li>' +
+                            '<li class="divider"></li>' +
+                            '<li class="dropdown-header">Download images</li>' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="inventory">Inventory</a></li>' +
+                            '<li class="dropdown-header">Transactions</li>' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="useItem">Use item</a></li>' +
+                            '<li><a data-idcharacter="' + _idCharacter + '" data-option="transferCharacter">Transfer character</a></li>' +
+                        '</ul>';
+                    wrapper.className = 'swalDropDown';
+                    swal({
+                        content: wrapper,
+                        button: {
+                            visible: false
+                        }
+                    }).then(() => {
+                        $('.swalDropDown').remove();
+                    });
+                    $('.swalDropDown').find('a').click((event) => {
+                        swal.close();
+                    });
+                    $('.swalDropDown').find('a[data-option="profile"]').click((event) => {
+                        self.selectedCharacter = null;
+                        self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                            return n.idCharacter == _idCharacter;
+                        })[0];
+                        $("#characterFormModal").modal();
+                    });
+                    // set up the inventory button
+                    $('.swalDropDown').find('a[data-option="inventory"]').click((event) => {
+                        self.selectedCharacter = null;
+                        self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                            return n.idCharacter == _idCharacter;
+                        })[0];
+                        $("#inventoryModal").modal();
+                    });
+                    // set up the inventory use button
+                    $('.swalDropDown').find('a[data-option="useItem"]').click((event) => {
+                        self.selectedCharacter = null;
+                        self.selectedCharacter = $(self.characters).filter(function(i,n) {
+                            return n.idCharacter == _idCharacter;
+                        })[0];
+                        $("#inventoryUseModal").modal();
+                    });
+                    // set up the transfer character button
+                    $('.swalDropDown').find('a[data-option="transferCharacter"]').click((event) => {
+                        this.selectedCharacter = null;
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == _idCharacter;
+                        })[0];
+                        $("#characterTransactionModal").modal();
+                    });
+                }
             }
         },
         created: function() {
@@ -337,6 +455,14 @@
     .slide-fade-enter, .slide-fade-leave-to {
         transform: translateX(10px);
         opacity: 0;
+    }
+
+    #editCharacterButton {
+        position: fixed;
+        bottom: 4vh;
+        right: 50vw;
+        transform: translate(50%);
+        z-index: 1002;
     }
 
 </style>

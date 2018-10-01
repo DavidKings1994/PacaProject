@@ -108,7 +108,7 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
                 },
                 {
                     path: 'characters',
-                    component: require('./views/user/characters/characterList.vue'),
+                    component: require('./views/template/characterGrid.vue'),
                     name: 'user characters',
                     props: true
                 },
