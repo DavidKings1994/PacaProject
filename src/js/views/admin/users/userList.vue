@@ -118,9 +118,11 @@ export default {
     methods: {
         resetInventory: function() {
             this.selectedUser = null;
+            this.transaction = null;
         },
         loadUsers: function() {
             this.users = [];
+            this.resetInventory();
             return new Promise(resolve => {
                 $.post('./php/controllers/userController.php', {
                     action: 'getUsers'
