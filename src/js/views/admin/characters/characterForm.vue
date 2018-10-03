@@ -24,26 +24,26 @@
                         <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="id">Registry number:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="id" id="id" placeholder="Enter character registry number" :value="this.characterId">
+                                <input type="text" class="form-control" name="id" id="id" placeholder="Enter character registry number" v-model="this.characterId">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="name">Name:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter character name" :value="this.characterName">
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter character name" v-model="editingCharacter.name">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="desc">Description:</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="desc" id="desc" placeholder="Enter character description" :value="this.characterDesc">
+                                <textarea class="form-control" name="desc" id="desc" placeholder="Enter character description" v-model="editingCharacter.description">
                                 </textarea>
                             </div>
                         </div>
                         <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="image">Image:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="image" id="image" placeholder="Enter character image link" :value="this.characterImage">
+                                <input type="text" class="form-control" name="image" id="image" placeholder="Enter character image link" v-model="editingCharacter.image">
                             </div>
                         </div>
                         <div class="form-group" v-if="rol == 'admin'">
@@ -69,7 +69,7 @@
                             <label class="control-label col-sm-2" for="traits">Traits:</label>
                             <div class="col-sm-10">
                                 <textarea type="text" class="form-control" name="traits" id="traits"
-                                placeholder="Enter character's traits" :value="this.characterTraits" maxlength="800">
+                                placeholder="Enter character's traits" v-model="editingCharacter.traits" maxlength="800">
                                 </textarea>
                             </div>
                         </div>
@@ -102,7 +102,14 @@ export default {
     data: function() {
         return {
             selected: null,
-            users: []
+            users: [],
+            editingCharacter: {
+                id: '',
+                name: '',
+                description: '',
+                image: '',
+                traits: ''
+            }
         };
     },
     components: {
@@ -119,6 +126,11 @@ export default {
                     value: this.character.idCharacter,
                     label: this.character.ownerName
                 };
+                this.editingCharacter.id = this.character.idCharacter;
+                this.editingCharacter.name = this.character.name;
+                this.editingCharacter.description = this.character.description;
+                this.editingCharacter.image = this.character.image;
+                this.editingCharacter.traits = this.character.traits;
             } else {
                 this.selected = null;
             }
@@ -128,11 +140,6 @@ export default {
         logged: function() { return navigation.state.session != null; },
         rol: function() { return this.logged ? navigation.state.session.rol : null; },
         userName: function() { return this.logged ? navigation.state.session.name : null; },
-        characterId: function() { return this.character == null ? '' : this.character.idCharacter; },
-        characterName: function() { return this.character == null ? '' : this.character.name; },
-        characterDesc: function() { return this.character == null ? '' : this.character.description; },
-        characterImage: function() { return this.character == null ? '' : this.character.image; },
-        characterTraits: function() { return this.character == null ? '' : this.character.traits; },
         buttonText: function() { return this.character == null ? 'Register' : 'Save'; },
         action: function() { return this.character == null ? 'registerCharacter' : 'updateCharacter'; }
     },

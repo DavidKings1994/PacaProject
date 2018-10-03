@@ -110,6 +110,7 @@
                         if ((c.name != null ? c.name.toLowerCase().includes(this.filter.toLowerCase().trim()) : false)
                         || (c.description != null ? c.description.toLowerCase().includes(this.filter.toLowerCase().trim()) : false)
                         || (c.idCharacter != null ? c.idCharacter.toLowerCase().includes(this.filter.toLowerCase().trim()) : false)
+                        || (c.traits != null ? c.traits.toLowerCase().includes(this.filter.toLowerCase().trim()) : false)
                         || (c.ownerName != null ? c.ownerName.toLowerCase().includes(this.filter.toLowerCase().trim()) : false)) {
                             return c;
                         }

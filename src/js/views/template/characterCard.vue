@@ -172,6 +172,7 @@ export default {
         top: -2%;
         right: 2%;
         color: white;
+        z-index: 1003;
     }
 
     #nextCard, #prevCard {
