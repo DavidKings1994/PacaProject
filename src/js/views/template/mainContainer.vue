@@ -11,7 +11,7 @@
         <div v-else class="row fondo" id="mainContainer">
             <div class="container col-md-8" id="loginMessage">
                 <div class="jumbotron">
-                    <img src="/assets/sirnus_white.png" alt="Sirnus logo">
+                    <img src="/assets/sirnus_logo.png" alt="Sirnus logo">
                     <p>Welcome to Sirnus, please log in first</p>
                 </div>
             </div>
@@ -37,7 +37,7 @@ export default {
 
 <style lang="css">
 #loginMessage img {
-    width: 100%;
+    height: 50vh;
     display: block;
     margin: 0px auto 15px;
 }

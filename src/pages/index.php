@@ -8,7 +8,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="keywords" content="Sirnus,deviant,art">
         <meta name="description" content="The Sirnus website!">
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/star.png"/>
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/pixellogo.png"/>
 
         <!-- External libraries -->
         <script src="https://use.fontawesome.com/65cecb8678.js"></script>

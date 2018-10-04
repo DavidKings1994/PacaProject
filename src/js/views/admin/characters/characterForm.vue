@@ -24,7 +24,7 @@
                         <div class="form-group" v-if="rol == 'admin'">
                             <label class="control-label col-sm-2" for="id">Registry number:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="id" id="id" placeholder="Enter character registry number" v-model="this.characterId">
+                                <input type="text" class="form-control" name="id" id="id" placeholder="Enter character registry number" v-model="editingCharacter.id">
                             </div>
                         </div>
                         <div class="form-group">
@@ -118,14 +118,16 @@ export default {
     props: ['character'],
     watch: {
         character: function() {
-            if (this.character != null && this.rol == 'admin') {
-                $("#characterFormModal select[name='class']").val(this.character.clas);
-                $("#characterFormModal select[name='type']").val(this.character.type);
-                $("#characterFormModal select[name='species']").val(this.character.species);
-                this.selected = {
-                    value: this.character.idCharacter,
-                    label: this.character.ownerName
-                };
+            if (this.character != null) {
+                if (this.rol == 'admin') {
+                    $("#characterFormModal select[name='class']").val(this.character.clas);
+                    $("#characterFormModal select[name='type']").val(this.character.type);
+                    $("#characterFormModal select[name='species']").val(this.character.species);
+                    this.selected = {
+                        value: this.character.idCharacter,
+                        label: this.character.ownerName
+                    };
+                }
                 this.editingCharacter.id = this.character.idCharacter;
                 this.editingCharacter.name = this.character.name;
                 this.editingCharacter.description = this.character.description;
@@ -146,8 +148,16 @@ export default {
     methods: {
         close: function() {
             this.selected = null;
+            this.editingCharacter = {
+                id: '',
+                name: '',
+                description: '',
+                image: '',
+                traits: ''
+            };
             $('#characterFormModal form input').val('');
             $('#characterFormModal .btn-danger').click();
+            this.$emit('closed');
         },
         getUsers: function(search, loading) {
             loading(true);
@@ -168,15 +178,15 @@ export default {
             } else {
                 data = {
                     action: 'updateCharacter',
-                    id: this.character.idCharacter,
-                    image: this.character.image,
+                    id: this.editingCharacter.id,
+                    image: this.editingCharacter.image,
                     name: $('#characterFormModal input#name').val(),
                     desc: $('#characterFormModal textarea#desc').val(),
-                    type: this.character.type,
-                    species: this.character.species,
-                    traits: this.character.traits,
+                    type: this.editingCharacter.type,
+                    species: this.editingCharacter.species,
+                    traits: this.editingCharacter.traits,
                     owner: this.userName,
-                    class: this.character.class
+                    class: this.editingCharacter.class
                 };
             }
             $.post('./php/controllers/characterController.php', data,

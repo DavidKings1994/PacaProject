@@ -26,9 +26,15 @@
                 </div>
             </div>
         </div>
+        <paca-user-character-transaction
+            :character="selectedCharacter"
+            v-on:saved="loadCharacters"
+        >
+        </paca-user-character-transaction>
         <paca-admin-character-form
             :character="selectedCharacter"
             v-on:saved="loadCharacters"
+            v-on:closed="resetInventory"
         >
         </paca-admin-character-form>
         <paca-inventory-transaction
