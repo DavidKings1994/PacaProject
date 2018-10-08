@@ -9,7 +9,7 @@
             </div>
             <transition name="card">
                 <div class="characterCard" v-if="characters[index] != null" :key="index" :data-index="index">
-                    <span>{{ characters[index].idCharacter + ': ' + characters[index].name}}</span>
+                    <span class="cardtop">{{ characters[index].idCharacter + ': ' + characters[index].name}}</span>
                     <div id="closeCard" v-on:click="close">
                         <i class="glyphicon glyphicon-remove"></i>
                     </div>
@@ -31,6 +31,7 @@
                             </ul>
                         </p>
                     </div>
+                    <span class="cardbottom">{{ characters[index].ownerName}}</span>
                 </div>
             </transition>
         </div>
@@ -105,7 +106,8 @@ export default {
     }
 
     .characterCard {
-        background: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0) 100%);
+        /* background: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0) 100%); */
+        background: black;
         height: 80vh;
         min-height: 400px;
         min-width: 225px;
@@ -115,13 +117,24 @@ export default {
         transform: translate(-50%,-50%);
         width: min-content;
         border-top: 2vh solid black;
+        border-bottom: 2vh solid black;
     }
 
-    .characterCard > span {
+    .characterCard > span.cardtop {
         color: white;
         position: absolute;
         top: -2%;
         left: 5px;
+    }
+
+    .characterCard > span.cardbottom {
+        top: 497px;
+        width: 100%;
+        text-align: right;
+        left: 0;
+        padding: 0 10px;
+        color: white;
+        position: absolute;
     }
 
     .characterCard .characterCardBody {

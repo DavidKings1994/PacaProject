@@ -197,6 +197,7 @@
                             this.characters = json.characters;
                             this.filteredCharacters = this.characters;
                             this.page = this.filteredCharacters.slice(this.currentPage * this.itemsPerPage, (this.currentPage * this.itemsPerPage) + this.itemsPerPage);
+                            $('#closeCard').click();
                         } else {
                             messageStore.commit('addMessage', {
                                 text: 'Unable to load character list.',
@@ -215,6 +216,7 @@
                                 this.characters = json.characters;
                                 this.filteredCharacters = this.characters;
                                 this.page = this.filteredCharacters.slice(this.currentPage * this.itemsPerPage, (this.currentPage * this.itemsPerPage) + this.itemsPerPage);
+                                $('#closeCard').click();
                             } else {
                                 messageStore.commit('addMessage', {
                                     text: 'Unable to load user\'s characters',
@@ -250,7 +252,7 @@
                 });
             },
             setUpSwall: function() {
-                let _idCharacter = this.characters[this.bufferIndex].idCharacter;
+                let _idCharacter = this.filteredCharacters[this.bufferIndex].idCharacter;
                 let self = this;
                 let wrapper = document.createElement('div');
                 if (this.rol == 'admin') {

@@ -129,7 +129,11 @@ export default {
                 }, (msg) => {
                     var json = JSON.parse(msg);
                     if (json.status == 'OK') {
-                        this.users = json.users;
+                        this.users = $.map(json.users, item => {
+                            item.idUser = parseInt(item.idUser);
+                            item.currency = parseInt(item.currency);
+                            return item;
+                        });
                     } else {
                         messageStore.commit('addMessage', {
                             text: 'Unable to load users',
