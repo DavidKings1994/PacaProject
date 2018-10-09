@@ -106,7 +106,10 @@ export default {
             }, (msg) => {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
-                    this.characters = json.characters;
+                    this.characters = $.map(json.characters, item => {
+                        item.ownerName = this.profile.name;
+                        return item;
+                    });
                 } else {
                     messageStore.commit('addMessage', {
                         text: 'Unable to load user\'s characters',

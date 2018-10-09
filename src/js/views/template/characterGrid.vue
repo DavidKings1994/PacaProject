@@ -213,7 +213,10 @@
                         }, (msg) => {
                             var json = JSON.parse(msg);
                             if (json.status == 'OK') {
-                                this.characters = json.characters;
+                                this.characters = $.map(json.characters, item => {
+                                    item.ownerName = this.profile.name;
+                                    return item;
+                                });
                                 this.filteredCharacters = this.characters;
                                 this.page = this.filteredCharacters.slice(this.currentPage * this.itemsPerPage, (this.currentPage * this.itemsPerPage) + this.itemsPerPage);
                                 $('#closeCard').click();
