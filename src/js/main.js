@@ -72,6 +72,11 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
                     name: 'characters'
                 },
                 {
+                    path: 'pets',
+                    component: require('./views/template/pets/petsList.vue'),
+                    name: 'pets'
+                },
+                {
                     path: 'items',
                     component: require('./views/admin/items/itemList.vue'),
                     name: 'items'
@@ -110,6 +115,12 @@ function(Vue, Vuex, VueRouter, Bootstrap, swal) {
                     path: 'characters',
                     component: require('./views/template/characterGrid.vue'),
                     name: 'user characters',
+                    props: true
+                },
+                {
+                    path: 'pets',
+                    component: require('./views/template/pets/petsList.vue'),
+                    name: 'user pets',
                     props: true
                 },
                 {

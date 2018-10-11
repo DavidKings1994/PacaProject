@@ -95,7 +95,11 @@ export default {
             }, (msg) => {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
-                    this.logs = json.logs;
+                    this.logs = $.map(json.logs, item => {
+                        item.idLog = parseInt(item.idLog);
+                        item.quantity = parseInt(item.quantity);
+                        return item;
+                    });
                 } else {
                     messageStore.commit('addMessage', {
                         text: 'Unable to load logs',

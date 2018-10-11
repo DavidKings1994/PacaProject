@@ -13,6 +13,9 @@
             <router-link to="/admin/characters" id="nav-characters" v-else>
                 <i class="fa fa-book"></i> Masterlist
             </router-link>
+            <router-link to="/admin/pets" id="nav-pets">
+                <i class="fa fa-paw"></i> pets
+            </router-link>
             <router-link to="/admin/items" id="nav-items">
                 <i class="fa fa-briefcase"></i> Items
             </router-link>
@@ -29,6 +32,9 @@
             </router-link>
             <router-link :to="'/user/' + userId + '/characters'" id="nav-characters">
                 <i class="fa fa-heart"></i> Characters
+            </router-link>
+            <router-link :to="'/user/' + userId + '/pets'" id="nav-pets">
+                <i class="fa fa-paw"></i> pets
             </router-link>
             <router-link :to="'/user/' + userId + '/inventory'" id="nav-items">
                 <i class="fa fa-briefcase"></i> Inventory

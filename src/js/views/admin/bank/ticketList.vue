@@ -96,7 +96,11 @@ export default {
             }, (msg) => {
                 var json = JSON.parse(msg);
                 if (json.status == 'OK') {
-                    this.tickets = json.tickets;
+                    this.tickets = $.map(json.tickets, item => {
+                        item.idTicket = parseInt(item.idTicket);
+                        item.currency = parseInt(item.currency);
+                        return item;
+                    });
                 } else {
                     messageStore.commit('addMessage', {
                         text: 'Unable to load ticket list',
