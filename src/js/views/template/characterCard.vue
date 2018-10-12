@@ -128,7 +128,7 @@ export default {
     }
 
     .characterCard > span.cardbottom {
-        top: 497px;
+        bottom: -2%;
         width: 100%;
         text-align: right;
         left: 0;
