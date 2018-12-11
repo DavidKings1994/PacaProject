@@ -3,6 +3,7 @@ node_modules
 public
 dist
 db
+vendor
 
 #ftp
 *.ftpconfig

@@ -4,8 +4,8 @@ error_reporting(0);
 class Connection {
     private $server = 'localhost';
     private $user = 'root';
-    private $password = 'root';
-    private $database = 'paca_project_db';
+    private $password = 'jjkli8jlkjlu';
+    private $database = 'ph19757465091_pacapillars';
     private $connection = null;
 
     function __construct() {

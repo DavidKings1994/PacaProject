@@ -37,6 +37,7 @@
         >
         </paca-inventory>
         <vue-bootstrap-table
+            v-if="users.length > 0"
             :columns="columns"
             :values="users"
             :show-filter="true"

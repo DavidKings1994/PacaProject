@@ -13,6 +13,7 @@
         >
         </paca-inventory>
         <vue-bootstrap-table
+            v-if="characters.length > 0"
             :columns="columns"
             :values="characters"
             :show-filter="true"

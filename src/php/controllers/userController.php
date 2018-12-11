@@ -5,7 +5,7 @@ $connection = new Connection();
 if(isset($_POST['action'])) {
     switch ($_POST['action']) {
         case 'login': {
-            $query = mysqli_prepare($connection->getConnection(), "CALL login(?,?)");
+            $query = mysqli_prepare($connection->getConnection(), "CALL pacaLogin(?,?)");
             $pass = sha1($_POST['pass']);
             $query->bind_param('ss',
                 $_POST['name'],
@@ -38,6 +38,11 @@ if(isset($_POST['action'])) {
                         'status' => 'ERROR'
                     ));
                 }
+            }else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
             }
             break;
         }
