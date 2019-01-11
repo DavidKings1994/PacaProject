@@ -8,7 +8,7 @@
                 <i class="fa fa-users"></i> Users
             </router-link>
             <router-link to="/admin/characters" id="nav-characters">
-                <i class="fa fa-heart"></i> Characters
+                <i class="fa fa-book"></i> Masterlist
             </router-link>
             <router-link to="/admin/items" id="nav-items">
                 <i class="fa fa-briefcase"></i> Items
@@ -25,7 +25,7 @@
                 <i class="fa fa-user"></i> Profile
             </router-link>
             <router-link :to="'/user/' + userId + '/characters'" id="nav-characters">
-                <i class="fa fa-heart"></i> Characters
+                <i class="fa fa-book"></i> Masterlist
             </router-link>
             <router-link :to="'/user/' + userId + '/inventory'" id="nav-items">
                 <i class="fa fa-briefcase"></i> Inventory

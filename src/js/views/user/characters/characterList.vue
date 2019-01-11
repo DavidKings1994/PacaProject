@@ -12,6 +12,21 @@
             v-on:closed="resetInventory"
         >
         </paca-inventory>
+        <paca-user-character-transaction
+            :character="selectedCharacter"
+            v-on:saved="loadCharacters"
+        >
+        </paca-user-character-transaction>
+        <paca-admin-character-form
+            :character="selectedCharacter"
+            v-on:saved="loadCharacters"
+        >
+        </paca-admin-character-form>
+        <paca-inventory-use
+            :idCharacter="idCharacter"
+            v-on:closed="resetInventory"
+        >
+        </paca-inventory-use>
         <vue-bootstrap-table
             v-if="characters.length > 0"
             :columns="columns"
@@ -145,6 +160,15 @@ export default {
                         })[0];
                         $("#inventoryUseModal").modal();
                     });
+                    // set up the transfer character button
+                    $('ul.dropdown-menu a[data-idcharacter="' + entry.idCharacter + '"][data-option="transferCharacter"]').click((event) => {
+                        var id = $(event.target).attr('data-idcharacter');
+                        this.selectedCharacter = null;
+                        this.selectedCharacter = $(this.characters).filter(function(i,n) {
+                            return n.idCharacter == id;
+                        })[0];
+                        $("#characterTransactionModal").modal();
+                    });
                     clearTimeout(checker);
                 }
             }, 100);
@@ -158,6 +182,7 @@ export default {
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="inventory">Inventory</a></li>' +
                     '<li class="dropdown-header">Transactions</li>' +
                     '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="useItem">Use item</a></li>' +
+                    '<li><a data-idcharacter="' + entry.idCharacter + '" data-option="transferCharacter">Transfer character</a></li>' +
                 '</ul>' +
             '</div>';
         }

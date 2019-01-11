@@ -1,4 +1,9 @@
 <?php
+require './../autoload.php';
+require('./../phpmailer/phpmailer/src/PHPMailer.php');
+require('./../phpmailer/phpmailer/src/Exception.php');
+require('./../phpmailer/phpmailer/src/SMTP.php');
+use PHPMailer\PHPMailer\PHPMailer;
 include_once  './../connection.php';
 $connection = new Connection();
 
@@ -365,6 +370,143 @@ if(isset($_POST['action'])) {
                     'users' => $characters
                 );
                 echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
+        case 'getNotifications': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL getNotifications(?)");
+            $query->bind_param('i', $_POST['user']);
+            if($query->execute()) {
+                $query->bind_result($id, $date, $status, $characterName, $characterImage, $userName, $ownerName);
+                $notifications = array();
+                while($query->fetch()) {
+                    $notifications[] = array(
+                        'id' => $id,
+                        'date' => $date,
+                        'status' => $status,
+                        'characterName' => $characterName,
+                        'characterImage' => $characterImage,
+                        'userName' => $userName,
+                        'ownerName' => $ownerName
+                    );
+                }
+                $data = array(
+                    'status' => 'OK',
+                    'notifications' => $notifications
+                );
+                echo json_encode($data);
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => $query->error
+                ));
+            }
+            break;
+        }
+        case 'checkPasswordRestoreKey': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL checkPasswordRestoreKey(?)");
+            $query->bind_param('s', $_POST['key']);
+            if($query->execute()) {
+                $query->bind_result($user);
+                if($query->fetch()) {
+                    echo json_encode(array(
+                        'status' => 'OK',
+                        'user' => $user
+                    ));
+                } else {
+                    echo json_encode(array(
+                        'status' => 'ERROR',
+                        'error' => 'key not found'
+                    ));
+                }
+            } else {
+                echo json_encode(array(
+                    'status' => 'ERROR',
+                    'error' => 'Ups! there was error'
+                ));
+            }
+            break;
+        }
+        case 'restorePassword': {
+            $query = mysqli_prepare($connection->getConnection(), "CALL restorePassword(?)");
+            $query->bind_param('s', $_POST['user']);
+            if($query->execute()) {
+                $query->bind_result($resul, $link, $_email);
+                if($query->fetch()) {
+                    if($_email != null and $_email != '') {
+                        $message = '
+                        <html lang="en">
+                            <head>
+                                <meta charset="utf-8">
+                                <title>Sirnus password restore</title>
+                            </head>
+                            <body>
+                                <p>Hello, ' . $_POST['user'] . '!</p>
+                                <p><a href="http://sirnus.com/#/passwordRestore/' . $link . '">
+                                    Click here to change the password of your Sirnus account
+                                </a></p>
+                                <p>We suggest that you change it after login in to
+                                one that you can better remember. If you did not request a password change
+                                then ignore this mail.</p>
+                            </body>
+                        </html>
+                        ';
+                        try {
+                            $mail=new PHPMailer(true);
+                            $mail->CharSet = 'UTF-8';
+
+                            $mail->IsSMTP();
+                            $mail->Host       = 'smtpout.secureserver.net';
+                            $mail->Port       = 80;
+                            $mail->SMTPAuth   = true;
+                            $mail->Username   = 'no-reply@sirnus.com';
+                            $mail->Password   = 'S1rnu5123!';
+
+                            $mail->SetFrom('no-reply@sirnus.com', 'no-reply');
+                            $mail->AddReplyTo('no-reply@sirnus.com','no-reply');
+                            $mail->Subject = 'Sirnus password restore';
+                            $mail->isHTML(true);
+                            $mail->msgHTML($message, __DIR__);
+                            $mail->AltBody = 'Hello, ' . $_POST['user'] . '!
+                            Click here to change the password of your sirnus account:
+                            http://sirnus.com/#/passwordRestore/' . $link . '.
+                            We suggest that you change it after login in to
+                            one that you can better remember. If you did not request
+                            a password change ignore this mail.';
+                            $mail->AddAddress($_email);
+                            if (!$mail->send()) {
+                                echo json_encode(array(
+                                    'status' => 'ERROR',
+                                    'error' => $mail->ErrorInfo
+                                ));
+                            } else {
+                                echo json_encode(array(
+                                    'status' => 'OK'
+                                ));
+                            }
+                        } catch (Exception $e) {
+                            echo json_encode(array(
+                                'status' => 'ERROR',
+                                'error' => $e->message
+                            ));
+                        }
+                    } else {
+                        echo json_encode(array(
+                            'status' => 'ERROR',
+                            'error' => 'User don\'t have an e-mail registered'
+                        ));
+                    }
+                } else {
+                    echo json_encode(array(
+                        'status' => 'ERROR',
+                        'error' => '404'
+                    ));
+                }
             } else {
                 echo json_encode(array(
                     'status' => 'ERROR',

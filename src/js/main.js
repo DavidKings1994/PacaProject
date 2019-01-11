@@ -28,6 +28,7 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
     // user components
     Vue.component('paca-user-item-transaction', require('./views/user/items/itemTransaction.vue'));
     Vue.component('paca-user-character-form', require('./views/user/characters/characterForm.vue'));
+    Vue.component('paca-user-character-transaction', require('./views/user/characters/characterTransaction.vue'));
 
     const routes = [
         {
@@ -94,6 +95,12 @@ function(Vue, Vuex, VueRouter, Bootstrap) {
                     path: 'characters',
                     component: require('./views/user/characters/characterList.vue'),
                     name: 'user characters',
+                    props: true
+                },
+                {
+                    path: 'requests',
+                    component: require('./views/user/characters/characterTransferList.vue'),
+                    name: 'transfer requests',
                     props: true
                 }
             ]

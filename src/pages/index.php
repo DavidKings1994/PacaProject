@@ -12,6 +12,7 @@
 
         <!-- External libraries -->
         <script src="https://use.fontawesome.com/65cecb8678.js"></script>
+        <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
         <!-- /External libraries -->
 
         <!--[htmlclean-protect]-->
